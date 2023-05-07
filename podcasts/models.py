@@ -11,7 +11,7 @@ class Podcast(models.Model):
         return f'{self.name}'
 
 class Episode(models.Model):
-    video_id = models.CharField(max_length=11)
+    video_id = models.CharField(max_length=11, unique=True)
     channel = models.ForeignKey(Podcast, on_delete=models.CASCADE)
     title = models.CharField(max_length=125)
     transcript_with_time = ArrayField(models.JSONField(), null=True, blank=True)
