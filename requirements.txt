@@ -2,6 +2,7 @@ asgiref==3.6.0
 astroid==2.15.4
 certifi==2023.5.7
 charset-normalizer==3.1.0
+coverage==7.2.5
 dill==0.3.6
 Django==4.2.1
 django-cors-headers==3.14.0
