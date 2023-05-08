@@ -7,3 +7,5 @@ local_settings.py
 media
 .env
 .vscode/
+.coverage
+htmlcov/
