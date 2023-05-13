@@ -1,6 +1,6 @@
 from django.db import models
 
-# Create your models here.
+from youtube_transcript_api import YouTubeTranscriptApi
 
 class Podcast(models.Model):
     name = models.CharField(max_length=50)
@@ -18,3 +18,8 @@ class Episode(models.Model):
 
     def __str__(self):
         return f'{self.channel.name} - {self.title}'
+
+    def save(self, *args, **kwargs):
+        transcript_list = YouTubeTranscriptApi.get_transcript(self.video_id)
+        self.transcript = " ".join([transcript['text'] for transcript in transcript_list])
+        super().save(*args, **kwargs)
