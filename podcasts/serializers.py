@@ -16,6 +16,7 @@ class EpisodeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Episode
         fields = [
+            'id',
             'video_id',
             'channel',
             'title',
