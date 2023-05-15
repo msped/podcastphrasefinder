@@ -6,14 +6,20 @@ from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 from rest_framework import status
 
-from .models import Episode
-from .serializers import EpisodeSerializer
+from .models import Episode, Podcast
+from .serializers import EpisodeSerializer, PodcastSerializer
 
 class SearchEpisodeView(ListAPIView):
     search_fields = ['transcript']
     filter_backends= (SearchFilter,)
     queryset = Episode.objects.all()
     serializer_class = EpisodeSerializer
+
+class SearchPodcastsView(ListAPIView):
+    search_fields = ['name']
+    filter_backends = (SearchFilter,)
+    queryset = Podcast.objects.all()
+    serializer_class = PodcastSerializer
 
 class IncrementEpisodeCiick(APIView):
     @csrf_exempt
