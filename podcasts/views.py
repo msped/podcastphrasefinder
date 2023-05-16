@@ -1,3 +1,4 @@
+from django.contrib.postgres.search import SearchVector, SearchRank
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.filters import SearchFilter
@@ -16,10 +17,20 @@ class SearchEpisodeView(ListAPIView):
     serializer_class = EpisodeSerializer
 
 class SearchPodcastsView(ListAPIView):
-    search_fields = ['name']
-    filter_backends = (SearchFilter,)
-    queryset = Podcast.objects.all()
+    filter_backends = [SearchFilter]
     serializer_class = PodcastSerializer
+    search_fields = ['name']
+
+    def get_queryset(self):
+        user_query = self.request.query_params.get('q')
+        if user_query:
+            vector = SearchVector('name')
+            return Podcast.objects.annotate(
+                search=vector,
+            ).filter(name__icontains=user_query).annotate(
+                rank=SearchRank(vector, user_query)
+            ).order_by('-rank')
+        return Podcast.objects.all()
 
 class IncrementEpisodeCiick(APIView):
     @csrf_exempt
