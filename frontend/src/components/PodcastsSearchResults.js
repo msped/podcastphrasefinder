@@ -1,6 +1,6 @@
 import useGetSearchPodcastsHook from '@/hooks/useGetSearchPodcastsHook'
 import PodcastPanel from '@/components/PodcastPanel'
-import { Grid, Stack } from '@mui/material'
+import { Grid, Stack, Typography } from '@mui/material'
 
 import LoadingSpinner from './LoadingSpinner'
 
@@ -17,17 +17,21 @@ export default function PodcastsSearchResults({ query }) {
 
     if (isLoading && results.length === 0) {
         return (
-            <div>
-                Search to see if we have your favourite podcasts!
-            </div>
+            <Stack alignItems='center' alignContent='center'>
+                <Typography>
+                    Search to see if we have your favourite podcasts!
+                </Typography>
+            </Stack>
         )
     }
 
     if (!isLoading && results.length === 0) {
         return (
-            <div>
-                No results
-            </div>
+            <Stack alignItems='center' alignContent='center'>
+                <Typography>
+                    No results
+                </Typography>
+            </Stack>
         )
     }
 
