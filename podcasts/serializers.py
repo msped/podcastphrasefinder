@@ -3,13 +3,18 @@ from rest_framework import serializers
 from .models import Podcast, Episode
 
 class PodcastSerializer(serializers.ModelSerializer):
+    no_of_episodes = serializers.SerializerMethodField()
     class Meta:
         model = Podcast
         fields = [
             'id',
             'name',
             'channel_link',
+            'no_of_episodes',
         ]
+
+    def get_no_of_episodes(self, obj):
+        return Episode.objects.filter(channel_id=obj.id).count()
 
 class EpisodeSerializer(serializers.ModelSerializer):
     channel = serializers.SerializerMethodField()
