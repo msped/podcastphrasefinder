@@ -1,6 +1,6 @@
 import apiClient from "./apiClient";
 
-const getChannelsSearchService = (query) => {
+const getPodcastsSearchService = (query) => {
     return apiClient
         .get('podcasts/search', {
             params: { q: query }
@@ -8,4 +8,4 @@ const getChannelsSearchService = (query) => {
         .then((res) => res.data)
 }
 
-export default getChannelsSearchService;
+export default getPodcastsSearchService;
