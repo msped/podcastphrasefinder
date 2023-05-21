@@ -39,6 +39,7 @@ export default function Podcasts() {
                         variant='filled'
                         onChange={(e) => setQuery(e.target.value)}
                         fullWidth
+                        value={query}
                         endAdornment={
                             <InputAdornment position="end" >
                                 <IconButton edge="end">
