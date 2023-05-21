@@ -17,6 +17,7 @@
     "@mui/material": "^5.13.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.4.3",
     "axios": "^1.4.0",
     "coverage": "^0.4.1",
     "eslint": "8.40.0",
