@@ -1,11 +1,11 @@
-import useGetSearchPodcastsHook from '@/hooks/useGetSearchPodcastsHook'
+import useGetPodcastsSearchHook from '@/hooks/useGetPodcastsSearchHook'
 import PodcastPanel from '@/components/PodcastPanel'
 import { Grid, Stack, Typography } from '@mui/material'
 
 import LoadingSpinner from './LoadingSpinner'
 
 export default function PodcastsSearchResults({ query }) {
-    const { results, isLoading } = useGetSearchPodcastsHook(query)
+    const { results, isLoading } = useGetPodcastsSearchHook(query)
 
     if (isLoading && query.length > 3) {
         return (

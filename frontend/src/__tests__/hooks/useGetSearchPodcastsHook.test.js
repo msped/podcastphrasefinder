@@ -1,10 +1,10 @@
 import { renderHook, waitFor, act } from '@testing-library/react';
 import getPodcastsSearchService from '@/api/getPodcastsSearchService';
-import useGetSearchPodcastsHook from '@/hooks/useGetSearchPodcastsHook';
+import useGetPodcastsSearchHook from '@/hooks/useGetPodcastsSearchHook';
 
 jest.mock('../../api/getPodcastsSearchService');
 
-describe('useGetSearchPodcastsHook', () => {
+describe('useGetPodcastsSearchHook', () => {
     afterEach(() => {
         jest.resetAllMocks();
     });
@@ -19,7 +19,7 @@ describe('useGetSearchPodcastsHook', () => {
         getPodcastsSearchService.mockResolvedValueOnce(mockData);
 
         const { result, rerender } = renderHook(() =>
-            useGetSearchPodcastsHook(query)
+            useGetPodcastsSearchHook(query)
         );
 
         waitFor(() => expect(result.current.results).toEqual([]));
@@ -41,7 +41,7 @@ describe('useGetSearchPodcastsHook', () => {
         getPodcastsSearchService.mockResolvedValueOnce(mockData);
 
         const { result, rerender } = renderHook(() =>
-            useGetSearchPodcastsHook(query)
+            useGetPodcastsSearchHook(query)
         );
 
         waitFor(() => expect(result.current.results).toEqual([]));
@@ -63,7 +63,7 @@ describe('useGetSearchPodcastsHook', () => {
         getPodcastsSearchService.mockResolvedValueOnce(mockData);
 
         const { result, rerender } = renderHook(() =>
-            useGetSearchPodcastsHook(query)
+            useGetPodcastsSearchHook(query)
         );
 
         waitFor(() => expect(result.current.results).toEqual([]));

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import getPodcastsSearchService from '@/api/getPodcastsSearchService'
 
-const useGetSearchPodcastsHook = (query) => {
+const useGetPodcastsSearchHook = (query) => {
     const [results, setResults] = useState([])
     const [isLoading, setIsLoading] = useState(true)
 
@@ -32,4 +32,4 @@ const useGetSearchPodcastsHook = (query) => {
     return { results, isLoading };
 }
 
-export default useGetSearchPodcastsHook;
+export default useGetPodcastsSearchHook;
