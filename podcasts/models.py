@@ -13,7 +13,7 @@ class Episode(models.Model):
     video_id = models.CharField(max_length=11, unique=True)
     channel = models.ForeignKey(Podcast, on_delete=models.CASCADE)
     title = models.CharField(max_length=125)
-    transcript = models.TextField()
+    transcript = models.TextField(blank=True, null=True)
     times_clicked = models.IntegerField(default=0)
 
     def __str__(self):
