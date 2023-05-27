@@ -14,6 +14,8 @@
 
 - Use webhook to get new uploads from podcast youtube channels automatically.
 
+- Display the match in the results page so the user can see where in the podcast it is.
+
 ### V3
 
 - Go through AI to get transcript if YouTube account doesn't allow profanity captions.
