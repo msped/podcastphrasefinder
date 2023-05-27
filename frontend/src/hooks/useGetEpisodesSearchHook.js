@@ -14,9 +14,6 @@ const useGetEpisodesSearchHook = (query) => {
 
         if (query.length >= 3 && !results.length > 0) {
             fetchDataFromService();
-        }
-        else if (query.length === 0 && isLoading && results.length === 0) {
-            fetchDataFromService();
         } else {
             const timeoutId = setTimeout(() => {
                 if (query) {
