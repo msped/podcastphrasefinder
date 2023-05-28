@@ -1,11 +1,11 @@
-import useGetPodcastsSearchHook from '@/hooks/useGetPodcastsSearchHook'
-import PodcastPanel from '@/components/PodcastPanel'
+import useGetEpisodesSearchHook from '@/hooks/useGetEpisodesSearchHook'
+import EpisodePanel from '@/components/EpisodePanel'
 import { Grid, Stack, Typography } from '@mui/material'
 
 import LoadingSpinner from './LoadingSpinner'
 
-export default function PodcastsSearchResults({ query }) {
-    const { results, isLoading } = useGetPodcastsSearchHook(query)
+export default function EpisodesSearchResults({ query }) {
+    const { results, isLoading } = useGetEpisodesSearchHook(query)
 
     if (isLoading && query.length > 3) {
         return (
@@ -18,8 +18,8 @@ export default function PodcastsSearchResults({ query }) {
     if (isLoading && results.length === 0) {
         return (
             <Stack alignItems='center' alignContent='center'>
-                <Typography>
-                    Search to see if we have your favourite podcasts!
+                <Typography variant='body1' component='p' sx={{textAlign: 'center'}}>
+                    Type the phrase you heard above to find the episode you heard it from.
                 </Typography>
             </Stack>
         )
@@ -39,7 +39,7 @@ export default function PodcastsSearchResults({ query }) {
         <Grid container spacing={2}>
             {results.map((item) => (
                 <Grid item key={item.id} xs={12}>
-                    <PodcastPanel podcast={item}/>
+                    <EpisodePanel episode={item}/>
                 </Grid>
             ))}
         </Grid>

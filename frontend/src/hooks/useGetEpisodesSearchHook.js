@@ -1,21 +1,18 @@
 import { useEffect, useState } from 'react'
-import getPodcastsSearchService from '@/api/getPodcastsSearchService'
+import getEpisodesSearchService from '@/api/getEpisodesSearchService'
 
-const useGetSearchPodcastsHook = (query) => {
+const useGetEpisodesSearchHook = (query) => {
     const [results, setResults] = useState([])
     const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         const fetchDataFromService = () => {
-            getPodcastsSearchService(query)
+            getEpisodesSearchService(query)
             .then(setResults)
             setIsLoading(false)
         }
 
         if (query.length >= 3 && !results.length > 0) {
-            fetchDataFromService();
-        }
-        else if (query.length === 0 && isLoading && results.length === 0) {
             fetchDataFromService();
         } else {
             const timeoutId = setTimeout(() => {
@@ -32,4 +29,4 @@ const useGetSearchPodcastsHook = (query) => {
     return { results, isLoading };
 }
 
-export default useGetSearchPodcastsHook;
+export default useGetEpisodesSearchHook;

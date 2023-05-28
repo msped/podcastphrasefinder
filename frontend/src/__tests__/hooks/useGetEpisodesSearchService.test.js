@@ -1,10 +1,10 @@
 import { renderHook, waitFor, act } from '@testing-library/react';
-import getPodcastsSearchService from '@/api/getPodcastsSearchService';
-import useGetPodcastsSearchHook from '@/hooks/useGetPodcastsSearchHook';
+import getEpisodesSearchService from '@/api/getEpisodesSearchService';
+import useGetEpisodesSearchHook from '@/hooks/useGetEpisodesSearchHook';
 
-jest.mock('../../api/getPodcastsSearchService');
+jest.mock('../../api/getEpisodesSearchService');
 
-describe('useGetPodcastsSearchHook', () => {
+describe('useGetEpisodesSearchHook', () => {
     afterEach(() => {
         jest.resetAllMocks();
     });
@@ -13,13 +13,25 @@ describe('useGetPodcastsSearchHook', () => {
         const query = 'test';
         const mockData = {
             isLoading: true,
-            results: [{ id: 1, name: 'Test Podcast' }]
+            results: [{
+                "id": 1,
+                "video_id": "b-UYSj6Q0Ao",
+                "channel": {
+                    "id": 2,
+                    "name": "The Rest Is Politics",
+                    "channel_link": "https://www.youtube.com/@restispolitics",
+                    "no_of_episodes": 1
+                },
+                "title": "Suella's speeding, Japan in focus, and what's the point of the G7?",
+                "transcript": "This is a test transcript of a podcast from the Rest is Politics.",
+                "times_clicked": 11
+            }]
         }
 
-        getPodcastsSearchService.mockResolvedValueOnce(mockData);
+        getEpisodesSearchService.mockResolvedValueOnce(mockData);
 
         const { result, rerender } = renderHook(() =>
-            useGetPodcastsSearchHook(query)
+            useGetEpisodesSearchHook(query)
         );
 
         waitFor(() => expect(result.current.results).toEqual([]));
@@ -38,10 +50,10 @@ describe('useGetPodcastsSearchHook', () => {
             results: []
         }
 
-        getPodcastsSearchService.mockResolvedValueOnce(mockData);
+        getEpisodesSearchService.mockResolvedValueOnce(mockData);
 
         const { result, rerender } = renderHook(() =>
-            useGetPodcastsSearchHook(query)
+            useGetEpisodesSearchHook(query)
         );
 
         waitFor(() => expect(result.current.results).toEqual([]));
@@ -60,10 +72,10 @@ describe('useGetPodcastsSearchHook', () => {
             results: []
         }
 
-        getPodcastsSearchService.mockResolvedValueOnce(mockData);
+        getEpisodesSearchService.mockResolvedValueOnce(mockData);
 
         const { result, rerender } = renderHook(() =>
-            useGetPodcastsSearchHook(query)
+            useGetEpisodesSearchHook(query)
         );
 
         waitFor(() => expect(result.current.results).toEqual([]));
@@ -72,7 +84,7 @@ describe('useGetPodcastsSearchHook', () => {
         // Wait for the first API call to finish
         rerender();
 
-        getPodcastsSearchService.mockResolvedValueOnce([]);
+        getEpisodesSearchService.mockResolvedValueOnce([]);
 
         // Change the query and trigger a new API call
         act(() => {

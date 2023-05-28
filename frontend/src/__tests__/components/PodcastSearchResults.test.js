@@ -5,7 +5,7 @@ import PodcastsSearchResults from '@/components/PodcastsSearchResults';
 
 describe('PodcastsSearchResults', () => {
     it('renders the podcast search results', () => {
-        jest.mock('../../hooks/useGetSearchPodcastsHook', () => ({
+        jest.mock('../../hooks/useGetPodcastsSearchHook', () => ({
             __esModule: true,
             default: jest.fn(() => ({
                 results: [
@@ -31,7 +31,7 @@ describe('PodcastsSearchResults', () => {
     });
 
     it('displays a loading spinner while fetching data', () => {
-        jest.mock('../../hooks/useGetSearchPodcastsHook', () => ({
+        jest.mock('../../hooks/useGetPodcastsSearchHook', () => ({
             __esModule: true,
             default: jest.fn(() => ({
                 results: [],
@@ -45,7 +45,7 @@ describe('PodcastsSearchResults', () => {
     });
 
     it('displays a message when there are no search results', async () => {
-        jest.mock('../../hooks/useGetSearchPodcastsHook', () => ({
+        jest.mock('../../hooks/useGetPodcastsSearchHook', () => ({
             __esModule: true,
             default: jest.fn(() => ({
                 results: [],
@@ -59,7 +59,7 @@ describe('PodcastsSearchResults', () => {
     });
 
     it('displays a message when the search query is too short', async () => {
-        jest.mock('../../hooks/useGetSearchPodcastsHook', () => ({
+        jest.mock('../../hooks/useGetPodcastsSearchHook', () => ({
             __esModule: true,
             default: jest.fn(() => ({
                 results: [],
