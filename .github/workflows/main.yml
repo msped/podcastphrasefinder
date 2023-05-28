@@ -55,6 +55,8 @@ jobs:
         with:
           node-version: 18.15.0
       - name: Install modules
+        working-directory: ./frontend
         run: npm ci
       - name: Run RTL tests
+        working-directory: ./frontend
         run: npm test
