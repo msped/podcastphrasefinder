@@ -10,7 +10,17 @@
 
 - Manual input for podcasts to the database. :white_check_mark:
 
+- Home page.
+
+- See all of the Podcast creators that are in the database. :white_check_mark:
+
+- Header / Footer.
+
+- Scroll to top.
+
 ### V2
+
+- Add functionality to go through a channel uploads to add to database.
 
 - Use webhook to get new uploads from podcast youtube channels automatically.
 
