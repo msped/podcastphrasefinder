@@ -5,6 +5,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { CacheProvider } from '@emotion/react';
 import theme from '@/theme';
 import createEmotionCache from '@/createEmotionCache';
+import Header from '@/components/Header'
 import Footer from '@/components/Footer';
 
 // Client-side cache, shared for the whole session of the user in the browser.
@@ -21,6 +22,7 @@ export default function MyApp(props) {
       <ThemeProvider theme={theme}>
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
+        <Header />
         <main style={{ minHeight: '80vh' }}>
           <Component {...pageProps} />
         </main>
