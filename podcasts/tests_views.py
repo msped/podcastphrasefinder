@@ -1,3 +1,4 @@
+import json
 from rest_framework.test import APITestCase
 
 from .models import Podcast, Episode
@@ -57,3 +58,13 @@ class TestodcastViews(APITestCase):
             }
         )
         self.assertEqual(response.status_code, 200)
+
+    def test_get_most_popular(self):
+        response = self.client.get(
+            '/api/podcasts/episode/popular'
+        )
+        self.assertEqual(response.status_code, 200)
+        episode = json.loads(response.content)
+        self.assertEqual(episode['video_id'], 'of-Oa7Ps8Rs')
+        self.assertEqual(episode['title'], 'Michelle de Swarte | Have A Word Podcast #223')
+        self.assertEqual(episode['times_clicked'], 100)
