@@ -49,3 +49,9 @@ class IncrementEpisodeCiick(APIView):
         episode.times_clicked += 1
         episode.save()
         return Response(status=status.HTTP_200_OK)
+
+class GetMostClickedPodcast(APIView):
+    def get(self, request):
+        episode = Episode.objects.all().order_by('-times_clicked').first()
+        serializer = EpisodeSerializer(episode, many=False)
+        return Response(serializer.data, status=status.HTTP_200_OK)
