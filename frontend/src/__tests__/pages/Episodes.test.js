@@ -3,7 +3,7 @@ import "@testing-library/jest-dom"
 import { screen, render, waitFor, fireEvent } from "@testing-library/react"
 import * as nextRouter from 'next/router'
 
-import Episodes from './index'
+import Episodes from '../../pages/episodes/index'
 
 // Mock the EpisodessSearchResults component
 jest.mock('src/components/EpisodesSearchResults', () => {
