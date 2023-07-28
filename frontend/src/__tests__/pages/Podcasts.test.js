@@ -1,7 +1,7 @@
 import React from 'react'
 import { screen, render, waitFor, fireEvent } from "@testing-library/react"
 
-import Podcasts from './index'
+import Podcasts from '../../pages/podcasts/index'
 
 // Mock the PodcastsSearchResults component
 jest.mock('src/components/PodcastsSearchResults', () => {

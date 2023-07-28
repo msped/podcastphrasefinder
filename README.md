@@ -10,11 +10,11 @@
 
 - Manual input for podcasts to the database. :white_check_mark:
 
-- Home page.
+- Home page. :white_check_mark:
 
 - See all of the Podcast creators that are in the database. :white_check_mark:
 
-- Header / Footer.
+- Header / Footer. :white_check_mark:
 
 - Scroll to top.
 
