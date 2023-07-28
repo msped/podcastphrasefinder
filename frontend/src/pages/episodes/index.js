@@ -47,6 +47,7 @@ export default function Episodes() {
                             type="search"
                             variant='filled'
                             onChange={(e) => setQuery(e.target.value)}
+                            placeholder='Type the phrase or guests name'
                             fullWidth
                             value={query}
                             endAdornment={
