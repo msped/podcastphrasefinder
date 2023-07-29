@@ -40,7 +40,7 @@ class SearchPodcastsView(ListAPIView):
             ).filter(name__icontains=user_query).annotate(
                 rank=SearchRank(vector, user_query)
             ).order_by('-rank')
-        return Podcast.objects.all()
+        return Podcast.objects.all()[:5]
 
 class IncrementEpisodeCiick(APIView):
     @csrf_exempt
