@@ -16,8 +16,6 @@
 
 - Header / Footer. :white_check_mark:
 
-- Scroll to top.
-
 ### V2
 
 - Use webhook to get new uploads from podcast youtube channels automatically.
