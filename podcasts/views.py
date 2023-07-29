@@ -13,15 +13,15 @@ from .serializers import EpisodeSerializer, PodcastSerializer
 class SearchEpisodeView(ListAPIView):
     filter_backends = [SearchFilter]
     serializer_class = EpisodeSerializer
-    search_fields = ['transcript']
+    search_fields = ['transcript', 'title']
 
     def get_queryset(self):
         user_query = self.request.query_params.get('q')
         if user_query:
-            vector = SearchVector('transcript')
+            vector = SearchVector('transcript', 'title')
             return Episode.objects.annotate(
                 search=vector,
-            ).filter(transcript__icontains=user_query).annotate(
+            ).filter(transcript__icontains=user_query, title__icontains=user_query).annotate(
                 rank=SearchRank(vector, user_query)
             ).order_by('-rank')
         return Episode.objects.all()
