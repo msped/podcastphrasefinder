@@ -1,13 +1,13 @@
-name: Django CI
+name: CI
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "*-main"]
   pull_request:
-    branches: ["main"]
+    branches: ["main", "*-main"]
 
 jobs:
-  build:
+  django_test_job:
     runs-on: ubuntu-latest
 
     services:
