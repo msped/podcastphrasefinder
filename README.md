@@ -18,13 +18,13 @@
 
 ### V2
 
-- Use webhook to get new uploads from podcast youtube channels automatically.
+- Add functionality to go through a channel uploads to add to database.
 
 - Display the match in the results page so the user can see where in the podcast it is.
 
 ### V2.5
 
-- Add functionality to go through a channel uploads to add to database.
+- Use webhook to get new uploads from podcast youtube channels automatically.
 
 ### V3
 
