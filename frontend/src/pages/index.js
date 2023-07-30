@@ -41,12 +41,9 @@ export default function Home() {
           Search podcast transcripts with that phrase you know, 
           but can't find! | PodFinder
         </title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
       </Head>
       {/* https://unsplash.com/photos/g0PcDhany4Y?utm_source=unsplash&utm_medium=referral&utm_content=creditShareLink */}
-      <div style={{...styles.backgroundImageStyle}}
-      >
+      <div style={{...styles.backgroundImageStyle}}>
         <Box
           sx={{
             position: 'absolute',

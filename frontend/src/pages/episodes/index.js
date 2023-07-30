@@ -22,8 +22,6 @@ export default function Episodes() {
         <Head>
             <title>Search on a phrase you heard and find the podcast it came from. | PodFinder</title>
             <meta name="description" content="PodFinder allows you to search on transcripts to find where it came from." />
-            <meta name="viewport" content="width=device-width, initial-scale=1" />
-            <link rel="icon" href="/favicon.ico" />
         </Head>
         <Container maxWidth='md' sx={{ marginY: 2 }}>
                 <Grid container spacing={2}>
