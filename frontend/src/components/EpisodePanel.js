@@ -55,7 +55,7 @@ export default function EpisodePanel({ episode }) {
                     </Typography>
                     <Typography>
                         By <Link
-                            href={`${episode.channel.channel_link}`}
+                            href={`https://www.youtube.com/channel/${episode.channel.channel_id}`}
                             target='_blank'
                         >
                             {episode.channel.name}
