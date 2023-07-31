@@ -9,7 +9,7 @@ class PodcastSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'name',
-            'channel_link',
+            'channel_id',
             'no_of_episodes',
         ]
 
