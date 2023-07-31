@@ -7,9 +7,11 @@ import {
 } from '@mui/material'
 
 export default function PodcastPanel({ podcast }) {
+    const channel_link = `https://www.youtube.com/channel/${podcast.channel_id}`
+
     return (
         <Card>
-            <CardActionArea href={podcast.channel_link} target='_blank'>
+            <CardActionArea href={channel_link} target='_blank'>
                 <CardContent>
                     <Grid container spacing={2}>
                         <Grid item xs={8}>

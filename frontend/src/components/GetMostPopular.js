@@ -12,6 +12,10 @@ import EpisodePanelSkeleton from '@/skeletons/EpisodePanelSkeleton'
 export default function GetMostPopular() {
     const { episode, isLoading } = useGetMostPopularHook()
 
+    if (!isLoading && episode.video_id === '') {
+        return null
+    }
+
     if (!isLoading) {
         return (
             <Box>
