@@ -8,11 +8,11 @@ class TestodcastViews(APITestCase):
     def setUp(self):
         Podcast.objects.create(
             name='Have a Word Podcast',
-            channel_link='https://www.youtube.com/@HaveAWordPod',
+            channel_id='UChl6sFeO_O0drTc1CG1ymFw',
         )
         Podcast.objects.create(
             name='The Mild High Club',
-            channel_link='https://www.youtube.com/@TheMildHighClub'
+            channel_id='UCIpglRjjRPp2_qfsak-jSSw'
         )
         podcast = Podcast.objects.get(name='Have a Word Podcast')
         Episode.objects.create(

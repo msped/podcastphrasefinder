@@ -9,7 +9,7 @@ class TestModels(APITestCase):
     def podcast_str(self):
         Podcast.objects.create(
             name='Tom Scott',
-            channel_link='https://www.youtube.com/@TomScottGo'
+            channel_id='UCBa659QWEk1AI4Tg--mrJ2A'
         ).save()
         podcast = Podcast.objects.get(name='Tom Scott')
         self.assertEqual(str(podcast), 'Tom Scott')
@@ -38,7 +38,7 @@ class EpisodeSerializerTestCase(APITestCase):
     def setUp(self):
         Podcast.objects.create(
             name='Have a Word Podcast',
-            channel_link='https://www.youtube.com/@HaveAWordPod',
+            channel_id='UChl6sFeO_O0drTc1CG1ymFw',
         )
         podcast = Podcast.objects.get(name='Have a Word Podcast')
         self.episode = Episode.objects.create(
@@ -74,7 +74,7 @@ class PodcastSerializerTestCase(APITestCase):
     def setUp(self):
         self.podcast = Podcast.objects.create(
             name='Have a Word Podcast',
-            channel_link='https://www.youtube.com/@HaveAWordPod',
+            channel_id='UChl6sFeO_O0drTc1CG1ymFw',
         )
         self.serializer = PodcastSerializer(instance=self.podcast)
 
@@ -86,6 +86,6 @@ class PodcastSerializerTestCase(APITestCase):
         data = self.serializer.data
         self.assertEqual(data['name'], self.podcast.name)
 
-    def test_channel_link_field_content(self):
+    def test_channel_id_field_content(self):
         data = self.serializer.data
-        self.assertEqual(data['channel_link'], self.podcast.channel_link)
+        self.assertEqual(data['channel_id'], self.podcast.channel_id)

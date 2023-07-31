@@ -13,13 +13,13 @@ describe('PodcastsSearchResults', () => {
                         id: 1,
                         name: 'Test Podcast 1',
                         no_of_episodes: 10,
-                        channel_link: 'https://example.com/1'
+                        channel_id: 'abtT4429vjlsdm'
                     },
                     {
                         id: 2,
                         name: 'Test Podcast 2',
                         no_of_episodes: 20,
-                        channel_link: 'https://example.com/2'
+                        channel_id: 'DFvfneifvn3058'
                     }
                 ],
                 isLoading: false

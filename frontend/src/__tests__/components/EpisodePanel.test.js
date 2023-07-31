@@ -17,7 +17,7 @@ describe('EpisodePanel', () => {
         "channel": {
             "id": 2,
             "name": "The Rest Is Politics",
-            "channel_link": "https://www.youtube.com/@restispolitics",
+            "channel_id": "UCsufaClk5if2RGqABb-09Uw",
             "no_of_episodes": 1
         },
         "title": "Suella's speeding, Japan in focus, and what's the point of the G7?",
