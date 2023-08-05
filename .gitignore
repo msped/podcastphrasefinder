@@ -9,3 +9,5 @@ media
 .vscode/
 .coverage
 htmlcov/
+postgres_data/
+redis_data/
