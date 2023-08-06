@@ -1,5 +1,7 @@
 from django.db import models
 
+from .utils import get_transcript
+
 class Podcast(models.Model):
     name = models.CharField(max_length=50)
     channel_id = models.CharField(max_length=24)
@@ -20,3 +22,10 @@ class Episode(models.Model):
         if self.error_occurred:
             return f'ERROR {self.channel.name} - {self.title}'
         return f'{self.channel.name} - {self.title}'
+
+    def save(self, *args, **kwargs):
+        transcript, error = get_transcript(self.video_id)
+        self.transcript = transcript
+        if error:
+            self.error_occurred = True
+        super().save(*args, **kwargs)
