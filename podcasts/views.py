@@ -28,7 +28,7 @@ class SearchEpisodeView(ListAPIView):
             ).annotate(
                 rank=SearchRank(vector, user_query)
             ).order_by('-rank')
-        return Episode.objects.all(error_occurred=False)
+        return Episode.objects.filter(error_occurred=False)[:5]
 
 class SearchPodcastsView(ListAPIView):
     filter_backends = [SearchFilter]
