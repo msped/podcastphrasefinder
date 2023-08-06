@@ -14,6 +14,9 @@ class Episode(models.Model):
     title = models.CharField(max_length=125)
     transcript = models.TextField(blank=True, null=True)
     times_clicked = models.IntegerField(default=0)
+    error_occurred = models.BooleanField(default=False)
 
     def __str__(self):
+        if self.error_occurred:
+            return f'ERROR {self.channel.name} - {self.title}'
         return f'{self.channel.name} - {self.title}'
