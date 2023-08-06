@@ -1,5 +1,4 @@
 from rest_framework.test import APITestCase
-from youtube_transcript_api import YouTubeTranscriptApi
 
 from .models import Podcast, Episode
 from .serializers import PodcastSerializer, EpisodeSerializer
@@ -16,13 +15,10 @@ class TestModels(APITestCase):
 
     def episode_str(self):
         channel = Podcast.objects.get(name='Tom Scott')
-        transcript_list = YouTubeTranscriptApi.get_transcript('ce-QHeZnVu4')
         Episode.objects.create(
             video_id='ce-QHeZnVu4',
             channel=channel,
             title='The giant archive hidden under the British countryside',
-            transcript=" ".join(
-                [transcript['text'] for transcript in transcript_list])
         ).save()
         episode = Episode.objects.get(video_id='ce-QHeZnVu4')
         self.assertEqual(
@@ -30,9 +26,20 @@ class TestModels(APITestCase):
             'Tom Scott - The giant archive hidden under the British countryside'
         )
 
+    def episode_str_with_error(self):
+        episode = Episode.objects.get(video_id='ce-QHeZnVu4')
+        episode.error_occurred = True
+        episode.transcript = 'An error message'
+        episode.save()
+        self.assertEqual(
+            str(episode),
+            'ERROR Tom Scott - The giant archive hidden under the British countryside'
+        )
+
     def test_in_order(self):
         self.podcast_str()
         self.episode_str()
+        self.episode_str_with_error()
 
 class EpisodeSerializerTestCase(APITestCase):
     def setUp(self):
