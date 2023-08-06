@@ -21,10 +21,14 @@ class SearchEpisodeView(ListAPIView):
             vector = SearchVector('transcript', 'title')
             return Episode.objects.annotate(
                 search=vector,
-            ).filter(transcript__icontains=user_query, title__icontains=user_query).annotate(
+            ).filter(
+                transcript__icontains=user_query,
+                title__icontains=user_query,
+                error_occurred=False
+            ).annotate(
                 rank=SearchRank(vector, user_query)
             ).order_by('-rank')
-        return Episode.objects.all()
+        return Episode.objects.all(error_occurred=False)
 
 class SearchPodcastsView(ListAPIView):
     filter_backends = [SearchFilter]
