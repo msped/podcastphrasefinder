@@ -6,4 +6,4 @@ from .tasks import add_back_catalogue_task
 
 @receiver(post_save, sender=Podcast)
 def add_back_catalogue_of_channel(sender, instance, **kwargs):
-    add_back_catalogue_task.delay(instance.id, instance.channel_id)
+    add_back_catalogue_task.delay(instance.id, instance.channel_id, instance.video_filter)
