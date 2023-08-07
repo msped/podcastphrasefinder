@@ -2,7 +2,7 @@ from unittest.mock import patch
 from django.test import TestCase
 from requests.exceptions import RequestException
 
-from .utils import call_api
+from .utils import call_api, get_transcript
 
 class TestUtils(TestCase):
     @patch('podcasts.utils.requests.get')
@@ -25,3 +25,11 @@ class TestUtils(TestCase):
 
         self.assertIsNone(result)
         mock_get.assert_called_once_with('https://example.com/api', timeout=5)
+
+    def test_get_transcript_failure(self):
+        transcript, error = get_transcript('aVsz7OP-AcQ')
+        self.assertIn(
+            'Could not retrieve a transcript for the video https://www.youtube.com/watch?v=aVsz7OP-AcQ',
+            transcript
+        )
+        self.assertTrue(error)
