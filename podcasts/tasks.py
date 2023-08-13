@@ -14,7 +14,6 @@ logger = get_task_logger(__name__)
 
 @shared_task
 def add_back_catalogue_task(channel_id, yt_channel_id, video_filter):
-    next_page_token = ""
     video_data = []
 
     url_params = {
@@ -25,15 +24,18 @@ def add_back_catalogue_task(channel_id, yt_channel_id, video_filter):
         'maxResults': 50,
     }
 
-    if next_page_token != "":
-        url_params['pageToken'] = next_page_token
-
     while True:
+        next_page_token = ""
         api_url = (
             'https://www.googleapis.com/youtube/v3/search?'
             + urlencode(url_params)
         )
         response = call_api(api_url)
+
+        next_page_token = response.get("nextPageToken", "")
+
+        if next_page_token != "":
+            url_params['pageToken'] = next_page_token
 
         videos = response.get('items', [])
 
@@ -51,9 +53,7 @@ def add_back_catalogue_task(channel_id, yt_channel_id, video_filter):
                     })
                     logger.info(f"{video_title} - Error: {error}")
 
-        next_page_token = response.get('nextPageToken')
-
-        if not next_page_token:
+        if next_page_token == "":
             break
 
     Episode.objects.bulk_create([Episode(**data) for data in video_data])
