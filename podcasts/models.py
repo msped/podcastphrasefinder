@@ -1,6 +1,6 @@
 from django.db import models
 
-from youtube_transcript_api import YouTubeTranscriptApi
+from .utils import get_transcript
 
 class Podcast(models.Model):
     name = models.CharField(max_length=50)
@@ -16,11 +16,16 @@ class Episode(models.Model):
     title = models.CharField(max_length=125)
     transcript = models.TextField(blank=True, null=True)
     times_clicked = models.IntegerField(default=0)
+    error_occurred = models.BooleanField(default=False)
 
     def __str__(self):
+        if self.error_occurred:
+            return f'ERROR {self.channel.name} - {self.title}'
         return f'{self.channel.name} - {self.title}'
 
     def save(self, *args, **kwargs):
-        transcript_list = YouTubeTranscriptApi.get_transcript(self.video_id)
-        self.transcript = " ".join([transcript['text'] for transcript in transcript_list])
+        transcript, error = get_transcript(self.video_id)
+        self.transcript = transcript
+        if error:
+            self.error_occurred = True
         super().save(*args, **kwargs)

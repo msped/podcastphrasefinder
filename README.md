@@ -18,7 +18,7 @@
 
 ### V2
 
-- Add functionality to go through a channel uploads to add to database.
+- Add functionality to go through a channel uploads to add to database. :white_check_mark:
 
 - Display the match in the results page so the user can see where in the podcast it is.
 
@@ -36,5 +36,6 @@
 
 - [Django Rest Framework](https://www.django-rest-framework.org/)
 - [Youtube Transcript API](https://pypi.org/project/youtube-transcript-api/)
+- [Celery](https://docs.celeryq.dev/en/stable/index.html)
 - [NextJS](https://nextjs.org/)
 - [Material UI](https://mui.com/)
