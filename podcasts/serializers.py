@@ -28,6 +28,7 @@ class EpisodeSerializer(serializers.ModelSerializer):
             'channel',
             'title',
             'transcript',
+            'thumbnail',
             'times_clicked',
         ]
 
