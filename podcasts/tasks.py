@@ -43,13 +43,15 @@ def add_back_catalogue_task(channel_id, yt_channel_id, video_filter):
             if video['id']['kind'] == 'youtube#video':
                 video_title = unescape(video['snippet']['title'])
                 if not video_filter or video_filter in video_title:
-                    transcript, error = get_transcript(video['id']['videoId'])
+                    video_id = video['id']['videoId']
+                    transcript, error = get_transcript(video_id)
                     video_data.append({
-                        'video_id': video['id']['videoId'],
+                        'video_id': video_id,
                         'channel_id': channel_id,
                         'title': video_title,
                         'transcript': transcript,
-                        'error_occurred': error
+                        'error_occurred': error,
+                        'thumbnail': f'https://i.ytimg.com/vi/{video_id}/hqdefault.jpg',
                     })
                     logger.info(f"{video_title} - Error: {error}")
 
