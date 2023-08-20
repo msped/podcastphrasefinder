@@ -30,6 +30,7 @@ class EpisodeSerializer(serializers.ModelSerializer):
             'transcript',
             'thumbnail',
             'times_clicked',
+            'published_date',
         ]
 
     def get_channel(self, obj):
