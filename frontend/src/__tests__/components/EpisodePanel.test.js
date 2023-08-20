@@ -20,6 +20,7 @@ describe('EpisodePanel', () => {
             "channel_id": "UCsufaClk5if2RGqABb-09Uw",
             "no_of_episodes": 1
         },
+        "thumbnail": "https://test.url.mspe.me/eeTEdlsa",
         "title": "Suella's speeding, Japan in focus, and what's the point of the G7?",
         "transcript": "This is a test transcript of a podcast from the Rest is Politics.",
         "times_clicked": 11
@@ -60,4 +61,13 @@ describe('EpisodePanel', () => {
         expect(postEpisodeIncrementService).toHaveBeenCalledTimes(1);
         expect(postEpisodeIncrementService).toHaveBeenCalledWith(episode.id);
     });
+
+    test('renders the correct thumbnail', () => {
+        render(<EpisodePanel episode={episode} />)
+    
+        const thumbnail = screen.getByAltText("Suella's speeding, Japan in focus, and what's the point of the G7? thumbnail")
+    
+        expect(thumbnail).toBeInTheDocument()
+        expect(thumbnail.src).toEqual(episode.thumbnail)
+    })
 });

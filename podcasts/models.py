@@ -16,6 +16,7 @@ class Episode(models.Model):
     title = models.CharField(max_length=125)
     transcript = models.TextField(blank=True, null=True)
     times_clicked = models.IntegerField(default=0)
+    thumbnail = models.URLField(blank=True, null=True)
     error_occurred = models.BooleanField(default=False)
 
     def __str__(self):
@@ -28,4 +29,5 @@ class Episode(models.Model):
         self.transcript = transcript
         if error:
             self.error_occurred = True
+        self.thumbnail = f'https://img.youtube.com/vi/{self.video_id}/maxresdefault.jpg'
         super().save(*args, **kwargs)

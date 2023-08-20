@@ -67,6 +67,13 @@ class EpisodeSerializerTestCase(APITestCase):
     def test_transcript_field_content(self):
         self.assertIsNotNone(self.episode.transcript)
 
+    def test_thumbnail_url(self):
+        data = self.serializer.data
+        self.assertEqual(
+            data['thumbnail'],
+            f'https://img.youtube.com/vi/{self.episode.video_id}/maxresdefault.jpg'
+        )
+
     def test_times_clicked_field_content(self):
         data = self.serializer.data
         self.assertEqual(data['times_clicked'], self.episode.times_clicked)
