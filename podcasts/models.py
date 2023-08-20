@@ -29,5 +29,5 @@ class Episode(models.Model):
         self.transcript = transcript
         if error:
             self.error_occurred = True
-        self.thumbnail = f'https://i.ytimg.com/vi/{self.video_id}/hqdefault.jpg'
+        self.thumbnail = f'https://img.youtube.com/vi/{self.video_id}/maxresdefault.jpg'
         super().save(*args, **kwargs)
