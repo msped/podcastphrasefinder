@@ -51,6 +51,19 @@ const styles = {
         height: 'auto',
         margin: 0,
         padding: 0,
+    },
+    episodeInformation: {
+        fontWeight: '700',
+        fontSize: {
+            xs: '.8rem',
+            md: '1.25rem',
+        }
+    },
+    channelInformation: {
+        fontSize: {
+            xs: '.65rem',
+            md: '1.25rem',
+        }
     }
 }
 
@@ -76,10 +89,14 @@ export default function EpisodePanel({ episode }) {
                     </Grid>
                     <Grid item xs={8}>
                         <Stack>
-                            <Typography variant='h6' component='span' fontWeight={700}>
+                            <Typography
+                                variant='h6'
+                                component='span'
+                                sx={{...styles.episodeInformation}}
+                            >
                                 {episode.title} 
                             </Typography>
-                            <Typography>
+                            <Typography sx={{...styles.channelInformation}}>
                                 By <Link
                                     href={`https://www.youtube.com/channel/${episode.channel.channel_id}`}
                                     target='_blank'
