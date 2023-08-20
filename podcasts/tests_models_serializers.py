@@ -71,7 +71,7 @@ class EpisodeSerializerTestCase(APITestCase):
         data = self.serializer.data
         self.assertEqual(
             data['thumbnail'],
-            f'https://img.youtube.com/vi/{self.video_id}/maxresdefault.jpg'
+            f'https://img.youtube.com/vi/{self.episode.video_id}/maxresdefault.jpg'
         )
 
     def test_times_clicked_field_content(self):
