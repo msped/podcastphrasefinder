@@ -18,6 +18,7 @@ class Episode(models.Model):
     times_clicked = models.IntegerField(default=0)
     thumbnail = models.URLField(blank=True, null=True)
     error_occurred = models.BooleanField(default=False)
+    published_date = models.DateField()
 
     def __str__(self):
         if self.error_occurred:
