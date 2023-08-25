@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from django.db import models
 
 from .utils import get_transcript
@@ -18,7 +19,7 @@ class Episode(models.Model):
     times_clicked = models.IntegerField(default=0)
     thumbnail = models.URLField(blank=True, null=True)
     error_occurred = models.BooleanField(default=False)
-    published_date = models.DateField()
+    published_date = models.DateTimeField()
 
     def __str__(self):
         if self.error_occurred:
