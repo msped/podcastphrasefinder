@@ -19,7 +19,7 @@ class TestModels(APITestCase):
             video_id='ce-QHeZnVu4',
             channel=channel,
             title='The giant archive hidden under the British countryside',
-            published_date='2023-08-13'
+            published_date='2023-08-25T20:55:33Z'
         ).save()
         episode = Episode.objects.get(video_id='ce-QHeZnVu4')
         self.assertEqual(
@@ -54,7 +54,7 @@ class EpisodeSerializerTestCase(APITestCase):
             title='Michelle de Swarte | Have A Word Podcast #223',
             channel_id=podcast.id,
             times_clicked=100,
-            published_date='2023-08-13'
+            published_date='2023-08-25T20:55:33Z'
         )
         self.serializer = EpisodeSerializer(instance=self.episode)
 
@@ -78,7 +78,7 @@ class EpisodeSerializerTestCase(APITestCase):
 
     def test_published_date(self):
         data = self.serializer.data
-        self.assertEqual('2023-08-13', data['published_date'])
+        self.assertEqual('2023-08-25T20:55:33Z', data['published_date'])
 
     def test_times_clicked_field_content(self):
         data = self.serializer.data
