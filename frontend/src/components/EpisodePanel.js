@@ -8,6 +8,7 @@ import {
     Grid,
     Box
 } from '@mui/material'
+import { formatDistance, parseISO } from 'date-fns';
 import HeadphonesIcon from '@mui/icons-material/Headphones';
 import Link from '@/components/Link'
 import postEpisodeIncrementService from '@/api/postEpisodeIncrementService'
@@ -62,13 +63,23 @@ const styles = {
     channelInformation: {
         fontSize: {
             xs: '.65rem',
-            md: '1.25rem',
+            md: '1rem',
         }
+    },
+    published_date: {
+        color: '#AAAAAA',
+        fontSize: {
+            xs: '.75rem',
+            md: '.85rem',
+        }
+        
     }
 }
 
 export default function EpisodePanel({ episode }) {
     const youtubeURL = `http://www.youtube.com/watch?v=${episode.video_id}`
+    const published_date = new Date(episode.published_date)
+    const current_date_time = new Date()
 
     const handleTimeClickedIncrement = () => {
         postEpisodeIncrementService(episode.id)
@@ -96,14 +107,16 @@ export default function EpisodePanel({ episode }) {
                             >
                                 {episode.title} 
                             </Typography>
-                            <Typography sx={{...styles.channelInformation}}>
-                                By <Link
-                                    href={`https://www.youtube.com/channel/${episode.channel.channel_id}`}
-                                    target='_blank'
-                                >
-                                    {episode.channel.name}
-                                </Link>
+                            <Typography sx={{...styles.published_date}} data-testid='time-since-test-id'>
+                                {formatDistance(published_date, current_date_time)} ago
                             </Typography>
+                            <Link
+                                href={`https://www.youtube.com/channel/${episode.channel.channel_id}`}
+                                target='_blank'
+                                sx={{...styles.channelInformation}}
+                            >
+                                {episode.channel.name}
+                            </Link>
                         </Stack>
                     </Grid>
                 </Grid>
