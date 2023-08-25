@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import "@testing-library/jest-dom";
+import { formatDistance } from 'date-fns';
 import * as nextRouter from 'next/router'
 import EpisodePanel from '@/components/EpisodePanel';
 import postEpisodeIncrementService from '@/api/postEpisodeIncrementService';
@@ -20,6 +21,7 @@ describe('EpisodePanel', () => {
             "channel_id": "UCsufaClk5if2RGqABb-09Uw",
             "no_of_episodes": 1
         },
+        'published_date': '2023-08-25T20:55:33Z',
         "thumbnail": "https://test.url.mspe.me/eeTEdlsa",
         "title": "Suella's speeding, Japan in focus, and what's the point of the G7?",
         "transcript": "This is a test transcript of a podcast from the Rest is Politics.",
@@ -62,7 +64,17 @@ describe('EpisodePanel', () => {
         expect(postEpisodeIncrementService).toHaveBeenCalledWith(episode.id);
     });
 
-    test('renders the correct thumbnail', () => {
+    it("checks that the correct length of time is displayed", () => {
+        render(<EpisodePanel episode={episode} />)
+        const published_date = new Date(episode.published_date);
+        const current_date_time = new Date();
+
+        const component = screen.getByTestId('time-since-test-id')
+
+        expect(component).toHaveTextContent(formatDistance(published_date, current_date_time));
+    })
+
+    it('renders the correct thumbnail', () => {
         render(<EpisodePanel episode={episode} />)
     
         const thumbnail = screen.getByAltText("Suella's speeding, Japan in focus, and what's the point of the G7? thumbnail")
