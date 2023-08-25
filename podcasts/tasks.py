@@ -52,6 +52,7 @@ def add_back_catalogue_task(channel_id, yt_channel_id, video_filter):
                         'transcript': transcript,
                         'error_occurred': error,
                         'thumbnail': f'https://img.youtube.com/vi/{video_id}/maxresdefault.jpg',
+                        'published_date': video['snippet']['publishedAt']
                     })
                     logger.info(f"{video_title} - Error: {error}")
 
