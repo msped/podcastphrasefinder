@@ -21,8 +21,6 @@ export default function Podcasts() {
             <Head>
                 <title>Find which podcasts and how many episodes are currently supported. | PodFinder</title>
                 <meta name="description" content="Find which podcasts and how many episodes are currently supported." />
-                <meta name="viewport" content="width=device-width, initial-scale=1" />
-                <link rel="icon" href="/favicon.ico" />
             </Head>
             <Container maxWidth='sm' sx={{ marginY: 2 }}>
                 <Grid container spacing={2}>

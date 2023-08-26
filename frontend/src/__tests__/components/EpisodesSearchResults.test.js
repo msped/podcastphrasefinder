@@ -54,6 +54,7 @@ describe("EpisodesSearchResults", () => {
                     channel: {
                         name: "Channel A",
                     },
+                    published_date: '2023-08-25T20:55:33Z',
                     transcript: "Here we go, the first episode of this podcast"
                 },
                 {
@@ -62,6 +63,7 @@ describe("EpisodesSearchResults", () => {
                     channel: {
                         name: "Channel B",
                     },
+                    published_date: '2023-08-25T20:55:33Z',
                     transcript: "Welcome to the rest is politics with me, Rory Stewart"
                 },
             ],

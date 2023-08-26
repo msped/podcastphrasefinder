@@ -14,9 +14,10 @@ jest.mock('../../hooks/useGetMostPopularHook', () => ({
             id: 1,
             title: 'Episode 1',
             video_id: 'AZLU_4G8CY0',
+            published_date: '2023-08-25T20:55:33Z',
             channel: {
                 name: 'Dead Men Talking',
-                channel_link: 'https://www.youtube.com/@DeadMenTalkingPod'
+                channel_id: 'UCuV8fchmNqEljq3wcTCjxeA'
             },
         },
         isLoading: false,

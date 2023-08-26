@@ -9,12 +9,14 @@ class PodcastSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'name',
-            'channel_link',
+            'channel_id',
             'no_of_episodes',
         ]
 
     def get_no_of_episodes(self, obj):
-        return Episode.objects.filter(channel_id=obj.id).count()
+        return Episode.objects.filter(
+            channel_id=obj.id, error_occurred=False
+        ).count()
 
 class EpisodeSerializer(serializers.ModelSerializer):
     channel = serializers.SerializerMethodField()
@@ -26,7 +28,9 @@ class EpisodeSerializer(serializers.ModelSerializer):
             'channel',
             'title',
             'transcript',
+            'thumbnail',
             'times_clicked',
+            'published_date',
         ]
 
     def get_channel(self, obj):

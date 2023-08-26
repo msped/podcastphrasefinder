@@ -41,7 +41,6 @@ export default function Header() {
                     <Link href="/" style={{...styles.logoLink}}>
                         <Typography
                             variant="h6"
-                            componenet='div'
                             sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
                         >
                             PodFinder

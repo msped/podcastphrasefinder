@@ -28,7 +28,8 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'rest_framework',
     'corsheaders',
-    'podcasts',
+    'podcasts.apps.PodcastsConfig',
+    'django_celery_results',
 ]
 
 MIDDLEWARE = [
@@ -120,3 +121,11 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 APPEND_SLASH = False
+
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
+
+CELERY_RESULT_BACKEND = 'django-db'
+
+CELERY_ACCEPT_CONTENT = ['json']
+
+CELERY_TASK_SERIALIZER = 'json'

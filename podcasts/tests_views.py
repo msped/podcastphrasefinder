@@ -8,11 +8,11 @@ class TestodcastViews(APITestCase):
     def setUp(self):
         Podcast.objects.create(
             name='Have a Word Podcast',
-            channel_link='https://www.youtube.com/@HaveAWordPod',
+            channel_id='UChl6sFeO_O0drTc1CG1ymFw',
         )
         Podcast.objects.create(
             name='The Mild High Club',
-            channel_link='https://www.youtube.com/@TheMildHighClub'
+            channel_id='UCIpglRjjRPp2_qfsak-jSSw'
         )
         podcast = Podcast.objects.get(name='Have a Word Podcast')
         Episode.objects.create(
@@ -20,18 +20,21 @@ class TestodcastViews(APITestCase):
             title='Michelle de Swarte | Have A Word Podcast #223',
             channel_id=podcast.id,
             times_clicked=100,
+            published_date='2023-08-25T20:55:33Z'
         )
         Episode.objects.create(
             video_id='gD1mHPbaE_E',
             title='Mike Rice | Have A Word Podcast #224',
             channel_id=podcast.id,
             times_clicked=0,
+            published_date='2023-08-25T20:55:33Z'
         )
         Episode.objects.create(
             video_id='0OQKI5r6K2Q',
             title='Elliot Steel | Have A Word Podcast #222',
             channel_id=podcast.id,
             times_clicked=23,
+            published_date='2023-08-25T20:55:33Z'
         )
 
     def test_increment_podcast_click_by_one(self):
