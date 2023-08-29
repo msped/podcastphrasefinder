@@ -18,3 +18,10 @@ def get_transcript(video_id):
         return transcript, False
     except Exception as e:
         return str(e), True
+
+def check_for_private_video(video_id):
+    response = requests.get(
+        f'https://www.youtube.com/watch?v={video_id}',
+        timeout=5
+    )
+    return "private video" in response.text
