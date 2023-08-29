@@ -2,7 +2,7 @@ from unittest.mock import patch
 from django.test import TestCase
 from requests.exceptions import RequestException
 
-from .utils import call_api, get_transcript
+from .utils import call_api, get_transcript, check_for_private_video
 
 class TestUtils(TestCase):
     @patch('podcasts.utils.requests.get')
@@ -29,7 +29,16 @@ class TestUtils(TestCase):
     def test_get_transcript_failure(self):
         transcript, error = get_transcript('aVsz7OP-AcQ')
         self.assertIn(
-            'Could not retrieve a transcript for the video https://www.youtube.com/watch?v=aVsz7OP-AcQ',
+            'Could not retrieve a transcript for ' + 
+            'the video https://www.youtube.com/watch?v=aVsz7OP-AcQ',
             transcript
         )
         self.assertTrue(error)
+
+    def test_check_for_private_video_true(self):
+        response = check_for_private_video('Xw1EKgEl_RY')
+        self.assertTrue(response)
+
+    def test_check_for_private_video_false(self):
+        response = check_for_private_video('7moEbc-xYF8')
+        self.assertFalse(response)
