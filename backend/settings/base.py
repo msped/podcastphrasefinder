@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from celery.schedules import crontab
 
 load_dotenv()
 
@@ -130,3 +131,10 @@ CELERY_RESULT_BACKEND = 'django-db'
 CELERY_ACCEPT_CONTENT = ['json']
 
 CELERY_TASK_SERIALIZER = 'json'
+
+CELERY_BEAT_SCHEDULE = {
+    "scheduled_task": {
+        "task": "podcasts.tasks.check_for_private_videos",
+        "schedule": crontab(0, 0, day_of_month='1'),
+    },
+}
