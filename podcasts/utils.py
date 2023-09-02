@@ -1,3 +1,4 @@
+from time import sleep
 import requests
 
 from youtube_transcript_api import YouTubeTranscriptApi
@@ -20,8 +21,9 @@ def get_transcript(video_id):
         return str(e), True
 
 def check_for_private_video(video_id):
+    sleep(10)
     response = requests.get(
-        f'https://www.youtube.com/watch?v={video_id}',
-        timeout=5
+        f'https://img.youtube.com/vi/{video_id}/maxresdefault.jpg',
+        timeout=10
     )
-    return "private video" in response.text
+    return response.status_code == 404
