@@ -14,7 +14,7 @@ class TestUtils(TestCase):
         result = call_api('https://example.com/api')
 
         self.assertEqual(result, {'success': True})
-        mock_get.assert_called_once_with('https://example.com/api', timeout=5)
+        mock_get.assert_called_once_with('https://example.com/api', timeout=10)
 
     @patch('podcasts.utils.requests.get')
     def test_call_api_error(self, mock_get):
@@ -24,7 +24,7 @@ class TestUtils(TestCase):
         result = call_api('https://example.com/api')
 
         self.assertIsNone(result)
-        mock_get.assert_called_once_with('https://example.com/api', timeout=5)
+        mock_get.assert_called_once_with('https://example.com/api', timeout=10)
 
     def test_get_transcript_failure(self):
         transcript, error = get_transcript('aVsz7OP-AcQ')
