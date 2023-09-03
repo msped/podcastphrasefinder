@@ -1,4 +1,3 @@
-from datetime import datetime, timezone
 from django.db import models
 
 from .utils import get_transcript
@@ -20,6 +19,7 @@ class Episode(models.Model):
     thumbnail = models.URLField(blank=True, null=True)
     error_occurred = models.BooleanField(default=False)
     published_date = models.DateTimeField()
+    private_video = models.BooleanField(default=False)
 
     def __str__(self):
         if self.error_occurred:
