@@ -4,9 +4,10 @@ from html import unescape
 from urllib.parse import urlencode
 from celery import shared_task
 from celery.utils.log import get_task_logger
+from django.db import transaction
 
 from .models import Episode
-from .utils import call_api, get_transcript
+from .utils import call_api, get_transcript, check_for_private_video
 
 api_key = os.environ.get('YOUTUBE_V3_API_KEY')
 
@@ -60,3 +61,19 @@ def add_back_catalogue_task(channel_id, yt_channel_id, video_filter):
             break
 
     Episode.objects.bulk_create([Episode(**data) for data in video_data])
+
+@shared_task
+def check_for_private_videos():
+    episodes = Episode.objects.filter(error_occurred=False)
+
+    video_ids = {}
+
+    for episode in episodes:
+        video_visibility = check_for_private_video(episode.video_id)
+        if episode.private_video != video_visibility:
+            video_ids[episode.video_id] = video_visibility
+
+    with transaction.atomic():
+        for key, value in video_ids.items():
+            Episode.objects.filter(video_id=key).update(private_video=value)
+    
