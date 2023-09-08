@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { 
     Container,
     Grid,
@@ -8,13 +9,29 @@ import {
     IconButton,
     Stack,
     Typography,
-} from '@mui/material'
+} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
 import PodcastsSearchResults from '@/components/PodcastsSearchResults';
 
 export default function Podcasts() {
-    const [query, setQuery] = useState('')
+    const router = useRouter();
+    const [searchQuery, setSearchQuery] = useState('');
+
+    useEffect(() => {
+        if(!router.isReady) return;
+        if (router.query) {
+            setSearchQuery(router.query.q);
+        }
+    }, [router.isReady])
+
+    const handleInputChange = (e) => {
+        if(!router.isReady) return;
+        setSearchQuery(e.target.value)
+        router.push({
+            query: { q: e.target.value }
+        })
+    }
 
     return (
         <>
@@ -43,9 +60,9 @@ export default function Podcasts() {
                             id="outlined-search"
                             type="search"
                             variant='filled'
-                            onChange={(e) => setQuery(e.target.value)}
+                            onChange={handleInputChange}
                             fullWidth
-                            value={query}
+                            value={searchQuery}
                             endAdornment={
                                 <InputAdornment position="end" >
                                     <IconButton edge="end">
@@ -56,7 +73,7 @@ export default function Podcasts() {
                         />
                     </Grid>
                     <Grid item xs={12}>
-                        <PodcastsSearchResults query={query} />
+                        <PodcastsSearchResults query={searchQuery} />
                     </Grid>
                 </Grid>
             </Container>
