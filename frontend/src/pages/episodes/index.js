@@ -1,5 +1,6 @@
-import Head from 'next/head'
-import { useState } from 'react'
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import { 
     Container,
     Grid,
@@ -8,14 +9,30 @@ import {
     IconButton,
     Stack,
     Typography,
-} from '@mui/material'
+} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
-import Link from '@/components/Link'
-import EpisodesSearchResults from '@/components/EpisodesSearchResults'
+import Link from '@/components/Link';
+import EpisodesSearchResults from '@/components/EpisodesSearchResults';
 
 export default function Episodes() {
-    const [query, setQuery] = useState('')
+    const router = useRouter();
+    const [searchQuery, setSearchQuery] = useState('');
+
+    useEffect(() => {
+        if(!router.isReady) return;
+        if (router.query) {
+            setSearchQuery(router.query.q);
+        }
+    }, [router.isReady])
+
+    const handleInputChange = (e) => {
+        if(!router.isReady) return;
+        setSearchQuery(e.target.value)
+        router.push({
+            query: { q: e.target.value }
+        })
+    }
 
     return (
         <>
@@ -44,10 +61,10 @@ export default function Episodes() {
                             id="outlined-search"
                             type="search"
                             variant='filled'
-                            onChange={(e) => setQuery(e.target.value)}
+                            onChange={handleInputChange}
                             placeholder='Type the phrase or guests name'
                             fullWidth
-                            value={query}
+                            value={searchQuery}
                             endAdornment={
                                 <InputAdornment position="end" >
                                     <IconButton edge="end">
@@ -58,7 +75,7 @@ export default function Episodes() {
                         />
                     </Grid>
                     <Grid item xs={12}>
-                        <EpisodesSearchResults query={query} />
+                        <EpisodesSearchResults query={searchQuery} />
                     </Grid>
                 </Grid>
             </Container>
