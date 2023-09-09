@@ -17,17 +17,21 @@ class SearchEpisodeView(ListAPIView):
 
     def get_queryset(self):
         user_query = self.request.query_params.get('q')
+        channel_id = self.request.query_params.get('c')
         if user_query:
             vector = SearchVector('transcript', 'title')
-            return Episode.objects.annotate(
+            qs = Episode.objects.annotate(
                 search=vector,
             ).filter(
-                transcript__icontains=user_query,
-                title__icontains=user_query,
-                error_occurred=False
+                search=user_query,
+                error_occurred=False,
+                private_video=False
             ).annotate(
                 rank=SearchRank(vector, user_query)
             ).order_by('-rank')
+            if channel_id:
+                qs = qs.filter(channel__channel_id=channel_id)
+            return qs
         return Episode.objects.filter(error_occurred=False, private_video=False)[:5]
 
 class SearchPodcastsView(ListAPIView):
