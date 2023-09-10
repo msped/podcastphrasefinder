@@ -66,3 +66,9 @@ class GetMostClickedPodcast(APIView):
         ).order_by('-times_clicked').first()
         serializer = EpisodeSerializer(episode, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class GetPodcastInformation(APIView):
+    def get(self, request, channel_id):
+        channel = get_object_or_404(Podcast, channel_id=channel_id)
+        serializer = PodcastSerializer(channel, many=False)
+        return Response(serializer.data, status=status.HTTP_200_OK)
