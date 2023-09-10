@@ -138,3 +138,20 @@ class TestodcastViews(APITestCase):
         self.assertEqual(episode['video_id'], 'of-Oa7Ps8Rs')
         self.assertEqual(episode['title'], 'Michelle de Swarte | Have A Word Podcast #223')
         self.assertEqual(episode['times_clicked'], 100)
+
+    def test_get_podcast_information_200(self):
+        channel = Podcast.objects.get(channel_id='UChl6sFeO_O0drTc1CG1ymFw')
+        response = self.client.get(
+            f'/api/podcasts/{channel.channel_id}'
+        )
+        res_data = json.loads(response.content)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_data['name'], 'Have a Word Podcast')
+        self.assertEqual(res_data['channel_id'], 'UChl6sFeO_O0drTc1CG1ymFw')
+        self.assertEqual(res_data['no_of_episodes'], 3)
+
+    def test_get_podcast_information_404(self):
+        response = self.client.get(
+            '/api/podcasts/testingthisview'
+        )
+        self.assertEqual(response.status_code, 404)
