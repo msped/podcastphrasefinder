@@ -9,7 +9,7 @@ const getEpisodesSearchService = (query, channelId) => {
     }
     return apiClient
         .get('podcasts/episode/search', {
-            params: { params }
+            params
         })
         .then((res) => res.data)
 }
