@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 import getEpisodesSearchService from '@/api/getEpisodesSearchService'
 
-const useGetEpisodesSearchHook = (query) => {
+const useGetEpisodesSearchHook = (query, channelId) => {
     const [results, setResults] = useState([])
     const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         const fetchDataFromService = () => {
-            getEpisodesSearchService(query)
+            getEpisodesSearchService(query, channelId)
             .then(setResults)
             setIsLoading(false)
         }

@@ -25,7 +25,6 @@ describe('PodcastPanel', () => {
     it('has a link to the podcast channel', () => {
         render(<PodcastPanel podcast={podcast} />);
         const link = screen.getByRole('link', { name: /Test Podcast/i });
-        expect(link).toHaveAttribute('href', 'https://www.youtube.com/channel/dvm402rvn3553');
-        expect(link).toHaveAttribute('target', '_blank');
+        expect(link).toHaveAttribute('href', `/podcasts/${podcast.channel_id}`);
     });
 });
