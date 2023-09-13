@@ -14,28 +14,51 @@ class TestodcastViews(APITestCase):
             name='The Mild High Club',
             channel_id='UCIpglRjjRPp2_qfsak-jSSw'
         )
-        podcast = Podcast.objects.get(name='Have a Word Podcast')
-        Episode.objects.create(
-            video_id='of-Oa7Ps8Rs',
-            title='Michelle de Swarte | Have A Word Podcast #223',
-            channel_id=podcast.id,
-            times_clicked=100,
-            published_date='2023-08-25T20:55:33Z'
-        )
-        Episode.objects.create(
-            video_id='gD1mHPbaE_E',
-            title='Mike Rice | Have A Word Podcast #224',
-            channel_id=podcast.id,
-            times_clicked=0,
-            published_date='2023-08-25T20:55:33Z'
-        )
-        Episode.objects.create(
-            video_id='0OQKI5r6K2Q',
-            title='Elliot Steel | Have A Word Podcast #222',
-            channel_id=podcast.id,
-            times_clicked=23,
-            published_date='2023-08-25T20:55:33Z'
-        )
+        have_a_word_podcast = Podcast.objects.get(name='Have a Word Podcast')
+        mild_high_club = Podcast.objects.get(name='The Mild High Club')
+        video_data = [
+            {
+                'video_id': 'of-Oa7Ps8Rs',
+                'title': 'Michelle de Swarte | Have A Word Podcast #223',
+                'channel_id': have_a_word_podcast.id,
+                'times_clicked': 100,
+                'transcript': 'This isnt it mate',
+                'published_date': '2023-08-25T20:55:33Z'
+            },
+            {
+                'video_id': 'gD1mHPbaE_E',
+                'title': 'Mike Rice | Have A Word Podcast #224',
+                'channel_id': have_a_word_podcast.id,
+                'times_clicked': 0,
+                'transcript': 'is here!',
+                'published_date': '2023-08-25T20:55:33Z'
+            },
+            {
+                'video_id': '0OQKI5r6K2Q',
+                'title': 'Elliot Steel | Have A Word Podcast #222',
+                'channel_id': have_a_word_podcast.id,
+                'transcript': 'Here we go, part 4 of 4',
+                'times_clicked': 23,
+                'published_date': '2023-08-25T20:55:33Z'
+            },
+            {
+                'video_id': 'OAQNj1jkmt4',
+                'title': 'The Mild High Club x Seann Walsh - 124',
+                'channel_id': mild_high_club.id,
+                'transcript': 'A very big welcome to Seann Walsh! How you doing mate?',
+                'times_clicked': 2,
+                'published_date': '2023-08-25T20:55:33Z'
+            },
+            {
+                'video_id': 'lTXFSn5gkBA',
+                'title': 'The Mild High Club x Rob Mulholland - 123',
+                'channel_id': mild_high_club.id,
+                'transcript': 'is there any reason for it? Freddie doesnt like music, its weird',
+                'times_clicked': 13,
+                'published_date': '2023-08-25T20:55:33Z'
+            }
+        ]
+        Episode.objects.bulk_create([Episode(**data) for data in video_data])
 
     def test_increment_podcast_click_by_one(self):
         episode = Episode.objects.get(video_id='of-Oa7Ps8Rs')
@@ -48,7 +71,7 @@ class TestodcastViews(APITestCase):
         response = self.client.get(
             '/api/podcasts/episode/search',
             {
-                "q": "what's the difference between Neil Armstrong and Michael Jackson"
+                "q": "part 4"
             }
         )
         self.assertEqual(response.status_code, 200)
@@ -73,6 +96,20 @@ class TestodcastViews(APITestCase):
             }
         )
         self.assertEqual(response.status_code, 200)
+
+    def test_search_episode_with_channel_id_returns_200(self):
+        mild_high_club = Podcast.objects.get(channel_id='UCIpglRjjRPp2_qfsak-jSSw')
+        response = self.client.get(
+            '/api/podcasts/episode/search',
+            {
+                "q": "freddie doesnt like music",
+                "c": mild_high_club.channel_id
+            }
+        )
+        episode = json.loads(response.content)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(episode[0]['title'], 'The Mild High Club x Rob Mulholland - 123')
+        self.assertEqual(episode[0]['video_id'], 'lTXFSn5gkBA')
 
     def test_search_podcast_returns_200_with_query(self):
         response = self.client.get(
@@ -101,3 +138,20 @@ class TestodcastViews(APITestCase):
         self.assertEqual(episode['video_id'], 'of-Oa7Ps8Rs')
         self.assertEqual(episode['title'], 'Michelle de Swarte | Have A Word Podcast #223')
         self.assertEqual(episode['times_clicked'], 100)
+
+    def test_get_podcast_information_200(self):
+        channel = Podcast.objects.get(channel_id='UChl6sFeO_O0drTc1CG1ymFw')
+        response = self.client.get(
+            f'/api/podcasts/{channel.channel_id}'
+        )
+        res_data = json.loads(response.content)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(res_data['name'], 'Have a Word Podcast')
+        self.assertEqual(res_data['channel_id'], 'UChl6sFeO_O0drTc1CG1ymFw')
+        self.assertEqual(res_data['no_of_episodes'], 3)
+
+    def test_get_podcast_information_404(self):
+        response = self.client.get(
+            '/api/podcasts/testingthisview'
+        )
+        self.assertEqual(response.status_code, 404)
