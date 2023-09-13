@@ -1,11 +1,17 @@
 import json
+from unittest import mock
 from rest_framework.test import APITestCase
 
 from .models import Podcast, Episode
 
-class TestodcastViews(APITestCase):
+class TestPodcastViews(APITestCase):
 
     def setUp(self):
+        self.mocked_get_transcript = mock.patch(
+            'youtube_transcript_api.YouTubeTranscriptApi.get_transcript'
+        )
+        self.mock_get_transcript = self.mocked_get_transcript.start()
+        self.mock_get_transcript.return_value = [{'text': 'mocked transcript'}]
         Podcast.objects.create(
             name='Have a Word Podcast',
             channel_id='UChl6sFeO_O0drTc1CG1ymFw',
@@ -59,6 +65,9 @@ class TestodcastViews(APITestCase):
             }
         ]
         Episode.objects.bulk_create([Episode(**data) for data in video_data])
+
+    def tearDown(self):
+        self.mocked_get_transcript.stop()
 
     def test_increment_podcast_click_by_one(self):
         episode = Episode.objects.get(video_id='of-Oa7Ps8Rs')

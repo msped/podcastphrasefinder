@@ -1,9 +1,18 @@
+from unittest import mock
 from rest_framework.test import APITestCase
-
 from .models import Podcast, Episode
 from .serializers import PodcastSerializer, EpisodeSerializer
 
 class TestModels(APITestCase):
+    def setUp(self):
+        self.mocked_get_transcript = mock.patch(
+            'youtube_transcript_api.YouTubeTranscriptApi.get_transcript'
+        )
+        self.mock_get_transcript = self.mocked_get_transcript.start()
+        self.mock_get_transcript.return_value = [{'text': 'mocked transcript'}]
+
+    def tearDown(self):
+        self.mocked_get_transcript.stop()
 
     def podcast_str(self):
         Podcast.objects.create(
@@ -44,6 +53,11 @@ class TestModels(APITestCase):
 
 class EpisodeSerializerTestCase(APITestCase):
     def setUp(self):
+        self.mocked_get_transcript = mock.patch(
+            'youtube_transcript_api.YouTubeTranscriptApi.get_transcript'
+        )
+        self.mock_get_transcript = self.mocked_get_transcript.start()
+        self.mock_get_transcript.return_value = [{'text': 'mocked transcript'}]
         Podcast.objects.create(
             name='Have a Word Podcast',
             channel_id='UChl6sFeO_O0drTc1CG1ymFw',
@@ -57,6 +71,9 @@ class EpisodeSerializerTestCase(APITestCase):
             published_date='2023-08-25T20:55:33Z'
         )
         self.serializer = EpisodeSerializer(instance=self.episode)
+
+    def tearDown(self):
+        self.mocked_get_transcript.stop()
 
     def test_video_id_field_content(self):
         data = self.serializer.data
@@ -92,11 +109,19 @@ class EpisodeSerializerTestCase(APITestCase):
 
 class PodcastSerializerTestCase(APITestCase):
     def setUp(self):
+        self.mocked_get_transcript = mock.patch(
+            'youtube_transcript_api.YouTubeTranscriptApi.get_transcript'
+        )
+        self.mock_get_transcript = self.mocked_get_transcript.start()
+        self.mock_get_transcript.return_value = [{'text': 'mocked transcript'}]
         self.podcast = Podcast.objects.create(
             name='Have a Word Podcast',
             channel_id='UChl6sFeO_O0drTc1CG1ymFw',
         )
         self.serializer = PodcastSerializer(instance=self.podcast)
+
+    def tearDown(self):
+        self.mocked_get_transcript.stop()
 
     def test_id_field_content(self):
         data = self.serializer.data

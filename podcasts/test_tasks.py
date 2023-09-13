@@ -1,8 +1,19 @@
+from unittest import mock
 from django.test import TestCase
 from .tasks import add_back_catalogue_task, check_for_private_videos
 from .models import Episode, Podcast
 
 class BackCatalogueTaskTest(TestCase):
+
+    def setUp(self):
+        self.mocked_get_transcript = mock.patch(
+            'youtube_transcript_api.YouTubeTranscriptApi.get_transcript'
+        )
+        self.mock_get_transcript = self.mocked_get_transcript.start()
+        self.mock_get_transcript.return_value = [{'text': 'mocked transcript'}]
+
+    def tearDown(self):
+        self.mocked_get_transcript.stop()
 
     def test_add_back_catalogue_task(self):
         podcast = Podcast.objects.create(
@@ -23,6 +34,11 @@ class BackCatalogueTaskTest(TestCase):
 class TestCheckForPrivateVideos(TestCase):
 
     def setUp(self):
+        self.mocked_get_transcript = mock.patch(
+            'youtube_transcript_api.YouTubeTranscriptApi.get_transcript'
+        )
+        self.mock_get_transcript = self.mocked_get_transcript.start()
+        self.mock_get_transcript.return_value = [{'text': 'mocked transcript'}]
         Podcast.objects.create(
             name='Test Podcast',
             channel_id='UCBa659QWEk1AI4Tg--mrJ2A'
@@ -67,6 +83,9 @@ class TestCheckForPrivateVideos(TestCase):
         ]
 
         Episode.objects.bulk_create([Episode(**data) for data in video_data])
+
+    def tearDown(self):
+        self.mocked_get_transcript.stop()
 
     def test_check_for_private_videos(self):
         """Should change two fields, one to true and another to false"""
