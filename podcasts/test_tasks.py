@@ -18,7 +18,8 @@ class BackCatalogueTaskTest(TestCase):
     def test_add_back_catalogue_task(self):
         podcast = Podcast.objects.create(
             name='jawed',
-            channel_id='UC4QobU6STFB0P71PMvOGN5A'
+            channel_id='UC4QobU6STFB0P71PMvOGN5A',
+            avatar='https//www.example.com'
         )
         add_back_catalogue_task.apply(args=(
             podcast.id,
@@ -41,7 +42,8 @@ class TestCheckForPrivateVideos(TestCase):
         self.mock_get_transcript.return_value = [{'text': 'mocked transcript'}]
         Podcast.objects.create(
             name='Test Podcast',
-            channel_id='UCBa659QWEk1AI4Tg--mrJ2A'
+            channel_id='UCBa659QWEk1AI4Tg--mrJ2A',
+            avatar='https//www.example.com'
         )
         channel = Podcast.objects.get(name='Test Podcast')
 
