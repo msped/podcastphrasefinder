@@ -19,7 +19,8 @@ describe('EpisodePanel', () => {
             "id": 2,
             "name": "The Rest Is Politics",
             "channel_id": "UCsufaClk5if2RGqABb-09Uw",
-            "no_of_episodes": 1
+            "no_of_episodes": 1,
+            "avatar": "https://yt3.ggpht.com/sROZx5jI62ZX-7Udpthim3reUrYnjGwBrzoJ_JuvKjLcxnHuceC1IHLWIfoykgi28rmW_EIV=s800-c-k-c0x00ffffff-no-rj"
         },
         'published_date': '2023-08-25T20:55:33Z',
         "thumbnail": "https://test.url.mspe.me/eeTEdlsa",
@@ -81,5 +82,19 @@ describe('EpisodePanel', () => {
     
         expect(thumbnail).toBeInTheDocument()
         expect(thumbnail.src).toEqual(episode.thumbnail)
+    })
+
+    it('renders the avatar', () => {
+        render(<EpisodePanel episode={episode} />)
+        const avatar = screen.getByAltText("The Rest Is Politics")
+        expect(avatar).toBeInTheDocument()
+        expect(avatar.src).toEqual(episode.channel.avatar)
+    })
+
+    it('YouTube channel link is rendered', () => {
+        render(<EpisodePanel episode={episode} />)
+        const channelLink= screen.getByText(/The Rest Is Politics/i);
+        console.log(channelLink)
+        expect(channelLink.href).toEqual(`https://www.youtube.com/channel/${episode.channel.channel_id}`)
     })
 });
