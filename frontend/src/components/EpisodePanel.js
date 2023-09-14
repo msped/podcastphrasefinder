@@ -6,9 +6,10 @@ import {
     Paper,
     Button,
     Grid,
-    Box
+    Box,
+    Avatar
 } from '@mui/material'
-import { formatDistance, parseISO } from 'date-fns';
+import { formatDistance } from 'date-fns';
 import HeadphonesIcon from '@mui/icons-material/Headphones';
 import Link from '@/components/Link'
 import postEpisodeIncrementService from '@/api/postEpisodeIncrementService'
@@ -64,7 +65,9 @@ const styles = {
         fontSize: {
             xs: '.65rem',
             md: '1rem',
-        }
+        },
+        color: '#fff',
+        textDecoration: 'none'
     },
     published_date: {
         color: '#AAAAAA',
@@ -110,13 +113,16 @@ export default function EpisodePanel({ episode }) {
                             <Typography sx={{...styles.published_date}} data-testid='time-since-test-id'>
                                 {formatDistance(published_date, current_date_time)} ago
                             </Typography>
-                            <Link
-                                href={`https://www.youtube.com/channel/${episode.channel.channel_id}`}
-                                target='_blank'
-                                sx={{...styles.channelInformation}}
-                            >
-                                {episode.channel.name}
-                            </Link>
+                            <Stack direction='row' spacing={1} marginY={1}>
+                                <Avatar alt={episode.channel.name} src={episode.channel.avatar} sx={{ height: 30, width: 30 }}/>
+                                <Link
+                                    href={`https://www.youtube.com/channel/${episode.channel.channel_id}`}
+                                    target='_blank'
+                                    sx={{...styles.channelInformation}}
+                                >
+                                    {episode.channel.name}
+                                </Link>
+                            </Stack>
                         </Stack>
                     </Grid>
                 </Grid>
