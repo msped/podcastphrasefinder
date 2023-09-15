@@ -133,8 +133,12 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 
 CELERY_BEAT_SCHEDULE = {
-    "scheduled_task": {
+    "check_for_private_videos": {
         "task": "podcasts.tasks.check_for_private_videos",
         "schedule": crontab(0, 0, day_of_month='1'),
     },
+    "check_podcast_avatars": {
+        "task": "podcasts.tasks.check_avatar",
+        "schedule": crontab(0, 0, day_of_month='15')
+    }
 }
