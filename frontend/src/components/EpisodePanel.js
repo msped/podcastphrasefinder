@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import {
     Card,
     CardContent,
@@ -94,10 +95,12 @@ export default function EpisodePanel({ episode }) {
                 <Grid container spacing={2}>
                     <Grid item xs={4}>
                         <Box sx={{...styles.thumbnailWrapper}}>
-                            <img
+                            <Image
                                 src={episode.thumbnail}
                                 style={{...styles.thumbnail}}
                                 alt={`${episode.title} thumbnail`}
+                                width={1280}
+                                height={720}
                             />
                         </Box>
                     </Grid>
