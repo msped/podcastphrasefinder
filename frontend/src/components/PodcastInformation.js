@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 
 import useGetPodcastInformationHook from '@/hooks/useGetPodcastInformationHook';
+import PodcastInformationSkeleton from '@/skeletons/PodcastInformationSkeleton';
 
 export default function PodcastInformation({ channelId }) {
     const { podcast, isLoading } = useGetPodcastInformationHook(channelId);
@@ -18,6 +19,7 @@ export default function PodcastInformation({ channelId }) {
 
     return (
         <Card>
+            {isLoading ? <PodcastInformationSkeleton /> : (
             <CardActionArea href={youtubeChannelLink} target='_blank'>
                 <CardContent sx={{ padding: 3 }}>
                     <Grid container spacing={2}>
@@ -45,7 +47,7 @@ export default function PodcastInformation({ channelId }) {
                         </Grid>
                     </Grid>
                 </CardContent>
-            </CardActionArea>
+            </CardActionArea> )}
         </Card>
     )
 }
