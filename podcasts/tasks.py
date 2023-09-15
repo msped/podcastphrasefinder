@@ -6,7 +6,7 @@ from celery import shared_task
 from celery.utils.log import get_task_logger
 from django.db import transaction
 
-from .models import Episode
+from .models import Episode, Podcast
 from .utils import call_api, get_transcript, check_for_private_video
 
 api_key = os.environ.get('YOUTUBE_V3_API_KEY')
@@ -76,4 +76,25 @@ def check_for_private_videos():
     with transaction.atomic():
         for key, value in video_ids.items():
             Episode.objects.filter(video_id=key).update(private_video=value)
+
+@shared_task
+def check_avatar():
+    podcasts = Podcast.objects.all()
+
+    for podcast in podcasts:
+        url_params = {
+                'key': api_key,
+                'id': podcast.channel_id,
+                'part': 'snippet',
+            }
+        api_url = (
+            'https://www.googleapis.com/youtube/v3/channels?'
+            + urlencode(url_params)
+        )
+        response = call_api(api_url)
+        channel = response.get('items', [])
+        response_avatar = channel[0]['snippet']['thumbnails']['high']['url']
+        if response_avatar != podcast.avatar:
+            podcast.avatar = response_avatar
+            podcast.save()
     

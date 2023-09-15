@@ -1,6 +1,6 @@
 from unittest import mock
 from django.test import TestCase
-from .tasks import add_back_catalogue_task, check_for_private_videos
+from .tasks import add_back_catalogue_task, check_for_private_videos, check_avatar
 from .models import Episode, Podcast
 
 class BackCatalogueTaskTest(TestCase):
@@ -101,3 +101,37 @@ class TestCheckForPrivateVideos(TestCase):
         self.assertFalse(Episode.objects.get(video_id='ce-QHeZnVu4').private_video)
         self.assertFalse(Episode.objects.get(video_id='1yfX84RMQ3M').private_video)
         self.assertTrue(Episode.objects.get(video_id='Xw1EKgEl_RY').private_video)
+
+    def test_check_avatar_url_changed(self):
+        self.assertEqual(
+            Podcast.objects.get(channel_id="UCBa659QWEk1AI4Tg--mrJ2A").avatar,
+            "https//www.example.com"
+        )
+
+        check_avatar()
+
+        self.assertEqual(
+            Podcast.objects.get(channel_id="UCBa659QWEk1AI4Tg--mrJ2A").avatar,
+            "https://yt3.ggpht.com/ytc/AOPolaR9zi_hlH8MQ80WIyB3qcDsqGvcJY2f" +
+            "-HoPcS_gtg=s800-c-k-c0x00ffffff-no-rj"
+        )
+
+    def test_check_avatar_not_changed(self):
+        podcast = Podcast.objects.get(channel_id="UCBa659QWEk1AI4Tg--mrJ2A")
+        podcast.avatar = "https://yt3.ggpht.com/ytc/AOPolaR9zi_hlH8MQ80WIyB3qc" + \
+        "DsqGvcJY2f-HoPcS_gtg=s800-c-k-c0x00ffffff-no-rj"
+        podcast.save()
+
+        self.assertEqual(
+            Podcast.objects.get(channel_id="UCBa659QWEk1AI4Tg--mrJ2A").avatar,
+            "https://yt3.ggpht.com/ytc/AOPolaR9zi_hlH8MQ80WIyB3qcDsqGvcJY2f" +
+            "-HoPcS_gtg=s800-c-k-c0x00ffffff-no-rj"
+        )
+
+        check_avatar()
+
+        self.assertEqual(
+            Podcast.objects.get(channel_id="UCBa659QWEk1AI4Tg--mrJ2A").avatar,
+            "https://yt3.ggpht.com/ytc/AOPolaR9zi_hlH8MQ80WIyB3qcDsqGvcJY2f" +
+            "-HoPcS_gtg=s800-c-k-c0x00ffffff-no-rj"
+        )
