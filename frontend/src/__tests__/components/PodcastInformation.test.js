@@ -6,7 +6,11 @@ import PodcastInformation from '@/components/PodcastInformation';
 // Mock the useGetPodcastInformationHook function
 jest.mock('../../hooks/useGetPodcastInformationHook', () => {
     return jest.fn(() => ({
-        podcast: { name: 'Test Podcast', no_of_episodes: 10 },
+        podcast: {
+            name: 'Test Podcast', 
+            no_of_episodes: 10,
+            avatar: "https://yt3.ggpht.com/sROZx5jI62ZX-7Udpthim3reUrYnjGwBrzoJ_JuvKjLcxnHuceC1IHLWIfoykgi28rmW_EIV=s800-c-k-c0x00ffffff-no-rj",
+        },
         isLoading: false,
     }));
 });
@@ -27,6 +31,12 @@ describe('PodcastInformation', () => {
         
         // Assert that the link to the YouTube channel is rendered correctly
         const linkElement = screen.getByRole('link');
-        expect(linkElement).toHaveAttribute('href', 'https://www.youtube/channel/1234567890');
+        expect(linkElement).toHaveAttribute('href', 'https://www.youtube.com/channel/1234567890');
+    });
+
+    test('test render of avatar', () => {
+        render(<PodcastInformation channelId={'1234567890'}/>);
+        const channelAvatar = screen.getByAltText('Test Podcast');
+        expect(channelAvatar.src).toEqual("https://yt3.ggpht.com/sROZx5jI62ZX-7Udpthim3reUrYnjGwBrzoJ_JuvKjLcxnHuceC1IHLWIfoykgi28rmW_EIV=s800-c-k-c0x00ffffff-no-rj")
     });
 });
