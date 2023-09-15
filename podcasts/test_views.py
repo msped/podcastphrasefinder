@@ -15,10 +15,12 @@ class TestPodcastViews(APITestCase):
         Podcast.objects.create(
             name='Have a Word Podcast',
             channel_id='UChl6sFeO_O0drTc1CG1ymFw',
+            avatar='https//www.example.com'
         )
         Podcast.objects.create(
             name='The Mild High Club',
-            channel_id='UCIpglRjjRPp2_qfsak-jSSw'
+            channel_id='UCIpglRjjRPp2_qfsak-jSSw',
+            avatar='https//www.example.com'
         )
         have_a_word_podcast = Podcast.objects.get(name='Have a Word Podcast')
         mild_high_club = Podcast.objects.get(name='The Mild High Club')

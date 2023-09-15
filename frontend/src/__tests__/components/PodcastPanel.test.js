@@ -5,9 +5,10 @@ import PodcastPanel from '@/components/PodcastPanel';
 
 describe('PodcastPanel', () => {
     const podcast = {
-        name: 'Test Podcast',
+        name: "Test Podcast",
         no_of_episodes: 10,
-        channel_id: 'dvm402rvn3553'
+        channel_id: "dvm402rvn3553",
+        avatar: "https://yt3.ggpht.com/sROZx5jI62ZX-7Udpthim3reUrYnjGwBrzoJ_JuvKjLcxnHuceC1IHLWIfoykgi28rmW_EIV=s800-c-k-c0x00ffffff-no-rj"
     };
 
     it('renders the podcast name', () => {
@@ -26,5 +27,11 @@ describe('PodcastPanel', () => {
         render(<PodcastPanel podcast={podcast} />);
         const link = screen.getByRole('link', { name: /Test Podcast/i });
         expect(link).toHaveAttribute('href', `/podcasts/${podcast.channel_id}`);
+    });
+
+    it('renders the channel avatar', () => {
+        render(<PodcastPanel podcast={podcast} />)
+        const avatar = screen.getByAltText('Test Podcast')
+        expect(avatar.src).toEqual(podcast.avatar)
     });
 });
