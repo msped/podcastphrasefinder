@@ -15,16 +15,6 @@ export default function EpisodesSearchResults({ query, channelId }) {
             )
         }
 
-        if (isLoading && results.length === 0) {
-            return (
-                <Stack alignItems='center' alignContent='center'>
-                    <Typography variant='body1' component='p' sx={{textAlign: 'center'}}>
-                        Type the phrase you heard above to find the episode you heard it from.
-                    </Typography>
-                </Stack>
-            )
-        }
-
         if (!isLoading && results.length === 0) {
             return (
                 <Stack alignItems='center' alignContent='center'>
@@ -35,14 +25,24 @@ export default function EpisodesSearchResults({ query, channelId }) {
             )
         }
 
+        if (!isLoading && results.length > 0) {
+            return (
+                <Grid container spacing={2}>
+                    {results.map((item) => (
+                        <Grid item key={item.id} xs={12}>
+                            <EpisodePanel episode={item}/>
+                        </Grid>
+                    ))}
+                </Grid>
+            )
+        }
+        
         return (
-            <Grid container spacing={2}>
-                {results.map((item) => (
-                    <Grid item key={item.id} xs={12}>
-                        <EpisodePanel episode={item}/>
-                    </Grid>
-                ))}
-            </Grid>
+            <Stack alignItems='center' alignContent='center'>
+                <Typography variant='body1' component='p' sx={{textAlign: 'center'}}>
+                    Type the phrase you heard above to find the episode you heard it from.
+                </Typography>
+            </Stack>
         )
     }
 
