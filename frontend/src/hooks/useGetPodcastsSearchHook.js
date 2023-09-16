@@ -12,17 +12,17 @@ const useGetPodcastsSearchHook = (query) => {
             setIsLoading(false)
         }
 
-        if (query.length >= 3 && !results.length > 0) {
-            fetchDataFromService();
-        } else {
-            const timeoutId = setTimeout(() => {
-                if (query.length >=3) {
-                    fetchDataFromService();
-                }
-            }, 750)
-            return () => {
-                clearTimeout(timeoutId)
+        const timeoutId = setTimeout(() => {
+            if (query.length >= 3) {
+                fetchDataFromService();
             }
+            if (query.length == 0){
+                setResults([]);
+                setIsLoading(!isLoading);
+            }
+        }, 750)
+        return () => {
+            clearTimeout(timeoutId)
         }
     }, [query])
 
