@@ -42,8 +42,7 @@ export default function Podcasts() {
         <Container maxWidth="md" sx={{ marginY: 2 }}>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
-                    {channelId ? 
-                    <PodcastInformation channelId={channelId} /> : <div>Loading...</div>}
+                    <PodcastInformation channelId={channelId} />
                 </Grid>
                 <Grid item xs={12}>
                     <Input

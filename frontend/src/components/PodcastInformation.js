@@ -35,7 +35,7 @@ export default function PodcastInformation({ channelId }) {
                                         variant='h3'
                                         component='h1'
                                         fontFamily='Roboto, cursive'
-                                        font fontWeight='500'
+                                        fontWeight='500'
                                     >
                                         {podcast.name}
                                     </Typography>

@@ -16,16 +16,6 @@ export default function PodcastsSearchResults({ query }) {
             )
         }
 
-        if (isLoading && results.length === 0) {
-            return (
-                <Stack alignItems='center' alignContent='center'>
-                    <Typography>
-                        Search to see if we have your favourite podcasts!
-                    </Typography>
-                </Stack>
-            )
-        }
-
         if (!isLoading && results.length === 0) {
             return (
                 <Stack alignItems='center' alignContent='center'>
@@ -36,15 +26,17 @@ export default function PodcastsSearchResults({ query }) {
             )
         }
 
-        return (
-            <Grid container spacing={2}>
-                {results.map((item) => (
-                    <Grid item key={item.id} xs={12}>
-                        <PodcastPanel podcast={item}/>
-                    </Grid>
-                ))}
-            </Grid>
-        )
+        if (!isLoading && results.length > 0) {
+            return (
+                <Grid container spacing={2}>
+                    {results.map((item) => (
+                        <Grid item key={item.id} xs={12}>
+                            <PodcastPanel podcast={item}/>
+                        </Grid>
+                    ))}
+                </Grid>
+            )
+        }
     }
 
     return (
