@@ -1,6 +1,6 @@
 from unittest import mock
 from rest_framework.test import APITestCase
-from .models import Podcast, Episode
+from .models import Podcast, Episode, EpisodeReleaseDay
 from .serializers import PodcastSerializer, EpisodeSerializer
 
 class TestModels(APITestCase):
@@ -47,10 +47,23 @@ class TestModels(APITestCase):
             'ERROR Tom Scott - The giant archive hidden under the British countryside'
         )
 
+    def episode_release_day(self):
+        podcast = Podcast.objects.get(name="Tom Scott")
+        EpisodeReleaseDay.objects.create(
+            podcast=podcast,
+            day=2
+        )
+        edr_obj = EpisodeReleaseDay.objects.get(podcast__name="Tom Scott", day=2)
+        self.assertEqual(
+            str(edr_obj),
+            'An Episode of Tom Scott is released on a Monday'
+        )
+
     def test_in_order(self):
         self.podcast_str()
         self.episode_str()
         self.episode_str_with_error()
+        self.episode_release_day()
 
 class EpisodeSerializerTestCase(APITestCase):
     def setUp(self):
