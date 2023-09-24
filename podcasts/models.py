@@ -9,7 +9,7 @@ class Podcast(models.Model):
     avatar = models.URLField(blank=True, null=True)
     run_auto_add_back_catalogue = models.BooleanField(default=True)
     has_add_back_catalogue_ran = models.BooleanField(default=False)
-    run_get_new_episodes = models.BooleanField(default=True) ## pre-emptive add ready for merge
+    run_get_new_episodes = models.BooleanField(default=True)
 
     def __str__(self):
         return f'{self.name}'
@@ -37,3 +37,21 @@ class Episode(models.Model):
             self.error_occurred = True
         self.thumbnail = f'https://img.youtube.com/vi/{self.video_id}/maxresdefault.jpg'
         super().save(*args, **kwargs)
+
+class EpisodeReleaseDay(models.Model):
+    DAY_CHOICES = (
+        (1, "Sunday"),
+        (2, "Monday"),
+        (3, "Tuesday"),
+        (4, "Wednesday"),
+        (5, "Thursday"),
+        (6, "Friday"),
+        (7, "Saturday")
+    )
+
+    podcast = models.ForeignKey(Podcast, on_delete=models.CASCADE)
+    day = models.IntegerField(choices=DAY_CHOICES, default=2)
+
+    def __str__(self):
+        return f'An Episode of {self.podcast.name} ' + \
+        f'is released on a {self.get_day_display()}'
