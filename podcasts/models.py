@@ -7,6 +7,9 @@ class Podcast(models.Model):
     channel_id = models.CharField(max_length=24)
     video_filter = models.CharField(max_length=10, blank=True, null=True)
     avatar = models.URLField(blank=True, null=True)
+    run_auto_add_back_catalogue = models.BooleanField(default=True)
+    has_add_back_catalogue_ran = models.BooleanField(default=False)
+    run_get_new_episodes = models.BooleanField(default=True) ## pre-emptive add ready for merge
 
     def __str__(self):
         return f'{self.name}'
