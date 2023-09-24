@@ -9,7 +9,7 @@ class Podcast(models.Model):
     avatar = models.URLField(blank=True, null=True)
     run_auto_add_back_catalogue = models.BooleanField(default=True)
     has_add_back_catalogue_ran = models.BooleanField(default=False)
-    run_get_new_episodes = models.BooleanField(default=True) ## pre-emptive add ready for merge
+    run_get_new_episodes = models.BooleanField(default=True)
 
     def __str__(self):
         return f'{self.name}'
