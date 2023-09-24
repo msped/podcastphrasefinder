@@ -27,16 +27,12 @@ def add_back_catalogue_task(channel_id, yt_channel_id, video_filter):
     }
 
     while True:
-        api_url = (
+        response = call_api(
             'https://www.googleapis.com/youtube/v3/search?'
             + urlencode(url_params)
         )
-        response = call_api(api_url)
 
         next_page_token = response.get("nextPageToken", "")
-
-        if next_page_token != "":
-            url_params['pageToken'] = next_page_token
 
         videos = response.get('items', [])
 
@@ -59,6 +55,7 @@ def add_back_catalogue_task(channel_id, yt_channel_id, video_filter):
 
         if next_page_token == "":
             break
+        url_params['pageToken'] = next_page_token
 
     Episode.objects.bulk_create([Episode(**data) for data in video_data])
 
@@ -83,15 +80,14 @@ def check_avatar():
 
     for podcast in podcasts:
         url_params = {
-                'key': api_key,
-                'id': podcast.channel_id,
-                'part': 'snippet',
-            }
-        api_url = (
+            'key': api_key,
+            'id': podcast.channel_id,
+            'part': 'snippet',
+        }
+        response = call_api(
             'https://www.googleapis.com/youtube/v3/channels?'
             + urlencode(url_params)
         )
-        response = call_api(api_url)
         channel = response.get('items', [])
         response_avatar = channel[0]['snippet']['thumbnails']['high']['url']
         if response_avatar != podcast.avatar:
@@ -101,17 +97,20 @@ def check_avatar():
 @shared_task
 def get_new_episodes():
     # Gets day of the week sunday 1, monday 2 etc
-    today = (date.today().isoweekday() % 7) + 1
     video_data = []
 
-    for podcast in EpisodeReleaseDay.objects.filter(day=today):
+    for item in EpisodeReleaseDay.objects.filter(
+        day=(date.today().isoweekday() % 7) + 1,
+        podcast__run_get_new_episodes=True
+    ):
+        podcast = item.podcast
         podcast_episode_qs = Episode.objects.filter(
-            channel__id=podcast.podcast.id
+            channel__id=podcast.id
         )
 
         url_params = {
             'key': api_key,
-            'channelId': podcast.podcast.channel_id,
+            'channelId': podcast.channel_id,
             'part': 'snippet,id',
             'order': 'date',
             'maxResults': 50,
@@ -119,16 +118,12 @@ def get_new_episodes():
 
         while True:
             video_break = False
-            api_url = (
+            response = call_api(
                 'https://www.googleapis.com/youtube/v3/search?'
                 + urlencode(url_params)
             )
-            response = call_api(api_url)
 
             next_page_token = response.get("nextPageToken", "")
-
-            if next_page_token != "":
-                url_params['pageToken'] = next_page_token
 
             videos = response.get('items', [])
 
@@ -137,12 +132,12 @@ def get_new_episodes():
                 if video['id']['kind'] == 'youtube#video' and not \
                         podcast_episode_qs.filter(video_id=video_id).exists():
                     video_title = unescape(video['snippet']['title'])
-                    if not podcast.podcast.video_filter or \
-                            podcast.podcast.video_filter in video_title:
+                    if not podcast.video_filter or \
+                            podcast.video_filter in video_title:
                         transcript, error = get_transcript(video_id)
                         video_data.append({
                             'video_id': video_id,
-                            'channel_id': podcast.podcast.id,
+                            'channel_id': podcast.id,
                             'title': video_title,
                             'transcript': transcript,
                             'error_occurred': error,
@@ -156,6 +151,7 @@ def get_new_episodes():
 
             if next_page_token == "" or video_break:
                 break
+            url_params['pageToken'] = next_page_token
 
     if len(video_data) > 0:
         Episode.objects.bulk_create([Episode(**data) for data in video_data])
