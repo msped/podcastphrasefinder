@@ -2,9 +2,18 @@ from unittest.mock import patch
 from django.test import TestCase
 from requests.exceptions import RequestException
 
-from .utils import call_api, get_transcript, check_for_private_video
+from .utils import (
+    call_api,
+    get_transcript,
+    check_for_private_video,
+    get_avatar
+)
 
 class TestUtils(TestCase):
+
+    def setUp(self):
+        self.channel_id = 'test_channe_id'
+
     @patch('podcasts.utils.requests.get')
     def test_call_api_success(self, mock_get):
         # Mock the response object and its json() method
@@ -42,3 +51,24 @@ class TestUtils(TestCase):
     def test_check_for_private_video_false(self):
         response = check_for_private_video('7moEbc-xYF8')
         self.assertFalse(response)
+
+    @patch('podcasts.utils.call_api')
+    def test_get_avatar(self, mock_call_api):
+        mock_response = {
+            'items': [
+                {
+                    'snippet': {
+                        'thumbnails': {
+                            'high': {
+                                'url': 'https://example.com/avatar.jpg'
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+        mock_call_api.return_value = mock_response
+
+        avatar_url = get_avatar(self.channel_id)
+
+        self.assertEqual(avatar_url, 'https://example.com/avatar.jpg')
