@@ -112,26 +112,26 @@ class TestCheckForPrivateVideos(TestCase):
 
         self.assertEqual(
             Podcast.objects.get(channel_id="UCBa659QWEk1AI4Tg--mrJ2A").avatar,
-            "https://yt3.ggpht.com/ytc/AOPolaR9zi_hlH8MQ80WIyB3qcDsqGvcJY2f" +
-            "-HoPcS_gtg=s800-c-k-c0x00ffffff-no-rj"
+            "https://yt3.ggpht.com/ytc/APkrFKbAM4yMQo1QLC5VYC1aoIf_" \
+                "49jnh4jEAMSXc9vM5g=s800-c-k-c0x00ffffff-no-rj"
         )
 
     def test_check_avatar_not_changed(self):
         podcast = Podcast.objects.get(channel_id="UCBa659QWEk1AI4Tg--mrJ2A")
-        podcast.avatar = "https://yt3.ggpht.com/ytc/AOPolaR9zi_hlH8MQ80WIyB3qc" + \
-        "DsqGvcJY2f-HoPcS_gtg=s800-c-k-c0x00ffffff-no-rj"
+        podcast.avatar = "https://yt3.ggpht.com/ytc/APkrFKbAM4yMQo1QLC5VYC1aoIf_" \
+            "49jnh4jEAMSXc9vM5g=s800-c-k-c0x00ffffff-no-rj"
         podcast.save()
 
         self.assertEqual(
             Podcast.objects.get(channel_id="UCBa659QWEk1AI4Tg--mrJ2A").avatar,
-            "https://yt3.ggpht.com/ytc/AOPolaR9zi_hlH8MQ80WIyB3qcDsqGvcJY2f" +
-            "-HoPcS_gtg=s800-c-k-c0x00ffffff-no-rj"
+            "https://yt3.ggpht.com/ytc/APkrFKbAM4yMQo1QLC5VYC1aoIf_" \
+                "49jnh4jEAMSXc9vM5g=s800-c-k-c0x00ffffff-no-rj"
         )
 
         check_avatar()
 
         self.assertEqual(
             Podcast.objects.get(channel_id="UCBa659QWEk1AI4Tg--mrJ2A").avatar,
-            "https://yt3.ggpht.com/ytc/AOPolaR9zi_hlH8MQ80WIyB3qcDsqGvcJY2f" +
-            "-HoPcS_gtg=s800-c-k-c0x00ffffff-no-rj"
+            "https://yt3.ggpht.com/ytc/APkrFKbAM4yMQo1QLC5VYC1aoIf_" \
+                "49jnh4jEAMSXc9vM5g=s800-c-k-c0x00ffffff-no-rj"
         )
