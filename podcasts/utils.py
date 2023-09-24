@@ -1,7 +1,11 @@
+import os
 from time import sleep
+from urllib.parse import urlencode
 import requests
 
 from youtube_transcript_api import YouTubeTranscriptApi
+
+api_key = os.environ.get('YOUTUBE_V3_API_KEY')
 
 def call_api(url):
     try:
@@ -27,3 +31,17 @@ def check_for_private_video(video_id):
         timeout=10
     )
     return response.status_code == 404
+
+def get_avatar(channel_id):
+    url_params = {
+        'key': api_key,
+        'id': channel_id,
+        'part': 'snippet',
+    }
+    api_url = (
+        'https://www.googleapis.com/youtube/v3/channels?'
+        + urlencode(url_params)
+    )
+    response = call_api(api_url)
+    channel = response.get('items', [])
+    return channel[0]['snippet']['thumbnails']['high']['url']
