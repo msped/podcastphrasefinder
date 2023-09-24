@@ -26,5 +26,7 @@ def add_back_catalogue_of_channel(sender, instance, **kwargs):
             response = call_api(api_url)
             channel = response.get('items', [])
             instance.avatar = channel[0]['snippet']['thumbnails']['high']['url']
-            instance.save()
-        add_back_catalogue_task.delay(instance.id, instance.channel_id, instance.video_filter)
+        if instance.run_auto_add_back_catalogue and not instance.has_add_back_catalogue_ran:
+            add_back_catalogue_task.delay(instance.id, instance.channel_id, instance.video_filter)
+            instance.has_add_back_catalogue_ran = True
+        instance.save()
