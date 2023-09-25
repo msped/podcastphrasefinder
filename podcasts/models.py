@@ -31,10 +31,11 @@ class Episode(models.Model):
         return f'{self.channel.name} - {self.title}'
 
     def save(self, *args, **kwargs):
-        transcript, error = get_transcript(self.video_id)
-        self.transcript = transcript
-        if error:
-            self.error_occurred = True
+        if not self.transcript or self.error_occurred:
+            transcript, error = get_transcript(self.video_id)
+            self.transcript = transcript
+            if error:
+                self.error_occurred = True
         self.thumbnail = f'https://img.youtube.com/vi/{self.video_id}/maxresdefault.jpg'
         super().save(*args, **kwargs)
 
