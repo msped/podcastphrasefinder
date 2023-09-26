@@ -17,6 +17,7 @@ class BackCatalogueTaskTest(TestCase):
         self.mocked_get_transcript.stop()
 
     def test_add_back_catalogue_task(self):
+        # no need to mock avatar as runs in signal
         podcast = Podcast.objects.create(
             name='jawed',
             channel_id='UC4QobU6STFB0P71PMvOGN5A',
@@ -90,8 +91,10 @@ class TestCheckForPrivateVideos(TestCase):
     def tearDown(self):
         self.mocked_get_transcript.stop()
 
-    def test_check_for_private_videos(self):
+    @mock.patch('podcasts.utils.check_for_private_video')
+    def test_check_for_private_videos(self, mock_get):
         """Should change two fields, one to true and another to false"""
+        mock_get.status_code.side_effect = [False, False, True]
 
         self.assertFalse(Episode.objects.get(video_id='ce-QHeZnVu4').private_video)
         self.assertTrue(Episode.objects.get(video_id='1yfX84RMQ3M').private_video)
