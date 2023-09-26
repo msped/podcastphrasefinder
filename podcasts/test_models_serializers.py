@@ -134,6 +134,7 @@ class PodcastSerializerTestCase(APITestCase):
         self.podcast = Podcast.objects.create(
             name='Have a Word Podcast',
             channel_id='UChl6sFeO_O0drTc1CG1ymFw',
+            avatar='https://www.exmaple.com/'
         )
         self.serializer = PodcastSerializer(instance=self.podcast)
 
