@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'podcasts.apps.PodcastsConfig',
     'django_celery_results',
     'django_celery_beat',
+    'django_elasticsearch_dsl',
 ]
 
 MIDDLEWARE = [
@@ -145,4 +146,10 @@ CELERY_BEAT_SCHEDULE = {
         "task": "podcasts.tasks.get_new_episodes",
         "schedule": crontab(0, 0)
     }
+}
+
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': os.getenv("ELASTICSEARCH_DSL_HOSTS", 'localhost:9200')
+    },
 }
