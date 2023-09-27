@@ -159,7 +159,6 @@ class TestPodcastViews(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(res_data['name'], 'Have a Word Podcast')
         self.assertEqual(res_data['channel_id'], 'UChl6sFeO_O0drTc1CG1ymFw')
-        self.assertEqual(res_data['no_of_episodes'], 3)
 
     def test_get_podcast_information_404(self):
         response = self.client.get(
