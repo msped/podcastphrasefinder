@@ -2,7 +2,7 @@ import json
 from unittest import mock
 from rest_framework.test import APITestCase
 
-from .models import Podcast, Episode
+from ..models import Podcast, Episode
 
 class TestPodcastViews(APITestCase):
 

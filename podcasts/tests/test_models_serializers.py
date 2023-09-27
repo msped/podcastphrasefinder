@@ -1,7 +1,7 @@
 from unittest import mock
 from rest_framework.test import APITestCase
-from .models import Podcast, Episode, EpisodeReleaseDay
-from .serializers import PodcastSerializer, EpisodeSerializer
+from ..models import Podcast, Episode, EpisodeReleaseDay
+from ..serializers import PodcastSerializer, EpisodeSerializer
 
 class TestModels(APITestCase):
     def setUp(self):
