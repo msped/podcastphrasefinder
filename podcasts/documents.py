@@ -24,7 +24,6 @@ class EpisodeDocument(Document):
             'video_id',
             'title',
             'transcript',
-            'times_clicked',
             'thumbnail',
             'published_date',
             'private_video',
