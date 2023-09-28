@@ -11,3 +11,4 @@ media
 htmlcov/
 postgres_data/
 redis_data/
+elasticsearch/
