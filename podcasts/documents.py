@@ -16,6 +16,10 @@ class EpisodeDocument(Document):
 
     class Index:
         name = "episodes"
+        settings = {
+            'number_of_shards': 1,
+            'number_of_replicas': 0
+        }
 
     class Django:
         model = Episode
