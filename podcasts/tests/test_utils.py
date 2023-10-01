@@ -2,7 +2,7 @@ from unittest.mock import patch
 from django.test import TestCase
 from requests.exceptions import RequestException
 
-from .utils import (
+from ..utils import (
     call_api,
     get_transcript,
     check_for_private_video,

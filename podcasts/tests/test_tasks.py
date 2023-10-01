@@ -1,8 +1,13 @@
 from unittest import mock
 from datetime import datetime as date
 from django.test import TestCase
-from .tasks import add_back_catalogue_task, check_for_private_videos, check_avatar, get_new_episodes
-from .models import Episode, Podcast, EpisodeReleaseDay
+from ..tasks import (
+    add_back_catalogue_task,
+    check_for_private_videos,
+    check_avatar,
+    get_new_episodes
+)
+from ..models import Episode, Podcast, EpisodeReleaseDay
 
 class BackCatalogueTaskTest(TestCase):
 

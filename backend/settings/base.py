@@ -32,9 +32,12 @@ INSTALLED_APPS = [
     'podcasts.apps.PodcastsConfig',
     'django_celery_results',
     'django_celery_beat',
+    'django_elasticsearch_dsl',
+    "debug_toolbar",
 ]
 
 MIDDLEWARE = [
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -43,6 +46,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+INTERNAL_IPS = [
+    "127.0.0.1",
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -145,4 +152,10 @@ CELERY_BEAT_SCHEDULE = {
         "task": "podcasts.tasks.get_new_episodes",
         "schedule": crontab(0, 0)
     }
+}
+
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': os.getenv("ELASTICSEARCH_DSL_HOSTS", 'localhost:9200')
+    },
 }

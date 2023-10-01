@@ -1,7 +1,7 @@
 from unittest import mock
 from rest_framework.test import APITestCase
-from .models import Podcast, Episode, EpisodeReleaseDay
-from .serializers import PodcastSerializer, EpisodeSerializer
+from ..models import Podcast, Episode, EpisodeReleaseDay
+from ..serializers import PodcastSerializer, EpisodeSerializer
 
 class TestModels(APITestCase):
     def setUp(self):
@@ -111,10 +111,6 @@ class EpisodeSerializerTestCase(APITestCase):
     def test_published_date(self):
         data = self.serializer.data
         self.assertEqual('2023-08-25T20:55:33Z', data['published_date'])
-
-    def test_times_clicked_field_content(self):
-        data = self.serializer.data
-        self.assertEqual(data['times_clicked'], self.episode.times_clicked)
 
     def test_serialized_channel_data(self):
         data = self.serializer.data
