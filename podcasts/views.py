@@ -6,33 +6,50 @@ from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 from rest_framework import status
+from elasticsearch_dsl import Q
 
+from .documents import EpisodeDocument
 from .models import Episode, Podcast
 from .serializers import EpisodeSerializer, PodcastSerializer
 
-class SearchEpisodeView(ListAPIView):
-    filter_backends = [SearchFilter]
+class SearchEpisodeView(APIView):
     serializer_class = EpisodeSerializer
-    search_fields = ['transcript', 'title']
+    search_document = EpisodeDocument
 
-    def get_queryset(self):
-        user_query = self.request.query_params.get('q')
-        channel_id = self.request.query_params.get('c')
+    def get(self, request):
+        user_query = self.request.query_params.get('q', None)
+        channel_id = self.request.query_params.get('c', None)
         if user_query:
-            vector = SearchVector('transcript', 'title')
-            qs = Episode.objects.annotate(
-                search=vector,
-            ).filter(
-                search=user_query,
-                error_occurred=False,
-                private_video=False
-            ).annotate(
-                rank=SearchRank(vector, user_query)
-            ).order_by('-rank')
-            if channel_id:
-                qs = qs.filter(channel__channel_id=channel_id)
-            return qs
-        return Episode.objects.filter(error_occurred=False, private_video=False)[:5]
+            try:
+                es_query = Q(
+                    "multi_match",
+                    query=user_query,
+                    fields=[
+                        "title", "transcript"
+                    ],
+                    fuzziness="auto"
+                ) & Q(
+                    "bool",
+                    should=[
+                        Q("match", private_video=False),
+                        Q("match", error_occurred=False)
+                    ],
+                    minimum_should_match=2
+                )
+
+                if channel_id:
+                    es_query &= Q(
+                        "match", channel__channel_id=channel_id
+                    )
+
+                search = EpisodeDocument.search().query(es_query)
+                response = search.execute()
+                serializer = self.serializer_class(response, many=True)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except Exception as err:
+                return Response(err, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(status=status.HTTP_200_OK)
+
 
 class SearchPodcastsView(ListAPIView):
     filter_backends = [SearchFilter]
