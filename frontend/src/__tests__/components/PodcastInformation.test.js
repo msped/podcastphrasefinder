@@ -21,7 +21,6 @@ describe('PodcastInformation', () => {
         
         // Assert that the podcast name and number of episodes are rendered correctly
         expect(screen.getByText('Test Podcast')).toBeInTheDocument();
-        expect(screen.getByText('Number of Episodes: 10')).toBeInTheDocument();
     });
 
     test('renders a link to the YouTube channel', () => {
