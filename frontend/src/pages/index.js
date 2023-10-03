@@ -41,6 +41,10 @@ export default function Home() {
           Search podcast transcripts with that phrase you know, 
           but can't find! | PodFinder
         </title>
+        <meta name="description" content="Discover and explore a vast collection of podcasts by searching through their transcripts. 
+          Find episodes based on specific topics, keywords, or phrases. Enjoy the convenience 
+          of finding relevant podcast episodes with ease." 
+        />
       </Head>
       {/* https://unsplash.com/photos/g0PcDhany4Y?utm_source=unsplash&utm_medium=referral&utm_content=creditShareLink */}
       <div style={{...styles.backgroundImageStyle}}>
