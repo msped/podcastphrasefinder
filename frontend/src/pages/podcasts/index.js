@@ -61,6 +61,7 @@ export default function Podcasts() {
                             type="search"
                             variant='filled'
                             onChange={handleInputChange}
+                            placeholder='Start typing the name of your favourite podcast'
                             fullWidth
                             value={searchQuery}
                         />
