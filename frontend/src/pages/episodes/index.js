@@ -5,12 +5,9 @@ import {
     Container,
     Grid,
     Input,
-    InputAdornment,
-    IconButton,
     Stack,
     Typography,
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
 
 import Link from '@/components/Link';
 import EpisodesSearchResults from '@/components/EpisodesSearchResults';
@@ -51,7 +48,7 @@ export default function Episodes() {
                             <Typography variant='h3' component='h1' fontWeight={500}>
                                 Search for an Episode
                             </Typography>
-                            <Typography variant='subtitle1' fontWeight={500} sx={{ textAlign: 'center' }}>
+                            <Typography variant='subtitle1' component='p' fontWeight={500} sx={{ textAlign: 'center' }}>
                                 You can see the Podcasts we have and the amount of episodes on <Link href="/podcasts">this page</Link>.
                             </Typography>
                         </Stack>
@@ -65,13 +62,6 @@ export default function Episodes() {
                             placeholder='Type the phrase or guests name'
                             fullWidth
                             value={searchQuery}
-                            endAdornment={
-                                <InputAdornment position="end" >
-                                    <IconButton edge="end">
-                                        <SearchIcon />
-                                    </IconButton>
-                                </InputAdornment>
-                            }
                         />
                     </Grid>
                     <Grid item xs={12}>
