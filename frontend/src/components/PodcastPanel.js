@@ -30,9 +30,6 @@ export default function PodcastPanel({ podcast }) {
                                 </Typography>
                             </Stack>
                         </Grid>
-                        <Grid item xs={4}>
-                            No. {podcast.no_of_episodes}
-                        </Grid>
                     </Grid>
                 </CardContent>
             </CardActionArea>

@@ -13,7 +13,6 @@ describe('getEpisodesSearchService', () => {
                 "id": 2,
                 "name": "The Rest Is Politics",
                 "channel_id": "UCsufaClk5if2RGqABb-09Uw",
-                "no_of_episodes": 1
             },
             "title": "Suella's speeding, Japan in focus, and what's the point of the G7?",
             "transcript": "This is a test transcript of a podcast from the Rest is Politics.",
@@ -38,7 +37,6 @@ describe('getEpisodesSearchService', () => {
                 "id": 2,
                 "name": "The Rest Is Politics",
                 "channel_id": "UCsufaClk5if2RGqABb-09Uw",
-                "no_of_episodes": 1
             },
             "title": "Suella's speeding, Japan in focus, and what's the point of the G7?",
             "transcript": "This is a test transcript of a podcast from the Rest is Politics.",
