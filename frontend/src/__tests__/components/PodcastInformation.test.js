@@ -7,8 +7,7 @@ import PodcastInformation from '@/components/PodcastInformation';
 jest.mock('../../hooks/useGetPodcastInformationHook', () => {
     return jest.fn(() => ({
         podcast: {
-            name: 'Test Podcast', 
-            no_of_episodes: 10,
+            name: 'Test Podcast',
             avatar: "https://yt3.ggpht.com/sROZx5jI62ZX-7Udpthim3reUrYnjGwBrzoJ_JuvKjLcxnHuceC1IHLWIfoykgi28rmW_EIV=s800-c-k-c0x00ffffff-no-rj",
         },
         isLoading: false,
@@ -22,7 +21,6 @@ describe('PodcastInformation', () => {
         
         // Assert that the podcast name and number of episodes are rendered correctly
         expect(screen.getByText('Test Podcast')).toBeInTheDocument();
-        expect(screen.getByText('Number of Episodes: 10')).toBeInTheDocument();
     });
 
     test('renders a link to the YouTube channel', () => {

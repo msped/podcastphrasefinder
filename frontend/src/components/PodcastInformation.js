@@ -40,9 +40,6 @@ export default function PodcastInformation({ channelId }) {
                                         {podcast.name}
                                     </Typography>
                                 </Stack>
-                                <Typography variant='body2'>
-                                    Number of Episodes: {podcast.no_of_episodes}
-                                </Typography>
                             </Stack>
                         </Grid>
                     </Grid>

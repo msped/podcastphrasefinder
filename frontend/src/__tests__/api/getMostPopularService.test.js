@@ -12,7 +12,6 @@ describe('getMostPopularService', () => {
                 "id": 2,
                 "name": "The Rest Is Politics",
                 "channel_id": "UCsufaClk5if2RGqABb-09Uw",
-                "no_of_episodes": 1
             },
             "title": "Suella's speeding, Japan in focus, and what's the point of the G7?",
             "times_clicked": 11
@@ -32,8 +31,7 @@ describe('getMostPopularService', () => {
             "channel": {
                 "id": 2,
                 "name": "The Rest Is Politics",
-                "channel_id": "UCsufaClk5if2RGqABb-09Uw",
-                "no_of_episodes": 1
+                "channel_id": "UCsufaClk5if2RGqABb-09Uw"
             },
             "title": "Suella's speeding, Japan in focus, and what's the point of the G7?",
             "times_clicked": 11

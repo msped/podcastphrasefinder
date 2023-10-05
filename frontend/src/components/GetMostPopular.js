@@ -22,6 +22,7 @@ export default function GetMostPopular() {
                 <Typography 
                     variant='h5'
                     sx={{ textAlign: 'center' }}
+                    component='p'
                     fontWeight={500}
                     pb={2}
                 >

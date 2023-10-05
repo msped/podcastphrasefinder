@@ -5,12 +5,9 @@ import {
     Container,
     Grid,
     Input,
-    InputAdornment,
-    IconButton,
     Stack,
     Typography,
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
 
 import PodcastsSearchResults from '@/components/PodcastsSearchResults';
 
@@ -37,7 +34,10 @@ export default function Podcasts() {
         <>
             <Head>
                 <title>Find which podcasts and how many episodes are currently supported. | PodFinder</title>
-                <meta name="description" content="Find which podcasts and how many episodes are currently supported." />
+                <meta name="description" content="Search and discover podcasts with ease. Explore a wide range of 
+                    podcasts and search for them directly. Find episodes, topics, or keywords in the transcripts for a more 
+                    personalized listening experience. Start exploring and find your favorite podcasts today!"
+                />
             </Head>
             <Container maxWidth='sm' sx={{ marginY: 2 }}>
                 <Grid container spacing={2}>
@@ -50,7 +50,7 @@ export default function Podcasts() {
                             <Typography variant='h2' component='h1' fontWeight={500}>
                                 Podcasts
                             </Typography>
-                            <Typography variant='subtitle1' fontWeight={500}>
+                            <Typography variant='subtitle1' component='p' fontWeight={500}>
                                 See all the Podcasts and the amount of episodes we have transcripts for.
                             </Typography>
                         </Stack>
@@ -61,15 +61,9 @@ export default function Podcasts() {
                             type="search"
                             variant='filled'
                             onChange={handleInputChange}
+                            placeholder='Start typing the name of your favourite podcast'
                             fullWidth
                             value={searchQuery}
-                            endAdornment={
-                                <InputAdornment position="end" >
-                                    <IconButton edge="end">
-                                        <SearchIcon />
-                                    </IconButton>
-                                </InputAdornment>
-                            }
                         />
                     </Grid>
                     <Grid item xs={12}>

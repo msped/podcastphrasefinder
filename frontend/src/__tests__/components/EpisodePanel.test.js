@@ -19,7 +19,6 @@ describe('EpisodePanel', () => {
             "id": 2,
             "name": "The Rest Is Politics",
             "channel_id": "UCsufaClk5if2RGqABb-09Uw",
-            "no_of_episodes": 1,
             "avatar": "https://yt3.ggpht.com/sROZx5jI62ZX-7Udpthim3reUrYnjGwBrzoJ_JuvKjLcxnHuceC1IHLWIfoykgi28rmW_EIV=s800-c-k-c0x00ffffff-no-rj"
         },
         'published_date': '2023-08-25T20:55:33Z',

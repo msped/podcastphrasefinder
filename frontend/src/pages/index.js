@@ -1,4 +1,4 @@
-import Head from 'next/head'
+import Head from 'next/head';
 import {
   Container,
   Grid,
@@ -8,20 +8,12 @@ import {
   CardContent,
   Button,
   Box,
-} from '@mui/material'
-import Link from '@/components/Link'
+} from '@mui/material';
+import Link from '@/components/Link';
 
-import GetMostPopular from '@/components/GetMostPopular'
-import HeaderImage from '../../public/static/images/homepageimg.jpeg'
+import GetMostPopular from '@/components/GetMostPopular';
 
 const styles = {
-  backgroundImageStyle: {
-    backgroundSize: 'cover',
-    backgroundRepeat: 'no-repeat',
-    backgroundPosition: 'bottom',
-    minHeight: '60vh',
-    backgroundImage: `url(${HeaderImage.src})`
-  },
   headerText: {
     marginBottom: '1%',
     fontWeight: 500,
@@ -41,9 +33,26 @@ export default function Home() {
           Search podcast transcripts with that phrase you know, 
           but can't find! | PodFinder
         </title>
+        <meta name="description" content="Discover and explore a vast collection of podcasts by searching through their transcripts. 
+          Find episodes based on specific topics, keywords, or phrases. Enjoy the convenience 
+          of finding relevant podcast episodes with ease." 
+        />
       </Head>
       {/* https://unsplash.com/photos/g0PcDhany4Y?utm_source=unsplash&utm_medium=referral&utm_content=creditShareLink */}
-      <div style={{...styles.backgroundImageStyle}}>
+      <Box sx={{
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'bottom',
+        minHeight: '60vh',
+        // TODO change so that it's not a full image on all screen sizes
+        backgroundImage: {
+          xs: "url('static/images/homepageimg-xs-min.jpeg')",
+          sm: "url('static/images/homepageimg-sm-min.jpeg')",
+          md: "url('static/images/homepageimg-md-min.jpeg')",
+          lg: "url('static/images/homepageimg-lg-min.jpeg')",
+          xl: "url('static/images/homepageimg-xl-min.jpeg')"
+        }
+      }}>
         <Box
           sx={{
             position: 'absolute',
@@ -65,7 +74,7 @@ export default function Home() {
             Search podcast transcripts for a (sometime questionable) phrase to find where it came from.
           </Typography>
         </Box>
-      </div>
+      </Box>
       <Container maxWidth='md' sx={{ my: 4 }}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6} md={6}>

@@ -19,7 +19,7 @@ export default function PodcastInformationSkeleton() {
                                     variant='h3'
                                     component='h1'
                                     fontFamily='Roboto, cursive'
-                                    font fontWeight='500'
+                                    fontWeight='500'
                                 >
                                     <Skeleton width={250}/>
                                 </Typography>

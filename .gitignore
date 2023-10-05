@@ -12,3 +12,4 @@ htmlcov/
 postgres_data/
 redis_data/
 elasticsearch/
+.DS_Store

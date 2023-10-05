@@ -28,7 +28,7 @@ export default function Header() {
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static">
                 <Toolbar>
-                    <Link href='/'>
+                    <Link href='/' aria-label="PodFinder">
                         <Image
                             src={podfinder_logo}
                             alt='PodFinder'
