@@ -30,6 +30,7 @@ PodFinder is a Django Rest Framework and NextJS application created to make tran
 - [PostgreSQL](https://www.postgresql.org/)
 - [YouTube API](https://developers.google.com/youtube/v3)
 - [Docker](https://www.docker.com/)
+- [ElasticSearch](https://www.elastic.co/)
 
 ## Local Development
 
