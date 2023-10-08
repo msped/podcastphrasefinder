@@ -34,7 +34,7 @@ describe('PodcastInformation', () => {
 
     test('test render of avatar', () => {
         render(<PodcastInformation channelId={'1234567890'}/>);
-        const channelAvatar = screen.getByAltText('Test Podcast');
+        const channelAvatar = screen.getAllByAltText('Test Podcast')[0];
         expect(channelAvatar.src).toEqual("https://yt3.ggpht.com/sROZx5jI62ZX-7Udpthim3reUrYnjGwBrzoJ_JuvKjLcxnHuceC1IHLWIfoykgi28rmW_EIV=s800-c-k-c0x00ffffff-no-rj")
     });
 });

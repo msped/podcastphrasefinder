@@ -8,41 +8,43 @@ import {
     Input,
     InputAdornment,
     IconButton,
-    Typography,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
 import PodcastInformation from '@/components/PodcastInformation';
+import PodcastInformationSkeleton from '@/skeletons/PodcastInformationSkeleton'
 import EpisodesSearchResults from '@/components/EpisodesSearchResults';
 
 export default function Podcasts() {
     const router = useRouter();
     const [channelId, setChannelId] = useState('');
-    const [searchQuery, setSearchQuery] = useState(router.query.q || '');
+    const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
-        if(!router.isReady) return;
-        if (router.query && router.query.q !== undefined) {
+        if (!router.isReady) return;
+        if (router.query.q !== undefined) {
             setSearchQuery(router.query.q);
         }
-        if (router.query.channelId) {
+        if (router.query.channelId !== undefined) {
             setChannelId(router.query.channelId);
         }
-    }, [router.isReady])
+    }, [router.isReady]);
 
     const handleInputChange = (e) => {
-        if(!router.isReady) return;
-        setSearchQuery(e.target.value)
+        if (!router.isReady) return;
+        setSearchQuery(e.target.value);
         router.push({
             query: { q: e.target.value, channelId: channelId }
-        })
-    }
+        });
+    };
 
     return (
         <Container maxWidth="md" sx={{ marginY: 2 }}>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
-                    <PodcastInformation channelId={channelId} />
+                    {channelId ? 
+                    <PodcastInformation channelId={channelId} /> :
+                    <PodcastInformationSkeleton /> }
                 </Grid>
                 <Grid item xs={12}>
                     <Input
