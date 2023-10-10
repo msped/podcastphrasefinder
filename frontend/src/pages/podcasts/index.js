@@ -17,7 +17,7 @@ export default function Podcasts() {
 
     useEffect(() => {
         if(!router.isReady) return;
-        if (router.query) {
+        if (router.query && router.query.q) {
             setSearchQuery(router.query.q);
         }
     }, [router.isReady])
@@ -26,6 +26,7 @@ export default function Podcasts() {
         if(!router.isReady) return;
         setSearchQuery(e.target.value)
         router.push({
+            pathname: '/podcasts',
             query: { q: e.target.value }
         })
     }
