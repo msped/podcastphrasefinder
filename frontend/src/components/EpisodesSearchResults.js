@@ -15,7 +15,7 @@ export default function EpisodesSearchResults({ query, channelId }) {
             )
         }
 
-        if (!isLoading && results.length === 0) {
+        if (!isLoading && results.length === 0 && query.length >= 3) {
             return (
                 <Stack alignItems='center' alignContent='center'>
                     <Typography>
@@ -25,7 +25,7 @@ export default function EpisodesSearchResults({ query, channelId }) {
             )
         }
 
-        if (!isLoading && results.length > 0) {
+        if (!isLoading && results.length > 0 && query.length > 3) {
             return (
                 <Grid container spacing={2}>
                     {results.map((item) => (
