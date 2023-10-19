@@ -47,7 +47,7 @@ class SearchEpisodeView(APIView):
                 serializer = self.serializer_class(response, many=True)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             except Exception as err:
-                return Response(err, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                return Response(str(err), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(status=status.HTTP_200_OK)
 
 
