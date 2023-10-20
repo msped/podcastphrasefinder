@@ -64,7 +64,8 @@ const styles = {
     },
     channelInformation: {
         fontSize: {
-            xs: '.65rem',
+            xs: '.7rem',
+            sm: '.85rem',
             md: '1rem',
         },
         color: '#fff',
@@ -117,7 +118,18 @@ export default function EpisodePanel({ episode }) {
                                 {formatDistance(published_date, current_date_time)} ago
                             </Typography>
                             <Stack direction='row' spacing={1} marginY={1}>
-                                <Avatar alt={episode.channel.name} src={episode.channel.avatar} sx={{ height: 30, width: 30 }}/>
+                                <Avatar alt={episode.channel.name} src={episode.channel.avatar} sx={{
+                                    height: {
+                                        xs: 20,
+                                        sm: 25,
+                                        md: 30
+                                    },
+                                    width: {
+                                        xs: 20,
+                                        sm: 25,
+                                        md: 30
+                                    } 
+                                }}/>
                                 <Link
                                     href={`https://www.youtube.com/channel/${episode.channel.channel_id}`}
                                     target='_blank'
