@@ -100,8 +100,8 @@ export default function EpisodePanel({ episode }) {
                                 src={episode.thumbnail}
                                 style={{...styles.thumbnail}}
                                 alt={`${episode.title} thumbnail`}
-                                width={1280}
-                                height={720}
+                                width={160}
+                                height={90}
                             />
                         </Box>
                     </Grid>
@@ -118,7 +118,7 @@ export default function EpisodePanel({ episode }) {
                                 {formatDistance(published_date, current_date_time)} ago
                             </Typography>
                             <Stack direction='row' spacing={1} marginY={1}>
-                                <Avatar alt={episode.channel.name} src={episode.channel.avatar} sx={{
+                                <Avatar sx={{
                                     height: {
                                         xs: 20,
                                         sm: 25,
@@ -129,7 +129,14 @@ export default function EpisodePanel({ episode }) {
                                         sm: 25,
                                         md: 30
                                     } 
-                                }}/>
+                                }}>
+                                    <Image
+                                        alt={episode.channel.name}
+                                        src={episode.channel.avatar}
+                                        height={27}
+                                        width={27}
+                                    />
+                                </Avatar>
                                 <Link
                                     href={`https://www.youtube.com/channel/${episode.channel.channel_id}`}
                                     target='_blank'
