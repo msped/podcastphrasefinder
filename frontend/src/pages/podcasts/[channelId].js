@@ -6,10 +6,7 @@ import {
     Container,
     Grid,
     Input,
-    InputAdornment,
-    IconButton,
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
 
 import PodcastInformation from '@/components/PodcastInformation';
 import PodcastInformationSkeleton from '@/skeletons/PodcastInformationSkeleton'
@@ -55,13 +52,6 @@ export default function Podcasts() {
                         placeholder='Type the phrase or guests name'
                         fullWidth
                         value={searchQuery}
-                        endAdornment={
-                            <InputAdornment position="end" >
-                                <IconButton edge="end">
-                                    <SearchIcon />
-                                </IconButton>
-                            </InputAdornment>
-                        }
                     />
                 </Grid>
                 <Grid item xs={12}>
