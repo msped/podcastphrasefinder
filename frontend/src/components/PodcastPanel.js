@@ -15,7 +15,7 @@ export default function PodcastPanel({ podcast }) {
             <CardActionArea href={`/podcasts/${podcast.channel_id}`}>
                 <CardContent>
                     <Grid container spacing={2}>
-                        <Grid item xs={8}>
+                        <Grid item xs={12}>
                             <Stack direction='row' spacing={2}>
                                 <Avatar
                                     src={podcast.avatar}
