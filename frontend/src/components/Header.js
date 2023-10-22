@@ -28,17 +28,15 @@ export default function Header() {
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static">
                 <Toolbar>
-                    <Link href='/' aria-label="PodFinder">
+                    <Link href='/' aria-label="Home">
                         <Image
                             src={podfinder_logo}
                             alt='PodFinder'
-                            style={{
-                                maxWidth: '70px',
-                                height: 'auto',
-                            }}
+                            height={60}
+                            width={60}
                         />
                     </Link>
-                    <Link href="/" style={{...styles.logoLink}}>
+                    <Link href="/" style={{...styles.logoLink}} aria-label='Home'>
                         <Typography
                             variant="h6"
                             sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
