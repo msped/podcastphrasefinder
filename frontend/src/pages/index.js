@@ -44,7 +44,6 @@ export default function Home() {
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'bottom',
         minHeight: '60vh',
-        // TODO change so that it's not a full image on all screen sizes
         backgroundImage: {
           xs: "url('static/images/homepageimg-xs-min.jpeg')",
           sm: "url('static/images/homepageimg-sm-min.jpeg')",
