@@ -79,7 +79,7 @@ export default function Footer() {
                                     </Link>
                                 </Stack>
                             </Grid>
-                            <Grid item xs={6} sm={4}>
+                            {/* <Grid item xs={6} sm={4}>
                                 <Stack direction='column'>
                                     <Link href='/terms' sx={{...styles.link}}>
                                         Terms & Conditions
@@ -88,7 +88,7 @@ export default function Footer() {
                                         Privacy Policy
                                     </Link>
                                 </Stack>
-                            </Grid>
+                            </Grid> */}
                             <Grid item xs={12}>
                                 <Stack alignItems='center' alignContent='center'>
                                     <Copyright />
