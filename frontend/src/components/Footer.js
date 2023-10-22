@@ -11,11 +11,12 @@ const styles = {
     link: {
         textDecoration: 'none',
         color: '#fff',
-        fontSize: 14,
+        fontSize: 15,
         '&:hover': {
             textDecoration: 'underline',
             color: '#bfbfbf'
-        }
+        },
+        paddingY: '.6rem'
     },
     copyright: {
         textDecoration: 'underline',
