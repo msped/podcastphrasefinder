@@ -1,6 +1,6 @@
-# PodFinder
+# Podcast Phrase Finder
 
-PodFinder is a Django Rest Framework and NextJS application created to make transcripts searchable. It also has the added functionlity of being able to search for guest names.
+Podcast Phrase Finder is a Django Rest Framework and NextJS application created to make transcripts searchable. It also has the added functionlity of being able to search for guest names.
 
 ## Requirements
 

@@ -29,7 +29,7 @@ describe('GetMostPopular', () => {
         render(<GetMostPopular />);
         
         // Assert that the text appears on the screen
-        waitFor(() => expect(screen.getByText('The most popular podcast on PodFinder')).toBeInTheDocument());
+        waitFor(() => expect(screen.getByText('The most popular podcast on PodcastPhraseFinder')).toBeInTheDocument());
 
         // Assert that EpisodePanel component is rendered
         waitFor(() => expect(screen.getByText('Episode 1')).toBeInTheDocument());

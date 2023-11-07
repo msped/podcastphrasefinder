@@ -34,7 +34,7 @@ export default function Podcasts() {
     return (
         <>
             <Head>
-                <title>Find which podcasts and how many episodes are currently supported. | PodFinder</title>
+                <title>Find which podcasts and how many episodes are currently supported. | PodcastPhraseFinder</title>
                 <meta name="description" content="Search and discover podcasts with ease. Explore a wide range of 
                     podcasts and search for them directly. Find episodes, topics, or keywords in the transcripts for a more 
                     personalized listening experience. Start exploring and find your favorite podcasts today!"

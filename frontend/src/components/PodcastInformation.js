@@ -23,11 +23,11 @@ export default function PodcastInformation({ channelId }) {
                 <title>
                     Find the episode of { 
                     podcast.name ? podcast.name : 'your favourite podcast'
-                    } based on what was said. | PodFinder
+                    } based on what was said. | PodcastPhraseFinder
                 </title>
                 <meta name="description" content="Find the episode you heard a phrase 
                 from by searching through podcast transcripts. Easily locate the episode
-                and show using PodFinder."
+                and show using PodcastPhraseFinder."
                 />
             </Head>
             <Card>

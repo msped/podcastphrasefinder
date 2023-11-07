@@ -32,7 +32,7 @@ function Copyright() {
         <Typography variant="body2" fontSize={14}>
             {"Copyright © "}
             <Link color="inherit" href="/" sx={{...styles.copyright}}>
-                PodFinder
+                PodcastPhraseFinder
             </Link>{" "}
             {new Date().getFullYear()}
             {"."}

@@ -26,7 +26,7 @@ export default function GetMostPopular() {
                     fontWeight={500}
                     pb={2}
                 >
-                    The most popular podcast on PodFinder
+                    The most popular podcast on PodcastPhraseFinder
                 </Typography>
                 <EpisodePanel episode={episode}/>
             </Box>
