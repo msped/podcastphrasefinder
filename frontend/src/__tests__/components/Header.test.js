@@ -6,7 +6,7 @@ import Header from '@/components/Header';
 describe('Header', () => {
     test('renders logo link', () => {
         render(<Header />);
-        const logoLink = screen.getByText(/PodFinder/i);
+        const logoLink = screen.getByText(/PodcastPhraseFinder/i);
         expect(logoLink).toBeInTheDocument();
     });
 

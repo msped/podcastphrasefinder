@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import podfinder_logo from '../../public/static/images/podfinder-no-bg.png'
+import logo from '../../public/static/images/podcastphrasefinder-no-bg.png'
 
 const styles = {
     logoLink: {
@@ -30,8 +30,8 @@ export default function Header() {
                 <Toolbar>
                     <Link href='/' aria-label="Home">
                         <Image
-                            src={podfinder_logo}
-                            alt='PodFinder'
+                            src={logo}
+                            alt='PodcastPhraseFinder'
                             height={60}
                             width={60}
                         />
@@ -41,7 +41,7 @@ export default function Header() {
                             variant="h6"
                             sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
                         >
-                            PodFinder
+                            PodcastPhraseFinder
                         </Typography>
                     </Link>
                     <Box sx={{

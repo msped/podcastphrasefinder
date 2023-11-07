@@ -25,9 +25,9 @@ jest.mock('../../hooks/useGetMostPopularHook', () => ({
 }));
 
 describe('Home component', () => {
-    it('renders "PodFinder" header text', () => {
+    it('renders "PodcastPhraseFinder" header text', () => {
         render(<Home />);
-        expect(screen.queryAllByText(/PodFinder/i)[0]).toBeInTheDocument();
+        expect(screen.queryAllByText(/PodcastPhraseFinder/i)[0]).toBeInTheDocument();
     });
 
     it('renders the episodes page from the home page', () => {

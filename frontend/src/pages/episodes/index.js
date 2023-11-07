@@ -35,8 +35,8 @@ export default function Episodes() {
     return (
         <>
         <Head>
-            <title>Search on a phrase you heard and find the podcast it came from. | PodFinder</title>
-            <meta name="description" content="PodFinder allows you to search on transcripts to find where it came from." />
+            <title>Search on a phrase you heard and find the podcast it came from. | PodcastPhraseFinder</title>
+            <meta name="description" content="PodcastPhraseFinder allows you to search on transcripts to find where it came from." />
         </Head>
         <Container maxWidth='md' sx={{ marginY: 2 }}>
                 <Grid container spacing={2}>

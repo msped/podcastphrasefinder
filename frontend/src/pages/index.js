@@ -31,7 +31,7 @@ export default function Home() {
       <Head>
         <title>
           Search podcast transcripts with that phrase you know, 
-          but can't find! | PodFinder
+          but can't find! | PodcastPhraseFinder
         </title>
         <meta name="description" content="Discover and explore a vast collection of podcasts by searching through their transcripts. 
           Find episodes based on specific topics, keywords, or phrases. Enjoy the convenience 
@@ -64,7 +64,7 @@ export default function Home() {
             sx={{...styles.headerText}}
             variant='h3'
           >
-            PodFinder
+            PodcastPhraseFinder
           </Typography>
           <Typography
             sx={{...styles.headerText}}
