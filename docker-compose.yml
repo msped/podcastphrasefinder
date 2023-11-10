@@ -1,10 +1,11 @@
-version: '3.9'
+version: '3.10'
 services:
 
   backend:
     build:
       context: .
       dockerfile: Dockerfile
+    container_name: pod-backend
     restart: unless-stopped
     volumes:
       - static_volume:/backend/static
@@ -12,6 +13,7 @@ services:
       - "8000:8000"
 
   elasticsearch:
+    container_name: pod-elastic
     image: elasticsearch:7.17.9
     environment:
       - discovery.type=single-node
@@ -22,8 +24,38 @@ services:
     depends_on:
       - backend
 
+  redis:
+    restart: always
+    image: redis:latest
+    container_name: pod-redis
+    volumes:
+      - ./redis_data:/data
+
+  celery:
+    build: .
+    container_name: pod-celery
+    command: celery -A backend worker -l INFO
+    volumes:
+      - ./:usr/src/app
+    env_file:
+      - '.env'
+    depends_on:
+      - redis
+
+  celery-beat:
+    build: .
+    container_name: pod-celery-beat
+    command: celery -A backend beat -l INFO
+    volumes:
+      - ./:/usr/src/app/
+    env_file:
+      - '.env'
+    depends_on:
+      - redis
+
   nginx:
     image: nginx:latest
+    container_name: pod-nginx
     restart: always
     ports:
         - "80:80"
