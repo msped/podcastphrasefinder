@@ -1,0 +1,13 @@
+frontend/
+env/
+htmlcov/
+postgres_data/
+redis_data/
+elasticsearch/
+.vscode/
+.github/
+.gitignore
+.env.example
+README.md
+docker-compose-dev.yml
+backend/settings/development.py
