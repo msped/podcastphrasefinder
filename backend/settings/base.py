@@ -18,8 +18,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    'podcastphrasefinder.com',
-    'www.podcastphrasefinder.com',
+    'api.podcastphrasefinder.com',
+    'www.api.podcastphrasefinder.com',
     os.environ.get('SERVER_IP'),
 ]
 
