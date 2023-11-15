@@ -44,6 +44,7 @@ services:
 
   celery-beat:
     build: .
+    user: root
     container_name: pod-celery-beat
     command: celery -A backend beat -l INFO
     volumes:
