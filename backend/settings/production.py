@@ -7,7 +7,9 @@ DEBUG = False
 
 CORS_ALLOWED_ORIGINS = [
     'https://podcastphrasefinder.com',
-    'https://www.podcastphrasefinder.com'
+    'https://www.podcastphrasefinder.com',
+    'https://api.podcastphrasefinder.com',
+    'https://www.api.podcastphrasefinder.com',
 
 ]
 
@@ -31,11 +33,13 @@ DATABASES = {
 
 CSRF_TRUSTED_ORIGINS = [
     'https://podcastphrasefinder.com',
-    'https://www.podcastphrasefinder.com'
+    'https://www.podcastphrasefinder.com',
+    'https://api.podcastphrasefinder.com',
+    'https://www.api.podcastphrasefinder.com',
 ]
 
 STATIC_URL = '/staticfiles/'
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_ROOT = '/backend/static/'
 
 sentry_sdk.init(
     dsn=os.environ.get('sentry_dns'),
