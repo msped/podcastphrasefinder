@@ -1,0 +1,9 @@
+cluster.name: "podfinder-docker-cluster"
+node.name: "podfinder0docker-single-node"
+network.host: 0.0.0.0
+
+https.cors.enabled: true
+http.cors.allow-origin: "https://api.podcastphrasefinder.com"
+https.cors.allow-header: "Authorization"
+
+ingest.geoip.downloader.enabled: false
