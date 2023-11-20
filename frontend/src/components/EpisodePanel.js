@@ -130,6 +130,7 @@ export default function EpisodePanel({ episode }) {
                                     variant="outlined"
                                     clickable
                                     target='_blank'
+                                    data-testid='avatar-chip-test-id'
                                     href={`https://www.youtube.com/channel/${episode.channel.channel_id}`}
                                 />
                             </Stack>
