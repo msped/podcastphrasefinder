@@ -92,7 +92,7 @@ describe('EpisodePanel', () => {
 
     it('YouTube channel link is rendered', () => {
         render(<EpisodePanel episode={episode} />)
-        const channelLink= screen.getByText(/The Rest Is Politics/i);
+        const channelLink= screen.getByTestId('avatar-chip-test-id');
         expect(channelLink.href).toEqual(`https://www.youtube.com/channel/${episode.channel.channel_id}`)
     })
 });
