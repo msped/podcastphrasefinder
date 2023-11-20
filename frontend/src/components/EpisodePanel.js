@@ -8,11 +8,11 @@ import {
     Button,
     Grid,
     Box,
-    Avatar
+    Avatar,
+    Chip,
 } from '@mui/material'
 import { formatDistance } from 'date-fns';
 import HeadphonesIcon from '@mui/icons-material/Headphones';
-import Link from '@/components/Link'
 import postEpisodeIncrementService from '@/api/postEpisodeIncrementService'
 
 const styles = {
@@ -71,7 +71,7 @@ const styles = {
         color: '#fff',
         textDecoration: 'none'
     },
-    published_date: {
+    publishedDate: {
         color: '#AAAAAA',
         fontSize: {
             xs: '.75rem',
@@ -114,36 +114,24 @@ export default function EpisodePanel({ episode }) {
                             >
                                 {episode.title} 
                             </Typography>
-                            <Typography sx={{...styles.published_date}} data-testid='time-since-test-id'>
+                            <Typography sx={{...styles.publishedDate}} data-testid='time-since-test-id'>
                                 {formatDistance(published_date, current_date_time)} ago
                             </Typography>
                             <Stack direction='row' spacing={1} marginY={1}>
-                                <Avatar sx={{
-                                    height: {
-                                        xs: 20,
-                                        sm: 25,
-                                        md: 30
-                                    },
-                                    width: {
-                                        xs: 20,
-                                        sm: 25,
-                                        md: 30
-                                    } 
-                                }}>
-                                    <Image
-                                        alt={episode.channel.name}
-                                        src={episode.channel.avatar}
-                                        height={27}
-                                        width={27}
-                                    />
-                                </Avatar>
-                                <Link
-                                    href={`https://www.youtube.com/channel/${episode.channel.channel_id}`}
+                                <Chip
+                                    component='a'
+                                    avatar={
+                                        <Avatar
+                                            alt={episode.channel.name} 
+                                            src={episode.channel.avatar}
+                                        />
+                                    }
+                                    label={episode.channel.name}
+                                    variant="outlined"
+                                    clickable
                                     target='_blank'
-                                    sx={{...styles.channelInformation}}
-                                >
-                                    {episode.channel.name}
-                                </Link>
+                                    href={`https://www.youtube.com/channel/${episode.channel.channel_id}`}
+                                />
                             </Stack>
                         </Stack>
                     </Grid>
