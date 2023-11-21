@@ -3,13 +3,16 @@ from rest_framework.test import APITestCase
 from ..models import Podcast, Episode, EpisodeReleaseDay
 from ..serializers import PodcastSerializer, EpisodeSerializer
 
+
 class TestModels(APITestCase):
     def setUp(self):
         self.mocked_get_transcript = mock.patch(
             'youtube_transcript_api.YouTubeTranscriptApi.get_transcript'
         )
         self.mock_get_transcript = self.mocked_get_transcript.start()
-        self.mock_get_transcript.return_value = [{'text': 'mocked transcript'}]
+        mocked_transcript_length = 'mockedtranscriptlengthnew' * 121
+        self.mock_get_transcript.return_value = [
+            {'text': mocked_transcript_length}]
 
     def tearDown(self):
         self.mocked_get_transcript.stop()
@@ -53,7 +56,8 @@ class TestModels(APITestCase):
             podcast=podcast,
             day=2
         )
-        edr_obj = EpisodeReleaseDay.objects.get(podcast__name="Tom Scott", day=2)
+        edr_obj = EpisodeReleaseDay.objects.get(
+            podcast__name="Tom Scott", day=2)
         self.assertEqual(
             str(edr_obj),
             'An Episode of Tom Scott is released on a Monday'
@@ -65,13 +69,16 @@ class TestModels(APITestCase):
         self.episode_str_with_error()
         self.episode_release_day()
 
+
 class EpisodeSerializerTestCase(APITestCase):
     def setUp(self):
         self.mocked_get_transcript = mock.patch(
             'youtube_transcript_api.YouTubeTranscriptApi.get_transcript'
         )
         self.mock_get_transcript = self.mocked_get_transcript.start()
-        self.mock_get_transcript.return_value = [{'text': 'mocked transcript'}]
+        mocked_transcript_length = 'mockedtranscriptlengthnew' * 121
+        self.mock_get_transcript.return_value = [
+            {'text': mocked_transcript_length}]
         Podcast.objects.create(
             name='Have a Word Podcast',
             channel_id='UChl6sFeO_O0drTc1CG1ymFw',
@@ -118,7 +125,9 @@ class EpisodeSerializerTestCase(APITestCase):
         self.assertEqual(channel_data['id'], self.episode.channel.id)
         self.assertEqual(channel_data['name'], self.episode.channel.name)
         self.assertEqual(channel_data['avatar'], self.episode.channel.avatar)
-        self.assertEqual(channel_data['channel_id'], self.episode.channel.channel_id)
+        self.assertEqual(channel_data['channel_id'],
+                         self.episode.channel.channel_id)
+
 
 class PodcastSerializerTestCase(APITestCase):
     def setUp(self):
@@ -126,7 +135,9 @@ class PodcastSerializerTestCase(APITestCase):
             'youtube_transcript_api.YouTubeTranscriptApi.get_transcript'
         )
         self.mock_get_transcript = self.mocked_get_transcript.start()
-        self.mock_get_transcript.return_value = [{'text': 'mocked transcript'}]
+        mocked_transcript_length = 'mockedtranscriptlengthnew' * 121
+        self.mock_get_transcript.return_value = [
+            {'text': mocked_transcript_length}]
         self.podcast = Podcast.objects.create(
             name='Have a Word Podcast',
             channel_id='UChl6sFeO_O0drTc1CG1ymFw',
