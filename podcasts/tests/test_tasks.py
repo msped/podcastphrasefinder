@@ -9,6 +9,7 @@ from ..tasks import (
 )
 from ..models import Episode, Podcast, EpisodeReleaseDay
 
+
 class BackCatalogueTaskTest(TestCase):
 
     def setUp(self):
@@ -16,7 +17,9 @@ class BackCatalogueTaskTest(TestCase):
             'youtube_transcript_api.YouTubeTranscriptApi.get_transcript'
         )
         self.mock_get_transcript = self.mocked_get_transcript.start()
-        self.mock_get_transcript.return_value = [{'text': 'mocked transcript'}]
+        mocked_transcript_length = 'mockedtranscriptlengthnew' * 121
+        self.mock_get_transcript.return_value = [
+            {'text': mocked_transcript_length}]
 
     def tearDown(self):
         self.mocked_get_transcript.stop()
@@ -46,7 +49,9 @@ class TestCheckForPrivateVideos(TestCase):
             'youtube_transcript_api.YouTubeTranscriptApi.get_transcript'
         )
         self.mock_get_transcript = self.mocked_get_transcript.start()
-        self.mock_get_transcript.return_value = [{'text': 'mocked transcript'}]
+        mocked_transcript_length = 'mockedtranscriptlengthnew' * 121
+        self.mock_get_transcript.return_value = [
+            {'text': mocked_transcript_length}]
         Podcast.objects.create(
             name='Test Podcast',
             channel_id='UCBa659QWEk1AI4Tg--mrJ2A',
@@ -101,15 +106,22 @@ class TestCheckForPrivateVideos(TestCase):
         """Should change two fields, one to true and another to false"""
         mock_get.status_code.side_effect = [False, False, True]
 
-        self.assertFalse(Episode.objects.get(video_id='ce-QHeZnVu4').private_video)
-        self.assertTrue(Episode.objects.get(video_id='1yfX84RMQ3M').private_video)
-        self.assertFalse(Episode.objects.get(video_id='Xw1EKgEl_RY').private_video)
+        self.assertFalse(Episode.objects.get(
+            video_id='ce-QHeZnVu4').private_video)
+        self.assertTrue(Episode.objects.get(
+            video_id='1yfX84RMQ3M').private_video)
+        self.assertFalse(Episode.objects.get(
+            video_id='Xw1EKgEl_RY').private_video)
 
         check_for_private_videos()
 
-        self.assertFalse(Episode.objects.get(video_id='ce-QHeZnVu4').private_video)
-        self.assertFalse(Episode.objects.get(video_id='1yfX84RMQ3M').private_video)
-        self.assertTrue(Episode.objects.get(video_id='Xw1EKgEl_RY').private_video)
+        self.assertFalse(Episode.objects.get(
+            video_id='ce-QHeZnVu4').private_video)
+        self.assertFalse(Episode.objects.get(
+            video_id='1yfX84RMQ3M').private_video)
+        self.assertTrue(Episode.objects.get(
+            video_id='Xw1EKgEl_RY').private_video)
+
 
 class TestCheckAvatar(TestCase):
 
@@ -130,8 +142,8 @@ class TestCheckAvatar(TestCase):
 
         self.assertEqual(
             Podcast.objects.get(channel_id="UCBa659QWEk1AI4Tg--mrJ2A").avatar,
-            "https://yt3.ggpht.com/ytc/APkrFKbAM4yMQo1QLC5VYC1aoIf_" \
-                "49jnh4jEAMSXc9vM5g=s800-c-k-c0x00ffffff-no-rj"
+            "https://yt3.ggpht.com/ytc/APkrFKbAM4yMQo1QLC5VYC1aoIf_"
+            "49jnh4jEAMSXc9vM5g=s800-c-k-c0x00ffffff-no-rj"
         )
 
     def test_check_avatar_not_changed(self):
@@ -142,17 +154,18 @@ class TestCheckAvatar(TestCase):
 
         self.assertEqual(
             Podcast.objects.get(channel_id="UCBa659QWEk1AI4Tg--mrJ2A").avatar,
-            "https://yt3.ggpht.com/ytc/APkrFKbAM4yMQo1QLC5VYC1aoIf_" \
-                "49jnh4jEAMSXc9vM5g=s800-c-k-c0x00ffffff-no-rj"
+            "https://yt3.ggpht.com/ytc/APkrFKbAM4yMQo1QLC5VYC1aoIf_"
+            "49jnh4jEAMSXc9vM5g=s800-c-k-c0x00ffffff-no-rj"
         )
 
         check_avatar()
 
         self.assertEqual(
             Podcast.objects.get(channel_id="UCBa659QWEk1AI4Tg--mrJ2A").avatar,
-            "https://yt3.ggpht.com/ytc/APkrFKbAM4yMQo1QLC5VYC1aoIf_" \
-                "49jnh4jEAMSXc9vM5g=s800-c-k-c0x00ffffff-no-rj"
+            "https://yt3.ggpht.com/ytc/APkrFKbAM4yMQo1QLC5VYC1aoIf_"
+            "49jnh4jEAMSXc9vM5g=s800-c-k-c0x00ffffff-no-rj"
         )
+
 
 class TestGetNewEpisodes(TestCase):
 
@@ -161,7 +174,9 @@ class TestGetNewEpisodes(TestCase):
             'youtube_transcript_api.YouTubeTranscriptApi.get_transcript'
         )
         self.mock_get_transcript = self.mocked_get_transcript.start()
-        self.mock_get_transcript.return_value = [{'text': 'mocked transcript'}]
+        mocked_transcript_length = 'mockedtranscriptlengthnew' * 121
+        self.mock_get_transcript.return_value = [
+            {'text': mocked_transcript_length}]
         Podcast.objects.create(
             name='Have a Word Podcast',
             channel_id='UChl6sFeO_O0drTc1CG1ymFw',

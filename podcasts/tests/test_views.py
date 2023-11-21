@@ -4,6 +4,7 @@ from rest_framework.test import APITestCase
 
 from ..models import Podcast, Episode
 
+
 class TestPodcastViews(APITestCase):
 
     def setUp(self):
@@ -11,7 +12,9 @@ class TestPodcastViews(APITestCase):
             'youtube_transcript_api.YouTubeTranscriptApi.get_transcript'
         )
         self.mock_get_transcript = self.mocked_get_transcript.start()
-        self.mock_get_transcript.return_value = [{'text': 'mocked transcript'}]
+        mocked_transcript_length = 'mockedtranscriptlengthnew' * 121
+        self.mock_get_transcript.return_value = [
+            {'text': mocked_transcript_length}]
         Podcast.objects.create(
             name='Have a Word Podcast',
             channel_id='UChl6sFeO_O0drTc1CG1ymFw',
@@ -110,7 +113,8 @@ class TestPodcastViews(APITestCase):
     def test_search_episode_with_channel_id_returns_200(self):
         # I know this test is redundant, but I have yet to come up
         # with a suitable way of testing this with elasticsearch.
-        mild_high_club = Podcast.objects.get(channel_id='UCIpglRjjRPp2_qfsak-jSSw')
+        mild_high_club = Podcast.objects.get(
+            channel_id='UCIpglRjjRPp2_qfsak-jSSw')
         response = self.client.get(
             '/api/podcasts/episode/search',
             {
@@ -145,7 +149,8 @@ class TestPodcastViews(APITestCase):
         self.assertEqual(response.status_code, 200)
         episode = json.loads(response.content)
         self.assertEqual(episode['video_id'], 'of-Oa7Ps8Rs')
-        self.assertEqual(episode['title'], 'Michelle de Swarte | Have A Word Podcast #223')
+        self.assertEqual(
+            episode['title'], 'Michelle de Swarte | Have A Word Podcast #223')
 
     def test_get_podcast_information_200(self):
         channel = Podcast.objects.get(channel_id='UChl6sFeO_O0drTc1CG1ymFw')
