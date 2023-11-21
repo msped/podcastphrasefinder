@@ -14,6 +14,7 @@ api_key = os.environ.get('YOUTUBE_V3_API_KEY')
 
 logger = get_task_logger(__name__)
 
+
 @shared_task
 def add_back_catalogue_task(channel_id, yt_channel_id, video_filter):
     video_data = []
@@ -24,6 +25,7 @@ def add_back_catalogue_task(channel_id, yt_channel_id, video_filter):
         'part': 'snippet,id',
         'order': 'date',
         'maxResults': 50,
+        'type': 'video',
     }
 
     while True:
@@ -37,11 +39,11 @@ def add_back_catalogue_task(channel_id, yt_channel_id, video_filter):
         videos = response.get('items', [])
 
         for video in videos:
-            if video['id']['kind'] == 'youtube#video':
-                video_title = unescape(video['snippet']['title'])
-                if not video_filter or video_filter in video_title:
-                    video_id = video['id']['videoId']
-                    transcript, error = get_transcript(video_id)
+            video_title = unescape(video['snippet']['title'])
+            if not video_filter or video_filter in video_title:
+                video_id = video['id']['videoId']
+                transcript, error = get_transcript(video_id)
+                if len(transcript) > 3000 and not error or error:
                     video_data.append({
                         'video_id': video_id,
                         'channel_id': channel_id,
@@ -59,6 +61,7 @@ def add_back_catalogue_task(channel_id, yt_channel_id, video_filter):
 
     Episode.objects.bulk_create([Episode(**data) for data in video_data])
 
+
 @shared_task
 def check_for_private_videos():
     episodes = Episode.objects.filter(error_occurred=False)
@@ -73,6 +76,7 @@ def check_for_private_videos():
     with transaction.atomic():
         for key, value in video_ids.items():
             Episode.objects.filter(video_id=key).update(private_video=value)
+
 
 @shared_task
 def check_avatar():
@@ -94,6 +98,7 @@ def check_avatar():
             podcast.avatar = response_avatar
             podcast.save()
 
+
 @shared_task
 def get_new_episodes():
     # Gets day of the week sunday 1, monday 2 etc
@@ -114,6 +119,7 @@ def get_new_episodes():
             'part': 'snippet,id',
             'order': 'date',
             'maxResults': 50,
+            'type': 'video',
         }
 
         while True:
@@ -129,23 +135,23 @@ def get_new_episodes():
 
             for video in videos:
                 video_id = video['id']['videoId']
-                if video['id']['kind'] == 'youtube#video' and not \
-                        podcast_episode_qs.filter(video_id=video_id).exists():
+                if not podcast_episode_qs.filter(video_id=video_id).exists():
                     video_title = unescape(video['snippet']['title'])
                     if not podcast.video_filter or \
                             podcast.video_filter in video_title:
                         transcript, error = get_transcript(video_id)
-                        video_data.append({
-                            'video_id': video_id,
-                            'channel_id': podcast.id,
-                            'title': video_title,
-                            'transcript': transcript,
-                            'error_occurred': error,
-                            'thumbnail': 'https://img.youtube.com/vi/' + \
-                                        f'{video_id}/maxresdefault.jpg',
-                            'published_date': video['snippet']['publishedAt']
-                        })
-                        logger.info(f"{video_title} - Error: {error}")
+                        if len(transcript) > 3000 and not error or error:
+                            video_data.append({
+                                'video_id': video_id,
+                                'channel_id': podcast.id,
+                                'title': video_title,
+                                'transcript': transcript,
+                                'error_occurred': error,
+                                'thumbnail': 'https://img.youtube.com/vi/' +
+                                f'{video_id}/maxresdefault.jpg',
+                                'published_date': video['snippet']['publishedAt']
+                            })
+                            logger.info(f"{video_title} - Error: {error}")
                 else:
                     video_break = True
 
