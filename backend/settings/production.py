@@ -42,7 +42,7 @@ STATIC_URL = '/staticfiles/'
 STATIC_ROOT = '/backend/static/'
 
 sentry_sdk.init(
-    dsn=os.environ.get('sentry_dns'),
+    dsn=os.environ.get('SENTRY_DNS'),
     integrations=[DjangoIntegration()],
     traces_sample_rate=1.0,
     send_default_pii=True
