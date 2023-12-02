@@ -17,7 +17,7 @@ COPY backend/ backend/
 COPY podcasts/ podcasts/
 COPY .env manage.py ./
 
-RUN python3 manage.py collectstatic --no-input --settings-backend.settings.production
+RUN python3 manage.py collectstatic --no-input --settings=backend.settings.production
 
 EXPOSE 8000
 
