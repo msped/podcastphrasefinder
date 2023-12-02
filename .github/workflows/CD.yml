@@ -21,5 +21,6 @@ jobs:
           script: |
             cd ${{ secrets.FILE_PATH }}
             git pull
+            docker compose down
             docker compose build --no-cache --compress
             docker compose up -d
