@@ -37,7 +37,7 @@ services:
     container_name: pod-celery
     command: celery -A backend worker -l INFO
     volumes:
-      - ./:usr/src/app
+      - ./:/usr/src/app
     env_file:
       - '.env'
     depends_on:
