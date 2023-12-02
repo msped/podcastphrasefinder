@@ -1,5 +1,5 @@
 cluster.name: "podfinder-docker-cluster"
-node.name: "podfinder0docker-single-node"
+node.name: "podfinder-docker-single-node"
 network.host: 0.0.0.0
 
 https.cors.enabled: true
