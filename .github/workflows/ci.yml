@@ -2,14 +2,14 @@ name: CI
 
 on:
   push:
-    branches: ["main", "*-main", "staging"]
+    branches: ["main"]
   pull_request:
-    branches: ["main", "*-main", "staging"]
+    branches: ["main"]
 
 jobs:
-  django_test_job:
+  CI:
     runs-on: ubuntu-latest
-
+    environment: Django Test
     services:
       elasticsearch:
         image: elasticsearch:7.17.9
@@ -49,7 +49,7 @@ jobs:
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
-          DJANGO_SETTINGS_MODULE: ${{ secrets.DJANGO_SETTINGS_MODULE}}
+          DJANGO_SETTINGS_MODULE: ${{ secrets.DJANGO_SETTINGS_MODULE }}
           CELERY_BROKER_URL: ${{ secrets.CELERY_BROKER_URL }}
           YOUTUBE_V3_API_KEY: ${{ secrets.YOUTUBE_V3_API_KEY}}
         run: |
