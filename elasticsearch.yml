@@ -4,6 +4,6 @@ network.host: 0.0.0.0
 
 http.cors.enabled: true
 http.cors.allow-origin: "https://api.podcastphrasefinder.com"
-http.cors.allow-header: "Authorization"
+http.cors.allow-headers: "Authorization"
 
 ingest.geoip.downloader.enabled: false
