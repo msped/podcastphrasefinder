@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django_celery_results',
     'django_celery_beat',
     'django_elasticsearch_dsl',
+    'django_elasticsearch_dsl_drf',
     "debug_toolbar",
 ]
 
