@@ -132,7 +132,26 @@ class TestCheckAvatar(TestCase):
             avatar='https//www.example.com'
         )
 
-    def test_check_avatar_url_changed(self):
+    @mock.patch('requests.get')
+    def test_check_avatar_url_changed(self, mock_get):
+        mock_return = {
+            'items': [
+                {
+                    'snippet': {
+                        'thumbnails': {
+                            'high': {
+                                'url': 'https://www.example.com/new'
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+        api_return = mock.Mock()
+        api_return.status_code = 200
+        api_return.json.return_value = mock_return
+        mock_get.return_value = api_return
+
         self.assertEqual(
             Podcast.objects.get(channel_id="UCBa659QWEk1AI4Tg--mrJ2A").avatar,
             "https//www.example.com"
@@ -142,28 +161,43 @@ class TestCheckAvatar(TestCase):
 
         self.assertEqual(
             Podcast.objects.get(channel_id="UCBa659QWEk1AI4Tg--mrJ2A").avatar,
-            "https://yt3.ggpht.com/ytc/APkrFKbAM4yMQo1QLC5VYC1aoIf_"
-            "49jnh4jEAMSXc9vM5g=s800-c-k-c0x00ffffff-no-rj"
+            "https://www.example.com/new"
         )
 
-    def test_check_avatar_not_changed(self):
+    @mock.patch('requests.get')
+    def test_check_avatar_not_changed(self, mock_get):
+        mock_return = {
+            'items': [
+                {
+                    'snippet': {
+                        'thumbnails': {
+                            'high': {
+                                'url': 'https://www.example.com/'
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+        api_return = mock.Mock()
+        api_return.status_code = 200
+        api_return.json.return_value = mock_return
+        mock_get.return_value = api_return
+
         podcast = Podcast.objects.get(channel_id="UCBa659QWEk1AI4Tg--mrJ2A")
-        podcast.avatar = "https://yt3.ggpht.com/ytc/APkrFKbAM4yMQo1QLC5VYC1aoIf_" \
-            "49jnh4jEAMSXc9vM5g=s800-c-k-c0x00ffffff-no-rj"
+        podcast.avatar = "https://www.example.com/"
         podcast.save()
 
         self.assertEqual(
             Podcast.objects.get(channel_id="UCBa659QWEk1AI4Tg--mrJ2A").avatar,
-            "https://yt3.ggpht.com/ytc/APkrFKbAM4yMQo1QLC5VYC1aoIf_"
-            "49jnh4jEAMSXc9vM5g=s800-c-k-c0x00ffffff-no-rj"
+            "https://www.example.com/"
         )
 
         check_avatar()
 
         self.assertEqual(
             Podcast.objects.get(channel_id="UCBa659QWEk1AI4Tg--mrJ2A").avatar,
-            "https://yt3.ggpht.com/ytc/APkrFKbAM4yMQo1QLC5VYC1aoIf_"
-            "49jnh4jEAMSXc9vM5g=s800-c-k-c0x00ffffff-no-rj"
+            "https://www.example.com/"
         )
 
 
