@@ -12,6 +12,7 @@ from .documents import EpisodeDocument
 from .models import Episode, Podcast
 from .serializers import EpisodeSerializer, PodcastSerializer
 
+
 class SearchEpisodeView(APIView):
     serializer_class = EpisodeSerializer
     search_document = EpisodeDocument
@@ -42,7 +43,8 @@ class SearchEpisodeView(APIView):
                         "match", channel__channel_id=channel_id
                     )
 
-                search = EpisodeDocument.search().query(es_query)
+                search = EpisodeDocument.search().query(
+                    es_query).highlight('transcript', fragment_size=150).highlight_options(order='score')
                 response = search.execute()
                 serializer = self.serializer_class(response, many=True)
                 return Response(serializer.data, status=status.HTTP_200_OK)
@@ -67,6 +69,7 @@ class SearchPodcastsView(ListAPIView):
             ).order_by('-rank')
         return Podcast.objects.all()[:5]
 
+
 class IncrementEpisodeCiick(APIView):
     @csrf_exempt
     def post(self, request, episode_id):
@@ -74,6 +77,7 @@ class IncrementEpisodeCiick(APIView):
         episode.times_clicked += 1
         episode.save()
         return Response(status=status.HTTP_200_OK)
+
 
 class GetMostClickedPodcast(APIView):
     def get(self, request):
@@ -83,6 +87,7 @@ class GetMostClickedPodcast(APIView):
         ).order_by('-times_clicked').first()
         serializer = EpisodeSerializer(episode, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class GetPodcastInformation(APIView):
     def get(self, request, channel_id):
