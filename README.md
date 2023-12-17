@@ -10,13 +10,15 @@ Podcast Phrase Finder is a Django Rest Framework and NextJS application created 
 
 - Automatically add back catalogue of podcast transcripts to database.
 
-- Check that the podcast videos are still public at least once a month via a schedule task.
+- Check that the podcast YouTube videos are still public at least once a month via a schedule task.
 
 - Obtain new transcripts from podcasts that are uploaded.
 
+- Display the text match from ElasticSearch
+
 ### Potentional Features
 
-- Display the text match on the EpisodePanel with the estimated times they quote occurs.
+- Display the  estimated times the quote occurs.
 
 - Creator account to upload own transcripts, request transcripts to send to 3rd party service for exclusive episodes.
 
@@ -51,7 +53,7 @@ To run this site locally you will first need to install Docker. You can find the
 
 4. Run docker-compose.
 
-    `docker-compose up -d`
+    `docker-compose -f docker-compose-dev.yml up -d`
 
 5. Run Django Migrations
 
