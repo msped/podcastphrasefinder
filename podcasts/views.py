@@ -44,7 +44,11 @@ class SearchEpisodeView(APIView):
                     )
 
                 search = EpisodeDocument.search().query(
-                    es_query).highlight('transcript', fragment_size=150).highlight_options(order='score')
+                    es_query).highlight('transcript', fragment_size=150).highlight_options(
+                        order='score',
+                        pre_tags='<b>',
+                        post_tags='</b>'
+                )
                 response = search.execute()
                 serializer = self.serializer_class(response, many=True)
                 return Response(serializer.data, status=status.HTTP_200_OK)
