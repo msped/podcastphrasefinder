@@ -25,7 +25,31 @@ describe('EpisodePanel', () => {
         "thumbnail": "https://test.url.mspe.me/eeTEdlsa",
         "title": "Suella's speeding, Japan in focus, and what's the point of the G7?",
         "transcript": "This is a test transcript of a podcast from the Rest is Politics.",
-        "times_clicked": 11
+        "times_clicked": 11,
+        "highlight": [
+            'test1',
+            'test2',
+            'test3',
+            'test4',
+            'test5',
+        ]
+    };
+
+    const episodeNoHighlight = {
+        "id": 2,
+        "video_id": "b-UYEj6Q0Ao",
+        "channel": {
+            "id": 2,
+            "name": "The Rest Is Politics",
+            "channel_id": "UCsufaClk5if2RGqABb-09Uw",
+            "avatar": "https://yt3.ggpht.com/sROZx5jI62ZX-7Udpthim3reUrYnjGwBrzoJ_JuvKjLcxnHuceC1IHLWIfoykgi28rmW_EIV=s800-c-k-c0x00ffffff-no-rj"
+        },
+        'published_date': '2023-08-25T20:55:33Z',
+        "thumbnail": "https://test.url.mspe.me/eeTEdlsa",
+        "title": "Suella's speeding, Japan in focus, and what's the point of the G7?",
+        "transcript": "This is a test transcript of a podcast from the Rest is Politics.",
+        "times_clicked": 11,
+        "highlight": null
     };
 
     beforeEach(() => {
@@ -42,7 +66,7 @@ describe('EpisodePanel', () => {
 
     it('has a button link to episode on YouTube', () => {
         render(<EpisodePanel episode={episode} />);
-        const youtubeURL = `http://www.youtube.com/watch?v=${episode.video_id}`
+        const youtubeURL = `https://www.youtube.com/watch?v=${episode.video_id}`
         const episodeListenButton = screen.getByLabelText(
             /listen to podcast/i);
         expect(episodeListenButton).toHaveAttribute('href', youtubeURL);
@@ -92,7 +116,44 @@ describe('EpisodePanel', () => {
 
     it('YouTube channel link is rendered', () => {
         render(<EpisodePanel episode={episode} />)
-        const channelLink= screen.getByTestId('avatar-chip-test-id');
+        const channelLink = screen.getByTestId('avatar-chip-test-id');
         expect(channelLink.href).toEqual(`https://www.youtube.com/channel/${episode.channel.channel_id}`)
+    })
+
+    // test highlight not open (should be unmounted i.e. not in the doc)
+    it('Render episode panel with highlight accordion collasped', () => {
+        render(<EpisodePanel episode={episode} />)
+        const highlightDropdownText = screen.queryByText('test1');
+        expect(highlightDropdownText).not.toBeInTheDocument();
+    })
+
+    // test highlight open and see 1
+    it('Test opening highlight show first item in the array', () => {
+        render(<EpisodePanel episode={episode} />)
+        const accordionToggleButton = screen.getByText('See transcript matches');
+        fireEvent.click(accordionToggleButton);
+        const getFirstMatch = screen.queryByText('test1');
+        expect(getFirstMatch).toBeInTheDocument();
+    })
+
+    // test highlight open and cycle
+    it('Open highlight and cycle through the matches', () => {
+        render(<EpisodePanel episode={episode} />)
+        const accordionToggleButton = screen.getByText('See transcript matches');
+        fireEvent.click(accordionToggleButton);
+        const nextMatchButton = screen.getByLabelText('next match')
+        for(let i = 0; i < episode.highlight.length; i++){
+            if (i !== 0){
+                fireEvent.click(nextMatchButton);
+            }
+            expect(screen.queryByText(episode.highlight[i])).toBeInTheDocument();
+        }
+    })
+
+    // test highlight not showing when null
+    it('Test not highlight shows with no highlight', () => {
+        render(<EpisodePanel episode={episodeNoHighlight} />)
+        const highlightDropdownText = screen.queryByText('See transcript matches');
+        expect(highlightDropdownText).not.toBeInTheDocument();
     })
 });
