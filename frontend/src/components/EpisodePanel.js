@@ -92,7 +92,8 @@ const styles = {
             'md': '.85rem',
             'sm': '.75rem',
             'xs': '.75rem'
-        }
+        },
+        textAlign: 'center'
     },
     accordionStyles: {
         border: 'none',
@@ -197,32 +198,29 @@ export default function EpisodePanel({ episode }) {
                 </Grid>
                 {episode.highlight && (
                     <Collapse in={isExpanded} mountOnEnter unmountOnExit>
-                        <Stack direction='row' spacing={1}>
+                        <Stack direction='column' spcaing={2}>
+                            <Button 
+                                onClick={handleHighlightSelection('prev')} 
+                                disabled={highlightIndex === 0}
+                                aria-label='previous match'
+                                fullWidth
+                            >
+                                <ArrowDropUpIcon />
+                            </Button>
                             <Typography
                                 dangerouslySetInnerHTML={
                                     {__html: episode.highlight[highlightIndex]}
                                 }
                                 sx={styles.highlightText}
                             ></Typography>
-                            <Stack>
-                                <Button 
-                                    onClick={handleHighlightSelection('prev')} 
-                                    disabled={highlightIndex === 0}
-                                    aria-label='previous match'
-                                >
-                                    <ArrowDropUpIcon/>
-                                </Button>
-                                <Typography fontSize='10pt' sx={{ textAlign: 'center' }}>
-                                    {highlightIndex + 1}/{highlightIndexLength}
-                                </Typography>
-                                <Button 
-                                    onClick={handleHighlightSelection('next')} 
-                                    disabled={highlightIndex === highlightIndexLength - 1}
-                                    aria-label='next match'
-                                >
-                                    <ArrowDropDownIcon/>
-                                </Button>
-                            </Stack>
+                            <Button 
+                                onClick={handleHighlightSelection('next')} 
+                                disabled={highlightIndex === highlightIndexLength - 1}
+                                aria-label='next match'
+                                fullWidth
+                            >
+                                <ArrowDropDownIcon />
+                            </Button>
                         </Stack>
                     </Collapse>
                 )}
