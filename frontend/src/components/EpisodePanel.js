@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Image from 'next/image';
 import {
     Card,
@@ -10,9 +11,15 @@ import {
     Box,
     Avatar,
     Chip,
+    Accordion,
+    Collapse,
+    AccordionSummary,
 } from '@mui/material'
 import { formatDistance } from 'date-fns';
 import HeadphonesIcon from '@mui/icons-material/Headphones';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import postEpisodeIncrementService from '@/api/postEpisodeIncrementService'
 
 const styles = {
@@ -78,24 +85,55 @@ const styles = {
             md: '.85rem',
         }
         
+    },
+    highlightText: {
+        fontSize: {
+            'lg': '1',
+            'md': '.85rem',
+            'sm': '.75rem',
+            'xs': '.75rem'
+        },
+        textAlign: 'center'
+    },
+    accordionStyles: {
+        border: 'none',
+        boxShadow: 'none',
+        '&:before': {
+            display: 'none'
+        }
     }
 }
 
 export default function EpisodePanel({ episode }) {
-    const youtubeURL = `http://www.youtube.com/watch?v=${episode.video_id}`
+    const youtubeURL = `https://www.youtube.com/watch?v=${episode.video_id}`
     const published_date = new Date(episode.published_date)
     const current_date_time = new Date()
+    const [highlightIndex, setHighlightIndex] = useState(0)
+    const highlightIndexLength = episode.highlight ? episode.highlight.length : 0
+    const [isExpanded, setIsExpanded] = useState(false)
 
     const handleTimeClickedIncrement = () => {
         postEpisodeIncrementService(episode.id)
     }
 
+    const handleHighlightSelection = (direction) => () => {
+        if (direction === 'next' && highlightIndex < episode.highlight.length - 1) {
+            setHighlightIndex(highlightIndex + 1);
+        } else if (direction === 'prev' && highlightIndex > 0) {
+            setHighlightIndex(highlightIndex - 1);
+        }
+    };
+
+    const handleAccordionToggle = () => {
+        setIsExpanded(!isExpanded);
+    }
+
     return (
-        <Card sx={{...styles.root}}>
-            <CardContent sx={{...styles.cardContent}}>
+        <Card sx={styles.root}>
+            <CardContent sx={styles.cardContent}>
                 <Grid container spacing={2}>
                     <Grid item xs={4}>
-                        <Box sx={{...styles.thumbnailWrapper}}>
+                        <Box sx={styles.thumbnailWrapper}>
                             <Image
                                 src={episode.thumbnail}
                                 style={{...styles.thumbnail}}
@@ -110,11 +148,11 @@ export default function EpisodePanel({ episode }) {
                             <Typography
                                 variant='h6'
                                 component='span'
-                                sx={{...styles.episodeInformation}}
+                                sx={styles.episodeInformation}
                             >
                                 {episode.title} 
                             </Typography>
-                            <Typography sx={{...styles.publishedDate}} data-testid='time-since-test-id'>
+                            <Typography sx={styles.publishedDate} data-testid='time-since-test-id'>
                                 {formatDistance(published_date, current_date_time)} ago
                             </Typography>
                             <Stack direction='row' spacing={1} marginY={1}>
@@ -134,17 +172,67 @@ export default function EpisodePanel({ episode }) {
                                     href={`https://www.youtube.com/channel/${episode.channel.channel_id}`}
                                 />
                             </Stack>
+                            {
+                                episode.highlight && (
+                                    <Box>
+                                        <Accordion 
+                                            disableGutters
+                                            sx={styles.accordionStyles}
+                                            expanded={isExpanded}
+                                            onChange={handleAccordionToggle}
+                                        >
+                                            <AccordionSummary
+                                                expandIcon={<ExpandMoreIcon />}
+                                                aria-controls="match-highlights"
+                                                id="match-highlights"
+                                            >
+                                                <Typography sx={{ fontSize: '10pt' }}>
+                                                    See transcript matches
+                                                </Typography>
+                                            </AccordionSummary>
+                                        </Accordion>
+                                    </Box>
+                                )}
                         </Stack>
                     </Grid>
                 </Grid>
+                {episode.highlight && (
+                    <Collapse in={isExpanded} mountOnEnter unmountOnExit>
+                        <Stack direction='column' spcaing={2}>
+                            <Button 
+                                onClick={handleHighlightSelection('prev')} 
+                                disabled={highlightIndex === 0}
+                                aria-label='previous match'
+                                fullWidth
+                            >
+                                <ArrowDropUpIcon />
+                            </Button>
+                            <Typography
+                                dangerouslySetInnerHTML={
+                                    {__html: episode.highlight[highlightIndex]}
+                                }
+                                sx={styles.highlightText}
+                            ></Typography>
+                            <Button 
+                                onClick={handleHighlightSelection('next')} 
+                                disabled={highlightIndex === highlightIndexLength - 1}
+                                aria-label='next match'
+                                fullWidth
+                            >
+                                <ArrowDropDownIcon />
+                            </Button>
+                        </Stack>
+                    </Collapse>
+                )}
             </CardContent>
-            <Paper elevation={3} sx={{...styles.buttonWrapper}}>
+            <Paper elevation={3} sx={styles.buttonWrapper}>
                 <Button
-                    sx={{...styles.button}} 
+                    sx={styles.button}
                     onClick={handleTimeClickedIncrement}
                     href={youtubeURL}
                     target='_blank'
                     aria-label='listen to podcast'
+                    rel="noopener noreferrer"
                 >
                     <HeadphonesIcon />
                 </Button>
