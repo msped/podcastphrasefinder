@@ -33,7 +33,6 @@ class EpisodeSerializer(serializers.ModelSerializer):
             'channel',
             'title',
             'transcript',
-            'thumbnail',
             'published_date',
             'error_occurred',
             'private_video',
