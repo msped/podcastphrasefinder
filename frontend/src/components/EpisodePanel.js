@@ -73,6 +73,7 @@ const styles = {
             xs: '.7rem',
             sm: '.85rem',
         },
+        fontWeight: '600',
         color: '#fff',
         textDecoration: 'none'
     },
@@ -98,8 +99,17 @@ const styles = {
         boxShadow: 'none',
         '&:before': {
             display: 'none'
-        }
+        },
+    },
+    accordionSummaryStyles: {
+        maxWidth: {
+            'xs': '100%',
+            'sm': '46%',
+            'md': '35%'
+        },
+        padding: '0 0'
     }
+
 }
 
 export default function EpisodePanel({ episode }) {
@@ -162,24 +172,23 @@ export default function EpisodePanel({ episode }) {
                             </Link>
                             {
                                 episode.highlight && (
-                                    <Box>
-                                        <Accordion 
-                                            disableGutters
-                                            sx={styles.accordionStyles}
-                                            expanded={isExpanded}
-                                            onChange={handleAccordionToggle}
+                                    <Accordion 
+                                        disableGutters
+                                        sx={styles.accordionStyles}
+                                        expanded={isExpanded}
+                                        onChange={handleAccordionToggle}
+                                    >
+                                        <AccordionSummary
+                                            expandIcon={<ExpandMoreIcon />}
+                                            aria-controls="match-highlights"
+                                            id="match-highlights"
+                                            sx={styles.accordionSummaryStyles}
                                         >
-                                            <AccordionSummary
-                                                expandIcon={<ExpandMoreIcon />}
-                                                aria-controls="match-highlights"
-                                                id="match-highlights"
-                                            >
-                                                <Typography sx={{ fontSize: '10pt' }}>
-                                                    See transcript matches
-                                                </Typography>
-                                            </AccordionSummary>
-                                        </Accordion>
-                                    </Box>
+                                            <Typography sx={{ fontSize: '10pt' }}>
+                                                See transcript matches
+                                            </Typography>
+                                        </AccordionSummary>
+                                    </Accordion>
                                 )}
                         </Stack>
                     </Grid>
