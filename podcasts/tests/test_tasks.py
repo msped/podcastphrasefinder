@@ -66,7 +66,6 @@ class TestCheckForPrivateVideos(TestCase):
                 'title': 'The giant archive hidden under the British countryside',
                 'transcript': 'test transcript 1',
                 'published_date': '2023-08-25T20:55:33Z',
-                'thumbnail': 'https://img.youtube.com/vi/ce-QHeZnVu4/maxresdefault.jpg',
                 'times_clicked': 0,
                 'error_occurred': False,
                 'private_video': False
@@ -77,7 +76,6 @@ class TestCheckForPrivateVideos(TestCase):
                 'title': 'This man built his office inside an elevator',
                 'transcript': 'test transcript 2',
                 'published_date': '2023-12-21T13:45:33Z',
-                'thumbnail': 'https://img.youtube.com/vi/1yfX84RMQ3M/maxresdefault.jpg',
                 'times_clicked': 0,
                 'error_occurred': False,
                 'private_video': True
@@ -88,7 +86,6 @@ class TestCheckForPrivateVideos(TestCase):
                 'title': 'Test Podcast Episode',
                 'transcript': 'test transcript 3',
                 'published_date': '2023-08-25T15:35:33Z',
-                'thumbnail': 'https://img.youtube.com/vi/Xw1EKgEl_RY/maxresdefault.jpg',
                 'times_clicked': 0,
                 'error_occurred': False,
                 'private_video': False

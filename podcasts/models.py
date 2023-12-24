@@ -2,6 +2,7 @@ from django.db import models
 
 from .utils import get_transcript
 
+
 class Podcast(models.Model):
     name = models.CharField(max_length=50)
     channel_id = models.CharField(max_length=24)
@@ -14,13 +15,13 @@ class Podcast(models.Model):
     def __str__(self):
         return f'{self.name}'
 
+
 class Episode(models.Model):
     video_id = models.CharField(max_length=11, unique=True)
     channel = models.ForeignKey(Podcast, on_delete=models.CASCADE)
     title = models.CharField(max_length=125)
     transcript = models.TextField(blank=True, null=True)
     times_clicked = models.IntegerField(default=0)
-    thumbnail = models.URLField(blank=True, null=True)
     error_occurred = models.BooleanField(default=False)
     published_date = models.DateTimeField()
     private_video = models.BooleanField(default=False)
@@ -36,8 +37,8 @@ class Episode(models.Model):
             self.transcript = transcript
             if error:
                 self.error_occurred = True
-        self.thumbnail = f'https://img.youtube.com/vi/{self.video_id}/maxresdefault.jpg'
         super().save(*args, **kwargs)
+
 
 class EpisodeReleaseDay(models.Model):
     DAY_CHOICES = (
@@ -55,4 +56,4 @@ class EpisodeReleaseDay(models.Model):
 
     def __str__(self):
         return f'An Episode of {self.podcast.name} ' + \
-        f'is released on a {self.get_day_display()}'
+            f'is released on a {self.get_day_display()}'

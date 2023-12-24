@@ -3,11 +3,12 @@ from django_elasticsearch_dsl.registries import registry
 
 from .models import Episode
 
+
 @registry.register_document
 class EpisodeDocument(Document):
 
     channel = fields.ObjectField(
-        properties = {
+        properties={
             "name": fields.TextField(),
             "channel_id": fields.TextField(),
             "avatar": fields.TextField()
@@ -28,7 +29,6 @@ class EpisodeDocument(Document):
             'video_id',
             'title',
             'transcript',
-            'thumbnail',
             'published_date',
             'private_video',
             'error_occurred'

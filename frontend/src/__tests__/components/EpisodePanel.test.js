@@ -22,7 +22,6 @@ describe('EpisodePanel', () => {
             "avatar": "https://yt3.ggpht.com/sROZx5jI62ZX-7Udpthim3reUrYnjGwBrzoJ_JuvKjLcxnHuceC1IHLWIfoykgi28rmW_EIV=s800-c-k-c0x00ffffff-no-rj"
         },
         'published_date': '2023-08-25T20:55:33Z',
-        "thumbnail": "https://test.url.mspe.me/eeTEdlsa",
         "title": "Suella's speeding, Japan in focus, and what's the point of the G7?",
         "transcript": "This is a test transcript of a podcast from the Rest is Politics.",
         "times_clicked": 11,
@@ -45,7 +44,6 @@ describe('EpisodePanel', () => {
             "avatar": "https://yt3.ggpht.com/sROZx5jI62ZX-7Udpthim3reUrYnjGwBrzoJ_JuvKjLcxnHuceC1IHLWIfoykgi28rmW_EIV=s800-c-k-c0x00ffffff-no-rj"
         },
         'published_date': '2023-08-25T20:55:33Z',
-        "thumbnail": "https://test.url.mspe.me/eeTEdlsa",
         "title": "Suella's speeding, Japan in focus, and what's the point of the G7?",
         "transcript": "This is a test transcript of a podcast from the Rest is Politics.",
         "times_clicked": 11,
@@ -98,25 +96,17 @@ describe('EpisodePanel', () => {
         expect(component).toHaveTextContent(formatDistance(published_date, current_date_time));
     })
 
-    it('renders the thumbnail', () => {
+    it('renders the avatar', () => {
         render(<EpisodePanel episode={episode} />)
     
-        const thumbnail = screen.getByAltText("Suella's speeding, Japan in focus, and what's the point of the G7? thumbnail")
+        const avatar = screen.getByAltText("The Rest Is Politics logo")
     
-        expect(thumbnail).toBeInTheDocument()
+        expect(avatar).toBeInTheDocument()
     })
-
-    // This fails due to nextjs image component
-    // it('renders the avatar', () => {
-    //     render(<EpisodePanel episode={episode} />)
-    //     const avatar = screen.getByAltText("The Rest Is Politics")
-    //     expect(avatar).toBeInTheDocument()
-    //     expect(avatar.src).toBeInTheDocument(episode.channel.avatar)
-    // })
 
     it('YouTube channel link is rendered', () => {
         render(<EpisodePanel episode={episode} />)
-        const channelLink = screen.getByTestId('avatar-chip-test-id');
+        const channelLink = screen.getByText('The Rest Is Politics');
         expect(channelLink.href).toEqual(`https://www.youtube.com/channel/${episode.channel.channel_id}`)
     })
 

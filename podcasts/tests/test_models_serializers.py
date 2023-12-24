@@ -108,13 +108,6 @@ class EpisodeSerializerTestCase(APITestCase):
     def test_transcript_field_content(self):
         self.assertIsNotNone(self.episode.transcript)
 
-    def test_thumbnail_url(self):
-        data = self.serializer.data
-        self.assertEqual(
-            data['thumbnail'],
-            f'https://img.youtube.com/vi/{self.episode.video_id}/maxresdefault.jpg'
-        )
-
     def test_published_date(self):
         data = self.serializer.data
         self.assertEqual('2023-08-25T20:55:33Z', data['published_date'])

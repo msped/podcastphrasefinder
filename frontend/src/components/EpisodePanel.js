@@ -9,11 +9,10 @@ import {
     Button,
     Grid,
     Box,
-    Avatar,
-    Chip,
     Accordion,
     Collapse,
     AccordionSummary,
+    Link,
 } from '@mui/material'
 import { formatDistance } from 'date-fns';
 import HeadphonesIcon from '@mui/icons-material/Headphones';
@@ -49,13 +48,13 @@ const styles = {
             md: '90%',
         }
     },
-    thumbnail: {
+    logo: {
         height: 'auto',
         width: '100%',
         borderRadius: '5px',
         padding: '-10% 0',
     },
-    thumbnailWrapper: {
+    logoWrapper: {
         position: 'relative',
         width: '100%',
         height: 'auto',
@@ -73,8 +72,8 @@ const styles = {
         fontSize: {
             xs: '.7rem',
             sm: '.85rem',
-            md: '1rem',
         },
+        fontWeight: '600',
         color: '#fff',
         textDecoration: 'none'
     },
@@ -100,8 +99,17 @@ const styles = {
         boxShadow: 'none',
         '&:before': {
             display: 'none'
-        }
+        },
+    },
+    accordionSummaryStyles: {
+        maxWidth: {
+            'xs': '100%',
+            'sm': '46%',
+            'md': '35%'
+        },
+        padding: '0 0'
     }
+
 }
 
 export default function EpisodePanel({ episode }) {
@@ -132,18 +140,18 @@ export default function EpisodePanel({ episode }) {
         <Card sx={styles.root}>
             <CardContent sx={styles.cardContent}>
                 <Grid container spacing={2}>
-                    <Grid item xs={4}>
-                        <Box sx={styles.thumbnailWrapper}>
+                    <Grid item xs={2}>
+                        <Box sx={styles.logoWrapper}>
                             <Image
-                                src={episode.thumbnail}
-                                style={{...styles.thumbnail}}
-                                alt={`${episode.title} thumbnail`}
+                                src={episode.channel.avatar}
+                                style={{...styles.logo}}
+                                alt={`${episode.channel.name} logo`}
                                 width={160}
                                 height={90}
                             />
                         </Box>
                     </Grid>
-                    <Grid item xs={8}>
+                    <Grid item xs={10}>
                         <Stack>
                             <Typography
                                 variant='h6'
@@ -155,43 +163,32 @@ export default function EpisodePanel({ episode }) {
                             <Typography sx={styles.publishedDate} data-testid='time-since-test-id'>
                                 {formatDistance(published_date, current_date_time)} ago
                             </Typography>
-                            <Stack direction='row' spacing={1} marginY={1}>
-                                <Chip
-                                    component='a'
-                                    avatar={
-                                        <Avatar
-                                            alt={episode.channel.name} 
-                                            src={episode.channel.avatar}
-                                        />
-                                    }
-                                    label={episode.channel.name}
-                                    variant="outlined"
-                                    clickable
-                                    target='_blank'
-                                    data-testid='avatar-chip-test-id'
-                                    href={`https://www.youtube.com/channel/${episode.channel.channel_id}`}
-                                />
-                            </Stack>
+                            <Link
+                                href={`https://www.youtube.com/channel/${episode.channel.channel_id}`}
+                                target='_blank'
+                                sx={styles.channelInformation}
+                            >
+                                {episode.channel.name}
+                            </Link>
                             {
                                 episode.highlight && (
-                                    <Box>
-                                        <Accordion 
-                                            disableGutters
-                                            sx={styles.accordionStyles}
-                                            expanded={isExpanded}
-                                            onChange={handleAccordionToggle}
+                                    <Accordion 
+                                        disableGutters
+                                        sx={styles.accordionStyles}
+                                        expanded={isExpanded}
+                                        onChange={handleAccordionToggle}
+                                    >
+                                        <AccordionSummary
+                                            expandIcon={<ExpandMoreIcon />}
+                                            aria-controls="match-highlights"
+                                            id="match-highlights"
+                                            sx={styles.accordionSummaryStyles}
                                         >
-                                            <AccordionSummary
-                                                expandIcon={<ExpandMoreIcon />}
-                                                aria-controls="match-highlights"
-                                                id="match-highlights"
-                                            >
-                                                <Typography sx={{ fontSize: '10pt' }}>
-                                                    See transcript matches
-                                                </Typography>
-                                            </AccordionSummary>
-                                        </Accordion>
-                                    </Box>
+                                            <Typography sx={{ fontSize: '10pt' }}>
+                                                See transcript matches
+                                            </Typography>
+                                        </AccordionSummary>
+                                    </Accordion>
                                 )}
                         </Stack>
                     </Grid>
