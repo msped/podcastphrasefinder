@@ -11,6 +11,10 @@ const styles = {
         },
         fontWeight: '700',
         fontSize: '8pt',
+        maxWidth: {
+            sm: '20%',
+        },
+        marginLeft: '1.25%'
     }
 }
 
