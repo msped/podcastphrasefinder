@@ -20,6 +20,7 @@ import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import postEpisodeIncrementService from '@/api/postEpisodeIncrementService'
+import ExclusiveChip from '@/components/ExclusiveChip';
 
 const styles = {
     root: {
@@ -152,13 +153,13 @@ export default function EpisodePanel({ episode }) {
                         </Box>
                     </Grid>
                     <Grid item xs={10}>
-                        <Stack>
+                        <Stack spacing={.1}>
                             <Typography
                                 variant='h6'
                                 component='span'
                                 sx={styles.episodeInformation}
                             >
-                                {episode.title} 
+                                {episode.title}{episode.exclusive && <ExclusiveChip />}
                             </Typography>
                             <Typography sx={styles.publishedDate} data-testid='time-since-test-id'>
                                 {formatDistance(published_date, current_date_time)} ago

@@ -31,5 +31,6 @@ class EpisodeDocument(Document):
             'transcript',
             'published_date',
             'private_video',
-            'error_occurred'
+            'error_occurred',
+            'exclusive',
         ]

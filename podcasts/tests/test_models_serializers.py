@@ -50,6 +50,16 @@ class TestModels(APITestCase):
             'ERROR Tom Scott - The giant archive hidden under the British countryside'
         )
 
+    def episode_str_exclusive(self):
+        episode = Episode.objects.get(video_id='ce-QHeZnVu4')
+        episode.error_occurred = False
+        episode.exclusive = True
+        episode.save()
+        self.assertEqual(
+            str(episode),
+            'Exclusive: Tom Scott - The giant archive hidden under the British countryside'
+        )
+
     def episode_release_day(self):
         podcast = Podcast.objects.get(name="Tom Scott")
         EpisodeReleaseDay.objects.create(
@@ -67,6 +77,7 @@ class TestModels(APITestCase):
         self.podcast_str()
         self.episode_str()
         self.episode_str_with_error()
+        self.episode_str_exclusive()
         self.episode_release_day()
 
 

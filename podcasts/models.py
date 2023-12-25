@@ -25,10 +25,13 @@ class Episode(models.Model):
     error_occurred = models.BooleanField(default=False)
     published_date = models.DateTimeField()
     private_video = models.BooleanField(default=False)
+    exclusive = models.BooleanField(default=False)
 
     def __str__(self):
         if self.error_occurred:
             return f'ERROR {self.channel.name} - {self.title}'
+        elif self.exclusive:
+            return f'Exclusive: {self.channel.name} - {self.title}'
         return f'{self.channel.name} - {self.title}'
 
     def save(self, *args, **kwargs):

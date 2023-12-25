@@ -36,5 +36,6 @@ class EpisodeSerializer(serializers.ModelSerializer):
             'published_date',
             'error_occurred',
             'private_video',
+            'exclusive',
             'highlight',
         ]
