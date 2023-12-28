@@ -24,7 +24,6 @@ describe('EpisodePanel', () => {
         'published_date': '2023-08-25T20:55:33Z',
         "title": "Suella's speeding, Japan in focus, and what's the point of the G7?",
         "transcript": "This is a test transcript of a podcast from the Rest is Politics.",
-        "times_clicked": 11,
         "highlight": [
             'test1',
             'test2',
@@ -46,13 +45,8 @@ describe('EpisodePanel', () => {
         'published_date': '2023-08-25T20:55:33Z',
         "title": "Suella's speeding, Japan in focus, and what's the point of the G7?",
         "transcript": "This is a test transcript of a podcast from the Rest is Politics.",
-        "times_clicked": 11,
         "highlight": null
     };
-
-    beforeEach(() => {
-        postEpisodeIncrementService.mockReset()
-    })
 
     it('renders the episode link', () => {
         render(<EpisodePanel episode={episode} />);
@@ -62,28 +56,10 @@ describe('EpisodePanel', () => {
         expect(episodeName).toBeInTheDocument();
     });
 
-    it('has a button link to episode on YouTube', () => {
-        render(<EpisodePanel episode={episode} />);
-        const youtubeURL = `https://www.youtube.com/watch?v=${episode.video_id}`
-        const episodeListenButton = screen.getByLabelText(
-            /listen to podcast/i);
-        expect(episodeListenButton).toHaveAttribute('href', youtubeURL);
-    });
-
     it('shows the podcast channel in the panel', () => {
         render(<EpisodePanel episode={episode} />);
         const channelName = screen.getByText(/The Rest Is Politics/i);
         expect(channelName).toBeInTheDocument();
-    });
-
-    it("calls postEpisodeIncrementService with correct episode ID on time click", async () => {
-        render(<EpisodePanel episode={episode} />);
-    
-        const timeButton = screen.getByLabelText("listen to podcast");
-        fireEvent.click(timeButton);
-    
-        expect(postEpisodeIncrementService).toHaveBeenCalledTimes(1);
-        expect(postEpisodeIncrementService).toHaveBeenCalledWith(episode.id);
     });
 
     it("checks that the correct length of time is displayed", () => {

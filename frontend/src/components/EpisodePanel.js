@@ -5,7 +5,6 @@ import {
     CardContent,
     Typography,
     Stack,
-    Paper,
     Button,
     Grid,
     Box,
@@ -15,7 +14,6 @@ import {
     Link,
 } from '@mui/material'
 import { formatDistance } from 'date-fns';
-import HeadphonesIcon from '@mui/icons-material/Headphones';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -41,13 +39,6 @@ const styles = {
     button: {
         width: '100%',
         height: '100%',
-    },
-    cardContent: {
-        width: {
-            xs: '80%',
-            sm: '85%',
-            md: '90%',
-        }
     },
     logo: {
         height: 'auto',
@@ -114,16 +105,11 @@ const styles = {
 }
 
 export default function EpisodePanel({ episode }) {
-    const youtubeURL = `https://www.youtube.com/watch?v=${episode.video_id}`
     const published_date = new Date(episode.published_date)
     const current_date_time = new Date()
     const [highlightIndex, setHighlightIndex] = useState(0)
     const highlightIndexLength = episode.highlight ? episode.highlight.length : 0
     const [isExpanded, setIsExpanded] = useState(false)
-
-    const handleTimeClickedIncrement = () => {
-        postEpisodeIncrementService(episode.id)
-    }
 
     const handleHighlightSelection = (direction) => () => {
         if (direction === 'next' && highlightIndex < episode.highlight.length - 1) {
@@ -223,18 +209,6 @@ export default function EpisodePanel({ episode }) {
                     </Collapse>
                 )}
             </CardContent>
-            <Paper elevation={3} sx={styles.buttonWrapper}>
-                <Button
-                    sx={styles.button}
-                    onClick={handleTimeClickedIncrement}
-                    href={youtubeURL}
-                    target='_blank'
-                    aria-label='listen to podcast'
-                    rel="noopener noreferrer"
-                >
-                    <HeadphonesIcon />
-                </Button>
-            </Paper>
         </Card>
     )
 }

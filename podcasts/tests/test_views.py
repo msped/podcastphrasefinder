@@ -32,7 +32,6 @@ class TestPodcastViews(APITestCase):
                 'video_id': 'of-Oa7Ps8Rs',
                 'title': 'Michelle de Swarte | Have A Word Podcast #223',
                 'channel_id': have_a_word_podcast.id,
-                'times_clicked': 100,
                 'transcript': 'This isnt it mate',
                 'published_date': '2023-08-25T20:55:33Z'
             },
@@ -40,7 +39,6 @@ class TestPodcastViews(APITestCase):
                 'video_id': 'gD1mHPbaE_E',
                 'title': 'Mike Rice | Have A Word Podcast #224',
                 'channel_id': have_a_word_podcast.id,
-                'times_clicked': 0,
                 'transcript': 'is here!',
                 'published_date': '2023-08-25T20:55:33Z'
             },
@@ -49,7 +47,6 @@ class TestPodcastViews(APITestCase):
                 'title': 'Elliot Steel | Have A Word Podcast #222',
                 'channel_id': have_a_word_podcast.id,
                 'transcript': 'Here we go, part 4 of 4',
-                'times_clicked': 23,
                 'published_date': '2023-08-25T20:55:33Z'
             },
             {
@@ -57,7 +54,6 @@ class TestPodcastViews(APITestCase):
                 'title': 'The Mild High Club x Seann Walsh - 124',
                 'channel_id': mild_high_club.id,
                 'transcript': 'A very big welcome to Seann Walsh! How you doing mate?',
-                'times_clicked': 2,
                 'published_date': '2023-08-25T20:55:33Z'
             },
             {
@@ -65,7 +61,6 @@ class TestPodcastViews(APITestCase):
                 'title': 'The Mild High Club x Rob Mulholland - 123',
                 'channel_id': mild_high_club.id,
                 'transcript': 'is there any reason for it? Freddie doesnt like music, its weird',
-                'times_clicked': 13,
                 'published_date': '2023-08-25T20:55:33Z'
             }
         ]
@@ -73,13 +68,6 @@ class TestPodcastViews(APITestCase):
 
     def tearDown(self):
         self.mocked_get_transcript.stop()
-
-    def test_increment_podcast_click_by_one(self):
-        episode = Episode.objects.get(video_id='of-Oa7Ps8Rs')
-        response = self.client.post(
-            f'/api/podcasts/episode/increment/{episode.id}',
-        )
-        self.assertEqual(response.status_code, 200)
 
     def test_search_episode_phrase_returns_200(self):
         response = self.client.get(
@@ -141,16 +129,6 @@ class TestPodcastViews(APITestCase):
             }
         )
         self.assertEqual(response.status_code, 200)
-
-    def test_get_most_popular(self):
-        response = self.client.get(
-            '/api/podcasts/episode/popular'
-        )
-        self.assertEqual(response.status_code, 200)
-        episode = json.loads(response.content)
-        self.assertEqual(episode['video_id'], 'of-Oa7Ps8Rs')
-        self.assertEqual(
-            episode['title'], 'Michelle de Swarte | Have A Word Podcast #223')
 
     def test_get_podcast_information_200(self):
         channel = Podcast.objects.get(channel_id='UChl6sFeO_O0drTc1CG1ymFw')

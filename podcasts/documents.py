@@ -26,7 +26,6 @@ class EpisodeDocument(Document):
         model = Episode
         fields = [
             'id',
-            'video_id',
             'title',
             'transcript',
             'published_date',

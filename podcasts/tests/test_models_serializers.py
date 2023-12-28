@@ -100,17 +100,12 @@ class EpisodeSerializerTestCase(APITestCase):
             video_id='of-Oa7Ps8Rs',
             title='Michelle de Swarte | Have A Word Podcast #223',
             channel_id=podcast.id,
-            times_clicked=100,
             published_date='2023-08-25T20:55:33Z'
         )
         self.serializer = EpisodeSerializer(instance=self.episode)
 
     def tearDown(self):
         self.mocked_get_transcript.stop()
-
-    def test_video_id_field_content(self):
-        data = self.serializer.data
-        self.assertEqual(data['video_id'], self.episode.video_id)
 
     def test_title_field_content(self):
         data = self.serializer.data

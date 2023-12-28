@@ -29,7 +29,6 @@ class EpisodeSerializer(serializers.ModelSerializer):
         model = Episode
         fields = [
             'id',
-            'video_id',
             'channel',
             'title',
             'transcript',
