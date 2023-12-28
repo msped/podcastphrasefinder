@@ -1,6 +1,5 @@
 from django.contrib.postgres.search import SearchVector, SearchRank
 from django.shortcuts import get_object_or_404
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
@@ -9,7 +8,7 @@ from rest_framework import status
 from elasticsearch_dsl import Q
 
 from .documents import EpisodeDocument
-from .models import Episode, Podcast
+from .models import Podcast
 from .serializers import EpisodeSerializer, PodcastSerializer
 
 
@@ -72,25 +71,6 @@ class SearchPodcastsView(ListAPIView):
                 rank=SearchRank(vector, user_query)
             ).order_by('-rank')
         return Podcast.objects.all()[:5]
-
-
-class IncrementEpisodeCiick(APIView):
-    @csrf_exempt
-    def post(self, request, episode_id):
-        episode = get_object_or_404(Episode, id=episode_id)
-        episode.times_clicked += 1
-        episode.save()
-        return Response(status=status.HTTP_200_OK)
-
-
-class GetMostClickedPodcast(APIView):
-    def get(self, request):
-        episode = Episode.objects.filter(
-            private_video=False,
-            error_occurred=False
-        ).order_by('-times_clicked').first()
-        serializer = EpisodeSerializer(episode, many=False)
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class GetPodcastInformation(APIView):

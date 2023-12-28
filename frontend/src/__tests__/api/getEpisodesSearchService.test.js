@@ -16,7 +16,6 @@ describe('getEpisodesSearchService', () => {
             },
             "title": "Suella's speeding, Japan in focus, and what's the point of the G7?",
             "transcript": "This is a test transcript of a podcast from the Rest is Politics.",
-            "times_clicked": 11
         }
 
         apiClient.get.mockResolvedValueOnce({ data: mockData });
@@ -40,7 +39,6 @@ describe('getEpisodesSearchService', () => {
             },
             "title": "Suella's speeding, Japan in focus, and what's the point of the G7?",
             "transcript": "This is a test transcript of a podcast from the Rest is Politics.",
-            "times_clicked": 11
         }
 
         apiClient.get.mockResolvedValueOnce({ data: mockData });

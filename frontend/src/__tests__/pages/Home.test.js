@@ -3,26 +3,8 @@ import "@testing-library/jest-dom"
 import { screen, render, waitFor, fireEvent } from "@testing-library/react"
 import mockRouter from 'next-router-mock';
 import Home from '@/pages/index';
-import { toBeInTheDocument } from '@testing-library/jest-dom/dist/matchers';
 
 jest.mock('next/router', () => require('next-router-mock'))
-
-jest.mock('../../hooks/useGetMostPopularHook', () => ({
-    __esModule: true,
-    default: jest.fn(() => ({
-        episode: {
-            id: 1,
-            title: 'Episode 1',
-            video_id: 'AZLU_4G8CY0',
-            published_date: '2023-08-25T20:55:33Z',
-            channel: {
-                name: 'Dead Men Talking',
-                channel_id: 'UCuV8fchmNqEljq3wcTCjxeA'
-            },
-        },
-        isLoading: false,
-    })),
-}));
 
 describe('Home component', () => {
     it('renders "PodcastPhraseFinder" header text', () => {
@@ -65,12 +47,4 @@ describe('Home component', () => {
             })
         })
     })
-
-    it('renders the podcasts youtube page in the most popular card', () => {
-        render(<Home />)
-        expect(
-            screen.getByRole('link', { name: /Dead Men Talking/i })
-        ).toBeInTheDocument();
-    })
-    
 });

@@ -11,8 +11,6 @@ import {
 } from '@mui/material';
 import Link from '@/components/Link';
 
-import GetMostPopular from '@/components/GetMostPopular';
-
 const styles = {
   headerText: {
     marginBottom: '1%',
@@ -105,9 +103,7 @@ export default function Home() {
             </Card>
           </Grid>
           <Grid item xs={12}>
-            <Box my={3}>
-              <GetMostPopular />
-            </Box>
+            {/* Add panel for signing up and managing content */}
           </Grid>
         </Grid>
       </Container>

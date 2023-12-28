@@ -21,7 +21,6 @@ class Episode(models.Model):
     channel = models.ForeignKey(Podcast, on_delete=models.CASCADE)
     title = models.CharField(max_length=125)
     transcript = models.TextField(blank=True, null=True)
-    times_clicked = models.IntegerField(default=0)
     error_occurred = models.BooleanField(default=False)
     published_date = models.DateTimeField()
     private_video = models.BooleanField(default=False)
