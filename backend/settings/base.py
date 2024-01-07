@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'rest_framework',
     'corsheaders',
+    'authentication.apps.AuthenticationConfig',
     'podcasts.apps.PodcastsConfig',
     'django_celery_results',
     'django_celery_beat',
