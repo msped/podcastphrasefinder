@@ -7,6 +7,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import logo from '../../public/static/images/podcastphrasefinder-no-bg.png'
+import SignIn from '@/components/SignIn';
 
 const styles = {
     logoLink: {
@@ -55,6 +56,7 @@ export default function Header() {
                     <Link href='/podcasts' style={{...styles.headerLink}}>
                         Podcasts
                     </Link>
+                    <SignIn />
                 </Toolbar>
             </AppBar>
         </Box>
