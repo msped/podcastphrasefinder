@@ -35,15 +35,23 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.postgres',
     'django.contrib.sites',
+
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'corsheaders',
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+
     'authentication.apps.AuthenticationConfig',
     'podcasts.apps.PodcastsConfig',
+
     'django_celery_results',
     'django_celery_beat',
     'django_elasticsearch_dsl',
+
     "debug_toolbar",
 ]
 
@@ -60,6 +68,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 INTERNAL_IPS = [
@@ -171,3 +180,6 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
     )
 }
+
+ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_EMAIL_VERIFICATION = 'none'
