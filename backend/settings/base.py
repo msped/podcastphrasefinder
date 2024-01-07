@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    "dj_rest_auth",
+    "dj_rest_auth.registration",
 
     'authentication.apps.AuthenticationConfig',
     'podcasts.apps.PodcastsConfig',
@@ -179,6 +181,11 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
     )
+}
+
+REST_AUTH = {
+    "USE_JWT": True,
+    "JWT_AUTH_HTTPONLY": False,
 }
 
 ACCOUNT_EMAIL_REQUIRED = False
