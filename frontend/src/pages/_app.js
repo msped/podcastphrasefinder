@@ -7,27 +7,34 @@ import theme from '@/theme';
 import createEmotionCache from '@/createEmotionCache';
 import Header from '@/components/Header'
 import Footer from '@/components/Footer';
+import { SessionProvider } from "next-auth/react";
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
 export default function MyApp(props) {
-  const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
+  const {
+    Component,
+    emotionCache=clientSideEmotionCache,
+    pageProps: { session, ...pageProps}
+  } = props;
 
   return (
-    <CacheProvider value={emotionCache}>
-      <Head>
-        <meta name="viewport" content="initial-scale=1, width=device-width" />
-      </Head>
-      <ThemeProvider theme={theme}>
-        {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-        <CssBaseline />
-        <Header />
-        <main style={{ minHeight: '80vh' }}>
-          <Component {...pageProps} />
-        </main>
-        <Footer />
-      </ThemeProvider>
-    </CacheProvider>
+    <SessionProvider session={session}>
+      <CacheProvider value={emotionCache}>
+        <Head>
+          <meta name="viewport" content="initial-scale=1, width=device-width" />
+        </Head>
+        <ThemeProvider theme={theme}>
+          {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+          <CssBaseline />
+          <Header />
+          <main style={{ minHeight: '80vh' }}>
+            <Component {...pageProps} />
+          </main>
+          <Footer />
+        </ThemeProvider>
+      </CacheProvider>
+    </SessionProvider>
   );
 }
