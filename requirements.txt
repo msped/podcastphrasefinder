@@ -25,6 +25,7 @@ django-elasticsearch-dsl==7.3
 django-nine==0.2.7
 django-timezone-field==6.0
 djangorestframework==3.14.0
+djangorestframework-simplejwt==5.3.1
 dparse==0.6.3
 elasticsearch==7.17.9
 elasticsearch-dsl==7.4.1
@@ -44,6 +45,7 @@ platformdirs==3.5.0
 prompt-toolkit==3.0.39
 psycopg2==2.9.6
 Pygments==2.16.1
+PyJWT==2.8.0
 pylint==2.11.1
 pylint-django==2.5.3
 pylint-plugin-utils==0.7
