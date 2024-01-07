@@ -34,6 +34,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.postgres',
     'rest_framework',
+    'rest_framework.authtoken',
+    'rest_framework_simplejwt',
     'corsheaders',
     'authentication.apps.AuthenticationConfig',
     'podcasts.apps.PodcastsConfig',
