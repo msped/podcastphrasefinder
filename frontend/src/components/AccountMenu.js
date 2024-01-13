@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
@@ -91,20 +91,20 @@ export default function AccountMenu() {
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-                <MenuItem component={Link} href='/podcast/add'>
+                <MenuItem href='/podcast/add'>
                     <ListItemIcon>
                         <AddIcon fontSize="small" />
                     </ListItemIcon>
                     Add new podcast
                 </MenuItem>
-                <MenuItem component={Link}  href='/dashboard'>
+                <MenuItem href='/dashboard'>
                     <ListItemIcon>
                         <DashboardIcon fontSize="small" />
                     </ListItemIcon>
                     Creator dashboard
                 </MenuItem>
                 <Divider />
-                <MenuItem component={Link}  href='/account'>
+                <MenuItem href='/settings'>
                     <ListItemIcon>
                         <Settings fontSize="small" />
                     </ListItemIcon>
