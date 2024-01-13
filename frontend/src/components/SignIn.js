@@ -16,7 +16,7 @@ export default function SignIn() {
     }
 
     return (
-        <Button onClick={() => signIn('google')}>
+        <Button onClick={() => signIn('google', { callbackUrl: '/dashboard' })}>
             Sign in
         </Button>
     )

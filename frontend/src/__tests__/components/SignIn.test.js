@@ -30,7 +30,7 @@ describe('<SignIn />', () => {
 
         const signInSpy = jest.spyOn(nextAuthReact, 'signIn');
         fireEvent.click(signInButton);
-        expect(signInSpy).toHaveBeenCalledWith('google');
+        expect(signInSpy).toHaveBeenCalledWith('google', {"callbackUrl": "/dashboard"});
 
         signInSpy.mockRestore();
     });
