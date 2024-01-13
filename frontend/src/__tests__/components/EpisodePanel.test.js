@@ -4,7 +4,6 @@ import "@testing-library/jest-dom";
 import { formatDistance } from 'date-fns';
 import * as nextRouter from 'next/router'
 import EpisodePanel from '@/components/EpisodePanel';
-import postEpisodeIncrementService from '@/api/postEpisodeIncrementService';
 
 nextRouter.useRouter = jest.fn()
 nextRouter.useRouter.mockImplementation(() => ({ route: '/' }))

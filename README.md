@@ -18,7 +18,7 @@ Podcast Phrase Finder is a Django Rest Framework and NextJS application created 
 
 ### Potentional Features
 
-- Display the  estimated times the quote occurs.
+- Display the estimated times the quote occurs.
 
 - Creator account to upload own transcripts, request transcripts to send to 3rd party service for exclusive episodes.
 
@@ -28,6 +28,10 @@ Podcast Phrase Finder is a Django Rest Framework and NextJS application created 
 - [Youtube Transcript API](https://pypi.org/project/youtube-transcript-api/)
 - [Celery](https://docs.celeryq.dev/en/stable/index.html)
 - [NextJS](https://nextjs.org/)
+- [NextAuth](https://next-auth.js.org/)
+- [Django Allauth](https://docs.allauth.org/en/latest/)
+- [Django Rest Auth](https://django-rest-auth.readthedocs.io/en/latest/)
+- [Simple JWT](https://django-rest-framework-simplejwt.readthedocs.io/en/latest/)
 - [Material UI](https://mui.com/)
 - [PostgreSQL](https://www.postgresql.org/)
 - [YouTube API](https://developers.google.com/youtube/v3)
