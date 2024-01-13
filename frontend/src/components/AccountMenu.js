@@ -90,12 +90,6 @@ export default function AccountMenu() {
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-                <MenuItem href='/podcast/add'>
-                    <ListItemIcon>
-                        <AddIcon fontSize="small" />
-                    </ListItemIcon>
-                    Add new podcast
-                </MenuItem>
                 <MenuItem href='/dashboard'>
                     <ListItemIcon>
                         <DashboardIcon fontSize="small" />
