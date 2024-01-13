@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom'
+import '@testing-library/jest-dom';
+import userEvent from '@testing-library/user-event'
 import { useSession } from 'next-auth/react';
 import Header from '@/components/Header';
 
@@ -35,7 +36,7 @@ describe('Header', () => {
         expect(signInBtn).toBeInTheDocument();
     });
 
-    test('renders a sign out button, when there is a session', () => {
+    test('renders a sign out button, when there is a session', async () => {
         useSession.mockReturnValue({
             data: {
                 expires: new Date(Date.now() + 2 * 86400).toISOString(),
@@ -44,10 +45,10 @@ describe('Header', () => {
             status: 'authenticated'
         })
         render(<Header />);
-        const accountMenuBtn = screen.getByLabelText('Account settings');
-        fireEvent.click(accountMenuBtn);
+        const accountMenuBtn = screen.getByLabelText(/account settings/i);
+        userEvent.click(accountMenuBtn);
 
-        waitFor(() => {
+        await waitFor(() => {
             expect(screen.getByRole('menu')).toBeInTheDocument();
         })
 
