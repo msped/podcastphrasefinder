@@ -1,9 +1,12 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 from .utils import get_transcript
 
 
 class Podcast(models.Model):
+    owner = models.ForeignKey(
+        User, on_delete=models.CASCADE, null=True, blank=True)  # Blank is admin ownership
     name = models.CharField(max_length=50)
     channel_id = models.CharField(max_length=24)
     video_filter = models.CharField(max_length=10, blank=True, null=True)
