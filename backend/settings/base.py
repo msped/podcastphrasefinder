@@ -50,6 +50,7 @@ INSTALLED_APPS = [
 
     'authentication.apps.AuthenticationConfig',
     'podcasts.apps.PodcastsConfig',
+    'creatoradmin.apps.CreatoradminConfig',
 
     'django_celery_results',
     'django_celery_beat',
