@@ -21,5 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include('authentication.urls')),
     path('api/', include('podcasts.urls')),
+    path('api/creator/', include('creatoradmin.urls')),
     # path("__debug__/", include("debug_toolbar.urls")),
 ]
