@@ -4,6 +4,7 @@ import {
     Tab,
     Container,
     Box,
+    Typography,
 } from '@mui/material';
 
 import AddEpisodeFromYouTube from '@/forms/AddEpisodeFromYouTube';
@@ -36,7 +37,10 @@ export default function add() {
     }
 
     return (
-        <Container maxWidth="md">
+        <Container maxWidth="md" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Typography variant='h3' component='h1' fontWeight={500} align='center' sx={{ my: 2.5 }}>
+                Add an Episode
+            </Typography>
             <Box sx={{ width: "100%" }}>
                 <Tabs value={tabValue} onChange={HandleTab} variant="fullWidth">
                     <Tab label="YouTube"/>
