@@ -6,7 +6,6 @@ import '@testing-library/jest-dom';
 
 jest.mock('../../api/getPodcastInformationService');
 
-// Test component that uses the hook
 function TestComponent({ channelId }) {
     const { podcast, isLoading } = useGetPodcastInformationHook(channelId);
     
@@ -23,7 +22,6 @@ function TestComponent({ channelId }) {
 
 describe('useGetPodcastInformationHook', () => {
     beforeEach(() => {
-        // Clear all previous mocks before each test
         jest.clearAllMocks();
     });
 

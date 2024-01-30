@@ -69,21 +69,17 @@ describe('useGetPodcastsSearchHook', () => {
         waitFor(() => expect(result.current.results).toEqual([]));
         waitFor(() => expect(result.current.isLoading).toBe(true));
 
-        // Wait for the first API call to finish
         rerender();
 
         getPodcastsSearchService.mockResolvedValueOnce([]);
 
-        // Change the query and trigger a new API call
         act(() => {
             query = 'new query'
         });
 
-        // Expect the results to still be the same, since the new API call has been debounced
         waitFor(() => expect(result.current.results).toEqual(mockData));
         waitFor(() => expect(result.current.isLoading).toBe(true));
 
-        // Wait for the second API call to finish
         rerender();
 
         waitFor(() => expect(result.current.results).toEqual([]));
