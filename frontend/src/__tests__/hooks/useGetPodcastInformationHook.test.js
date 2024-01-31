@@ -29,7 +29,7 @@ describe('useGetPodcastInformationHook', () => {
         getPodcastInformationService.mockResolvedValue([]);
         const { getByTestId } = render(<TestComponent channelId="channelId" />);
         
-        expect(getByTestId('loading')).toHaveTextContent('Loading...');
+        waitFor(() => expect(getByTestId('loading')).toHaveTextContent('Loading...'));
     });
 
     it('should set podcast data after successful fetch', async () => {
@@ -42,6 +42,6 @@ describe('useGetPodcastInformationHook', () => {
 
         await waitFor(() => expect(queryByTestId('loading')).toBeNull());
 
-        expect(getByTestId('podcast').textContent).toBe(JSON.stringify(mockPodcastData));
+        waitFor(() => expect(getByTestId('podcast').textContent).toBe(JSON.stringify(mockPodcastData)));
     });
 });
