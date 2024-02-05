@@ -32,7 +32,8 @@ class SearchEpisodeView(APIView):
                     "bool",
                     should=[
                         Q("match", private_video=False),
-                        Q("match", error_occurred=False)
+                        Q("match", error_occurred=False),
+                        Q("match", is_draft=False)
                     ],
                     minimum_should_match=2
                 )
