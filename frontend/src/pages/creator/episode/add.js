@@ -7,7 +7,7 @@ import {
     Typography,
 } from '@mui/material';
 
-import AddEpisodeFromYouTube from '@/forms/AddEpisodeFromYouTube';
+import AddEpisodeFromYouTubeForm from '@/forms/AddEpisodeFromYouTubeForm';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -50,7 +50,7 @@ export default function add() {
                 </Tabs>
             </Box>
             <TabPanel value={tabValue} index={0}>
-                <AddEpisodeFromYouTube />
+                <AddEpisodeFromYouTubeForm />
             </TabPanel>
         </Container>
     )
