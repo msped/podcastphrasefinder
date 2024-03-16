@@ -141,6 +141,8 @@ CELERY_ACCEPT_CONTENT = ['json']
 
 CELERY_TASK_SERIALIZER = 'json'
 
+CELERY_RESULT_EXTENDED = True
+
 CELERY_BEAT_SCHEDULE = {
     "check_for_private_videos": {
         "task": "podcasts.tasks.check_for_private_videos",

@@ -158,3 +158,5 @@ def get_new_episodes():
 
     if len(video_data) > 0:
         Episode.objects.bulk_create([Episode(**data) for data in video_data])
+        return video_data
+    return 'No episodes found.'
