@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import Head from 'next/head';
 import {
     Tabs,
     Tab,
@@ -8,6 +9,7 @@ import {
 } from '@mui/material';
 
 import AddEpisodeFromYouTubeForm from '@/forms/AddEpisodeFromYouTubeForm';
+
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -38,6 +40,9 @@ export default function add() {
 
     return (
         <Container maxWidth="md" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Head>
+                <title>Add a new episode | PodcastPhraseFinder</title>
+            </Head>
             <Typography variant='h3' component='h1' fontWeight={500} align='center' sx={{ my: 2.5 }}>
                 Add an Episode
             </Typography>
