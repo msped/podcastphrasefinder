@@ -8,8 +8,6 @@ import EpisodePanel from '@/components/EpisodePanel';
 nextRouter.useRouter = jest.fn()
 nextRouter.useRouter.mockImplementation(() => ({ route: '/' }))
 
-jest.mock("../../api/postEpisodeIncrementService");
-
 describe('EpisodePanel', () => {
     const episode = {
         "id": 1,

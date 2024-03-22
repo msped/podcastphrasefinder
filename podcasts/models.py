@@ -28,6 +28,7 @@ class Episode(models.Model):
     published_date = models.DateTimeField()
     private_video = models.BooleanField(default=False)
     exclusive = models.BooleanField(default=False)
+    is_draft = models.BooleanField(default=False)
 
     def __str__(self):
         if self.error_occurred:

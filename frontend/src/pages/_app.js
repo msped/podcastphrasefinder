@@ -8,6 +8,9 @@ import createEmotionCache from '@/createEmotionCache';
 import Header from '@/components/Header'
 import Footer from '@/components/Footer';
 import { SessionProvider } from "next-auth/react";
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import { Toaster } from 'react-hot-toast';
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -21,20 +24,32 @@ export default function MyApp(props) {
 
   return (
     <SessionProvider session={session}>
-      <CacheProvider value={emotionCache}>
-        <Head>
-          <meta name="viewport" content="initial-scale=1, width=device-width" />
-        </Head>
-        <ThemeProvider theme={theme}>
-          {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-          <CssBaseline />
-          <Header />
-          <main style={{ minHeight: '80vh' }}>
-            <Component {...pageProps} />
-          </main>
-          <Footer />
-        </ThemeProvider>
-      </CacheProvider>
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <CacheProvider value={emotionCache}>
+          <Head>
+            <meta name="viewport" content="initial-scale=1, width=device-width" />
+          </Head>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Toaster
+              position="bottom-left"
+              reverseOrder={true}
+              toastOptions={{
+                style: {
+                  borderRadius: '10px',
+                  background: '#333',
+                  color: '#fff'
+                }
+              }}
+            />
+            <Header />
+            <main style={{ minHeight: '80vh' }}>
+              <Component {...pageProps} />
+            </main>
+            <Footer />
+          </ThemeProvider>
+        </CacheProvider>
+      </LocalizationProvider>
     </SessionProvider>
   );
 }

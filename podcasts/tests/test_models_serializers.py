@@ -1,7 +1,11 @@
+from datetime import datetime
 from unittest import mock
+from zoneinfo import ZoneInfo
 from rest_framework.test import APITestCase
 from ..models import Podcast, Episode, EpisodeReleaseDay
 from ..serializers import PodcastSerializer, EpisodeSerializer
+
+from creatoradmin.utils import convert_date_from_picker
 
 
 class TestModels(APITestCase):
@@ -95,11 +99,11 @@ class EpisodeSerializerTestCase(APITestCase):
             channel_id='UChl6sFeO_O0drTc1CG1ymFw',
             avatar='https//www.example.com'
         )
-        podcast = Podcast.objects.get(name='Have a Word Podcast')
+        self.podcast = Podcast.objects.get(name='Have a Word Podcast')
         self.episode = Episode.objects.create(
             video_id='of-Oa7Ps8Rs',
             title='Michelle de Swarte | Have A Word Podcast #223',
-            channel_id=podcast.id,
+            channel_id=self.podcast.id,
             published_date='2023-08-25T20:55:33Z'
         )
         self.serializer = EpisodeSerializer(instance=self.episode)
@@ -118,6 +122,10 @@ class EpisodeSerializerTestCase(APITestCase):
         data = self.serializer.data
         self.assertEqual('2023-08-25T20:55:33Z', data['published_date'])
 
+    def test_is_draft(self):
+        data = self.serializer.data
+        self.assertFalse(data['is_draft'])
+
     def test_serialized_channel_data(self):
         data = self.serializer.data
         channel_data = data['channel']
@@ -126,6 +134,54 @@ class EpisodeSerializerTestCase(APITestCase):
         self.assertEqual(channel_data['avatar'], self.episode.channel.avatar)
         self.assertEqual(channel_data['channel_id'],
                          self.episode.channel.channel_id)
+
+    def test_create_episode_serializer(self):
+        data = {
+            'channel_id': Podcast.objects.values_list('id', flat=True).first(),
+            'title': 'Test Title',
+            'transcript': 'test transcript',
+            'exclusive': True,
+            'video_id': 'test1234',
+            'error_occurred': False,
+            'published_date': convert_date_from_picker('02/25/2024'),
+            'is_draft': False
+        }
+
+        serializer = EpisodeSerializer(data=data)
+        self.assertTrue(serializer.is_valid())
+        episode = serializer.save()
+
+        self.assertEqual(episode.title, 'Test Title')
+        self.assertEqual(episode.transcript, 'test transcript')
+        self.assertTrue(episode.exclusive)
+        self.assertEqual(episode.video_id, 'test1234')
+        self.assertFalse(episode.error_occurred)
+        self.assertEqual(episode.published_date, datetime(
+            2024, 2, 25, 0, 0, 1, tzinfo=ZoneInfo(key='UTC'))),
+        self.assertFalse(episode.is_draft)
+
+    @mock.patch('creatoradmin.utils.get_video_id')
+    def test_update_episode_serializer(self, mock_get_video_id):
+        episode = Episode.objects.create(
+            channel=self.podcast,
+            title='Test Title 2',
+            video_id='test12345',
+            transcript='test transcript 2',
+            published_date=datetime(
+                2024, 2, 24, 0, 0, 1, tzinfo=ZoneInfo(key='UTC'))
+        )
+        data = {
+            'title': 'Test Title Change',
+            'video_id': 'https://www.youtube.com/watch?v=test12346'
+        }
+        serializer = EpisodeSerializer(episode, data=data, partial=True)
+
+        self.assertTrue(serializer.is_valid())
+        updated_episode = serializer.save()
+        mock_get_video_id.return_value = 'test12346'
+
+        self.assertEqual(updated_episode.title, 'Test Title Change')
+        self.assertEqual(updated_episode.video_id, 'test12346')
 
 
 class PodcastSerializerTestCase(APITestCase):
