@@ -29,9 +29,11 @@ export default function MyApp(props) {
       <ThemeProvider theme={theme}>
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
-        <main style={{ minHeight: '80vh' }} className={roboto.className}>
+        <main className={roboto.className}>
           <Header />
-            <Component {...pageProps} />
+            <div style={{ minHeight: '80vh' }}>
+              <Component {...pageProps} />
+            </div>
           <Footer />
         </main>
       </ThemeProvider>
