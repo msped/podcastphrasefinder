@@ -67,7 +67,6 @@ export default function PodcastInformation({ channelId }) {
                                     <Typography 
                                         variant='h3'
                                         component='h1'
-                                        fontFamily='Roboto, cursive'
                                         fontWeight='500'
                                         sx={{
                                             textAlign: {
