@@ -18,7 +18,7 @@ class SearchEpisodeView(APIView):
 
     def get(self, request):
         user_query = self.request.query_params.get('q', None)
-        channel_id = self.request.query_params.get('c', None)
+        slug = self.request.query_params.get('s', None)
         if user_query:
             try:
                 es_query = Q(
@@ -37,9 +37,9 @@ class SearchEpisodeView(APIView):
                     minimum_should_match=2
                 )
 
-                if channel_id:
+                if slug:
                     es_query &= Q(
-                        "match", channel__channel_id=channel_id
+                        "match", channel__slug=slug
                     )
 
                 search = EpisodeDocument.search().query(
@@ -74,7 +74,7 @@ class SearchPodcastsView(ListAPIView):
 
 
 class GetPodcastInformation(APIView):
-    def get(self, request, channel_id):
-        channel = get_object_or_404(Podcast, channel_id=channel_id)
+    def get(self, request, slug):
+        channel = get_object_or_404(Podcast, slug=slug)
         serializer = PodcastSerializer(channel, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
