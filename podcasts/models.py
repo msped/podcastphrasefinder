@@ -6,7 +6,7 @@ from .utils import get_transcript
 
 class Podcast(models.Model):
     name = models.CharField(max_length=50)
-    slug = models.SlugField(blank=True, null=True)
+    slug = models.SlugField(unique=True, blank=True, null=True)
     channel_id = models.CharField(max_length=24)
     video_filter = models.CharField(max_length=10, blank=True, null=True)
     avatar = models.URLField(blank=True, null=True)
