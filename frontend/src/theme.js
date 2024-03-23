@@ -1,5 +1,11 @@
 import { createTheme, responsiveFontSizes } from '@mui/material'
+import { Roboto } from 'next/font/google';
 
+const roboto = Roboto({
+    subsets: ['latin'],
+    display: 'swap',
+    weight: ['400', '500', '700', '900']
+})
 
 const theme = createTheme({
     palette: {
@@ -11,6 +17,9 @@ const theme = createTheme({
             main: '#f50057',
         },
         type: 'dark',
+    },
+    typography: {
+        fontFamily: roboto.style.fontFamily
     },
     overrides: {
         MuiAppBar: {
