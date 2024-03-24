@@ -10,6 +10,7 @@ class EpisodeDocument(Document):
     channel = fields.ObjectField(
         properties={
             "name": fields.TextField(),
+            "slug": fields.TextField(),
             "channel_id": fields.TextField(),
             "avatar": fields.TextField()
         }

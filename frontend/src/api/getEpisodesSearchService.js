@@ -1,11 +1,11 @@
 import apiClient from "./apiClient";
 
-const getEpisodesSearchService = (query, channelId) => {
+const getEpisodesSearchService = (query, slug) => {
     let params = {
         q: query,
     }
-    if (channelId) {
-        params['c'] = channelId
+    if (slug) {
+        params['s'] = slug
     }
     return apiClient
         .get('podcasts/episode/search', {

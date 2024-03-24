@@ -12,7 +12,7 @@ export default function PodcastPanel({ podcast }) {
 
     return (
         <Card>
-            <CardActionArea href={`/podcasts/${podcast.channel_id}`}>
+            <CardActionArea href={`/podcasts/${podcast.slug}`}>
                 <CardContent>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>

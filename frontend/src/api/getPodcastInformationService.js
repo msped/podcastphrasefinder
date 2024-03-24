@@ -1,8 +1,8 @@
 import apiClient from "./apiClient";
 
-const getPodcastInformationService = (channelId) => {
+const getPodcastInformationService = (slug) => {
     return apiClient
-        .get(`podcasts/${channelId}`)
+        .get(`podcasts/${slug}`)
         .then((res) => res.data)
 }
 
