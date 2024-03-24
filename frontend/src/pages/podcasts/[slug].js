@@ -14,7 +14,7 @@ import EpisodesSearchResults from '@/components/EpisodesSearchResults';
 
 export default function Podcasts() {
     const router = useRouter();
-    const [channelId, setChannelId] = useState('');
+    const [slug, setSlug] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
@@ -22,8 +22,8 @@ export default function Podcasts() {
         if (router.query.q !== undefined) {
             setSearchQuery(router.query.q);
         }
-        if (router.query.channelId !== undefined) {
-            setChannelId(router.query.channelId);
+        if (router.query.slug !== undefined) {
+            setSlug(router.query.slug);
         }
     }, [router.isReady]);
 
@@ -31,7 +31,7 @@ export default function Podcasts() {
         if (!router.isReady) return;
         setSearchQuery(e.target.value);
         router.push({
-            query: { q: e.target.value, channelId: channelId }
+            query: { q: e.target.value, slug: slug }
         });
     };
 
@@ -39,8 +39,8 @@ export default function Podcasts() {
         <Container maxWidth="md" sx={{ marginY: 2 }}>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
-                    {channelId ? 
-                    <PodcastInformation channelId={channelId} /> :
+                    {slug ? 
+                    <PodcastInformation slug={slug} /> :
                     <PodcastInformationSkeleton /> }
                 </Grid>
                 <Grid item xs={12}>
@@ -55,7 +55,7 @@ export default function Podcasts() {
                     />
                 </Grid>
                 <Grid item xs={12}>
-                    <EpisodesSearchResults query={searchQuery} channelId={channelId} />
+                    <EpisodesSearchResults query={searchQuery} slug={slug} />
                 </Grid>
             </Grid>
         </Container>
