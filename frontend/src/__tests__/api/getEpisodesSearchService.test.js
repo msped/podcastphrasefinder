@@ -50,6 +50,29 @@ describe('getEpisodesSearchService', () => {
         expect(result).toEqual(mockData);
     });
 
+    it('returns the correct data with channel slug', async () => {
+        const query = 'test';
+        const slug = 'the-rest-is-politics';
+        const mockData = {
+            "id": 1,
+            "video_id": "b-UYSj6Q0Ao",
+            "channel": {
+                "id": 2,
+                "name": "The Rest Is Politics",
+                "slug": "the-rest-is-politics",
+                "channel_id": "UCsufaClk5if2RGqABb-09Uw",
+            },
+            "title": "Suella's speeding, Japan in focus, and what's the point of the G7?",
+            "transcript": "This is a test transcript of a podcast from the Rest is Politics.",
+        }
+
+        apiClient.get.mockResolvedValueOnce({ data: mockData });
+
+        const result = await getEpisodesSearchService(query, slug);
+
+        expect(result).toEqual(mockData);
+    });
+
     it('throws an error if the API call fails', async () => {
         const query = 'ferrari';
 
