@@ -6,6 +6,7 @@ import PodcastPanel from '@/components/PodcastPanel';
 describe('PodcastPanel', () => {
     const podcast = {
         name: "Test Podcast",
+        slug: "test-podcast",
         channel_id: "dvm402rvn3553",
         avatar: "https://yt3.ggpht.com/sROZx5jI62ZX-7Udpthim3reUrYnjGwBrzoJ_JuvKjLcxnHuceC1IHLWIfoykgi28rmW_EIV=s800-c-k-c0x00ffffff-no-rj"
     };
@@ -19,7 +20,7 @@ describe('PodcastPanel', () => {
     it('has a link to the podcast channel', () => {
         render(<PodcastPanel podcast={podcast} />);
         const link = screen.getByRole('link', { name: /Test Podcast/i });
-        expect(link).toHaveAttribute('href', `/podcasts/${podcast.channel_id}`);
+        expect(link).toHaveAttribute('href', `/podcasts/${podcast.slug}`);
     });
 
     it('renders the channel avatar', () => {

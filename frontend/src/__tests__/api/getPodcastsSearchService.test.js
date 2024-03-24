@@ -6,7 +6,7 @@ jest.mock('../../api/apiClient');
 describe('getChannelsSearchService', () => {
     it('makes an API call with the correct arguments', async () => {
         const query = 'test';
-        const mockData = { channels: [{ id: 1, name: 'Test Channel' }] };
+        const mockData = { channels: [{ id: 1, name: 'Test Channel', slug: 'test-channel' }] };
 
         apiClient.get.mockResolvedValueOnce({ data: mockData });
 
@@ -19,7 +19,7 @@ describe('getChannelsSearchService', () => {
 
     it('returns the correct data', async () => {
         const query = 'test';
-        const mockData = { channels: [{ id: 1, name: 'Test Channel' }] };
+        const mockData = { channels: [{ id: 1, name: 'Test Channel', slug: 'test-channel' }] };
 
         apiClient.get.mockResolvedValueOnce({ data: mockData });
 
