@@ -19,6 +19,7 @@ describe('useGetEpisodesSearchHook', () => {
                 "channel": {
                     "id": 2,
                     "name": "The Rest Is Politics",
+                    "slug": "the-rest-is-politics",
                     "channel_id": "UCsufaClk5if2RGqABb-09Uw"
                 },
                 "title": "Suella's speeding, Japan in focus, and what's the point of the G7?",

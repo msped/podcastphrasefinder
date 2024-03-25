@@ -12,10 +12,8 @@ import {
 import useGetPodcastInformationHook from '@/hooks/useGetPodcastInformationHook';
 import PodcastInformationSkeleton from '@/skeletons/PodcastInformationSkeleton';
 
-export default function PodcastInformation({ channelId }) {
-    const { podcast, isLoading } = useGetPodcastInformationHook(channelId);
-
-    const youtubeChannelLink = `https://www.youtube.com/channel/${channelId}`
+export default function PodcastInformation({ slug }) {
+    const { podcast, isLoading } = useGetPodcastInformationHook(slug);
 
     return (
         <>
@@ -34,7 +32,7 @@ export default function PodcastInformation({ channelId }) {
                 {isLoading || !podcast ? (
                     <PodcastInformationSkeleton />
                 ) : (
-                    <CardActionArea href={youtubeChannelLink} target='_blank'>
+                    <CardActionArea href={`https://www.youtube.com/channel/${podcast.channel_id}`} target='_blank'>
                         <CardContent sx={{ padding: 3 }}>
                             <Stack direction='column' spacing={1}>
                                 <Stack alignItems='center' justifyItems='center'>
@@ -67,7 +65,6 @@ export default function PodcastInformation({ channelId }) {
                                     <Typography 
                                         variant='h3'
                                         component='h1'
-                                        fontFamily='Roboto, cursive'
                                         fontWeight='500'
                                         sx={{
                                             textAlign: {

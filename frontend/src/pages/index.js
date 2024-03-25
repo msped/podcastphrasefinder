@@ -19,7 +19,6 @@ const styles = {
     backgroundColor: '#000',
     width: 'fit-content',
     padding: '5px 15px',
-    fontFamily: 'Roboto, cursive'
   }
 }
 

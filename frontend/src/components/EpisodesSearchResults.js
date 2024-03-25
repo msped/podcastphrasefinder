@@ -4,9 +4,9 @@ import { Grid, Stack, Typography } from '@mui/material'
 
 import LoadingSpinner from './LoadingSpinner'
 
-export default function EpisodesSearchResults({ query, channelId }) {
+export default function EpisodesSearchResults({ query, slug }) {
     if (query !== undefined) {
-        const { results, isLoading } = useGetEpisodesSearchHook(query, channelId)
+        const { results, isLoading } = useGetEpisodesSearchHook(query, slug)
         if (isLoading && query.length > 3) {
             return (
                 <Stack alignItems='center' alignContent='center' my={5}>

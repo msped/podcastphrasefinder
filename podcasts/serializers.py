@@ -10,6 +10,7 @@ class PodcastSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'name',
+            'slug',
             'channel_id',
             'avatar',
         ]

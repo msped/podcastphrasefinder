@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.template.defaultfilters import slugify
 
 from .utils import get_transcript
 
@@ -8,6 +9,7 @@ class Podcast(models.Model):
     owner = models.ForeignKey(
         User, on_delete=models.CASCADE, null=True, blank=True)  # Blank is admin ownership
     name = models.CharField(max_length=50)
+    slug = models.SlugField(unique=True, blank=True, null=True)
     channel_id = models.CharField(max_length=24)
     video_filter = models.CharField(max_length=10, blank=True, null=True)
     avatar = models.URLField(blank=True, null=True)
@@ -17,6 +19,11 @@ class Podcast(models.Model):
 
     def __str__(self):
         return f'{self.name}'
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.slug = slugify(self.name)
+        return super(Podcast, self).save(*args, **kwargs)
 
 
 class Episode(models.Model):

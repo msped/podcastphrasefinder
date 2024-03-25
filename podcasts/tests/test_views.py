@@ -98,7 +98,7 @@ class TestPodcastViews(APITestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-    def test_search_episode_with_channel_id_returns_200(self):
+    def test_search_episode_with_slug_returns_200(self):
         # I know this test is redundant, but I have yet to come up
         # with a suitable way of testing this with elasticsearch.
         mild_high_club = Podcast.objects.get(
@@ -107,7 +107,7 @@ class TestPodcastViews(APITestCase):
             '/api/podcasts/episode/search',
             {
                 "q": "freddie doesnt like music",
-                "c": mild_high_club.channel_id
+                "s": mild_high_club.slug
             }
         )
         self.assertEqual(response.status_code, 200)
@@ -133,12 +133,12 @@ class TestPodcastViews(APITestCase):
     def test_get_podcast_information_200(self):
         channel = Podcast.objects.get(channel_id='UChl6sFeO_O0drTc1CG1ymFw')
         response = self.client.get(
-            f'/api/podcasts/{channel.channel_id}'
+            f'/api/podcasts/{channel.slug}'
         )
         res_data = json.loads(response.content)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(res_data['name'], 'Have a Word Podcast')
-        self.assertEqual(res_data['channel_id'], 'UChl6sFeO_O0drTc1CG1ymFw')
+        self.assertEqual(res_data['slug'], 'have-a-word-podcast')
 
     def test_get_podcast_information_404(self):
         response = self.client.get(

@@ -30,6 +30,10 @@ class TestModels(APITestCase):
         podcast = Podcast.objects.get(name='Tom Scott')
         self.assertEqual(str(podcast), 'Tom Scott')
 
+    def podcast_slug(self):
+        podcast = Podcast.objects.get(name='Tom Scott')
+        self.assertEqual(podcast.slug, 'tom-scott')
+
     def episode_str(self):
         channel = Podcast.objects.get(name='Tom Scott')
         Episode.objects.create(
@@ -79,6 +83,7 @@ class TestModels(APITestCase):
 
     def test_in_order(self):
         self.podcast_str()
+        self.podcast_slug()
         self.episode_str()
         self.episode_str_with_error()
         self.episode_str_exclusive()
@@ -131,6 +136,7 @@ class EpisodeSerializerTestCase(APITestCase):
         channel_data = data['channel']
         self.assertEqual(channel_data['id'], self.episode.channel.id)
         self.assertEqual(channel_data['name'], self.episode.channel.name)
+        self.assertEqual(channel_data['slug'], self.episode.channel.slug)
         self.assertEqual(channel_data['avatar'], self.episode.channel.avatar)
         self.assertEqual(channel_data['channel_id'],
                          self.episode.channel.channel_id)
@@ -210,6 +216,10 @@ class PodcastSerializerTestCase(APITestCase):
     def test_name_field_content(self):
         data = self.serializer.data
         self.assertEqual(data['name'], self.podcast.name)
+
+    def test_slug_field_content(self):
+        data = self.serializer.data
+        self.assertEqual(data['slug'], self.podcast.slug)
 
     def test_channel_id_field_content(self):
         data = self.serializer.data

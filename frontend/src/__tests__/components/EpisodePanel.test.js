@@ -15,6 +15,7 @@ describe('EpisodePanel', () => {
         "channel": {
             "id": 2,
             "name": "The Rest Is Politics",
+            "slug": "the-rest-is-politics",
             "channel_id": "UCsufaClk5if2RGqABb-09Uw",
             "avatar": "https://yt3.ggpht.com/sROZx5jI62ZX-7Udpthim3reUrYnjGwBrzoJ_JuvKjLcxnHuceC1IHLWIfoykgi28rmW_EIV=s800-c-k-c0x00ffffff-no-rj"
         },
@@ -36,6 +37,7 @@ describe('EpisodePanel', () => {
         "channel": {
             "id": 2,
             "name": "The Rest Is Politics",
+            "slug": "the-rest-is-politics",
             "channel_id": "UCsufaClk5if2RGqABb-09Uw",
             "avatar": "https://yt3.ggpht.com/sROZx5jI62ZX-7Udpthim3reUrYnjGwBrzoJ_JuvKjLcxnHuceC1IHLWIfoykgi28rmW_EIV=s800-c-k-c0x00ffffff-no-rj"
         },

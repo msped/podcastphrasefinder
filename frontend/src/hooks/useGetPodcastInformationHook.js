@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 import getPodcastInformationService from '@/api/getPodcastInformationService'
 
-const useGetPodcastInformationHook = (channelId) => {
+const useGetPodcastInformationHook = (slug) => {
     const [podcast, setPodcast] = useState([])
     const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         const fetchDataFromService = async () => {
-            await getPodcastInformationService(channelId)
+            await getPodcastInformationService(slug)
             .then(setPodcast)
             setIsLoading(false)
         }
