@@ -2,8 +2,8 @@ from datetime import datetime
 from unittest import mock
 from zoneinfo import ZoneInfo
 from rest_framework.test import APITestCase
-from ..models import Podcast, Episode, EpisodeReleaseDay
-from ..serializers import PodcastSerializer, EpisodeSerializer
+from ..models import Podcast, Episode, EpisodeReleaseDay, Transcript
+from ..serializers import PodcastSerializer, EpisodeSerializer, TranscriptSerializer
 
 from creatoradmin.utils import convert_date_from_picker
 
@@ -17,16 +17,31 @@ class TestModels(APITestCase):
         mocked_transcript_length = 'mockedtranscriptlengthnew' * 121
         self.mock_get_transcript.return_value = [
             {'text': mocked_transcript_length}]
+        podcast = Podcast.objects.create(
+            name='Tom Scott',
+            channel_id='UCBa659QWEk1AI4Tg--mrJ2A',
+            avatar='https//www.example.com'
+        )
+        Episode.objects.create(
+            id=1,
+            video_id='ce-QHeZnVu4',
+            channel_id=podcast.id,
+            title='The giant archive hidden under the British countryside',
+            published_date='2023-08-25T20:55:33Z'
+        )
+        Episode.objects.create(
+            id=2,
+            video_id='testesttest',
+            channel_id=podcast.id,
+            title='A random podcast',
+            published_date='2022-12-03T20:55:33Z'
+        )
+        Transcript.objects.get(episode_id=2).delete()
 
     def tearDown(self):
         self.mocked_get_transcript.stop()
 
     def podcast_str(self):
-        Podcast.objects.create(
-            name='Tom Scott',
-            channel_id='UCBa659QWEk1AI4Tg--mrJ2A',
-            avatar='https//www.example.com'
-        ).save()
         podcast = Podcast.objects.get(name='Tom Scott')
         self.assertEqual(str(podcast), 'Tom Scott')
 
@@ -35,32 +50,22 @@ class TestModels(APITestCase):
         self.assertEqual(podcast.slug, 'tom-scott')
 
     def episode_str(self):
-        channel = Podcast.objects.get(name='Tom Scott')
-        Episode.objects.create(
-            video_id='ce-QHeZnVu4',
-            channel=channel,
-            title='The giant archive hidden under the British countryside',
-            published_date='2023-08-25T20:55:33Z'
-        ).save()
         episode = Episode.objects.get(video_id='ce-QHeZnVu4')
         self.assertEqual(
             str(episode),
             'Tom Scott - The giant archive hidden under the British countryside'
         )
 
-    def episode_str_with_error(self):
+    def transcript_str(self):
         episode = Episode.objects.get(video_id='ce-QHeZnVu4')
-        episode.error_occurred = True
-        episode.transcript = 'An error message'
-        episode.save()
+        transcript = Transcript.objects.get(episode=episode)
         self.assertEqual(
-            str(episode),
-            'ERROR Tom Scott - The giant archive hidden under the British countryside'
+            str(transcript),
+            'The giant archive hidden under the British countryside - Transcript'
         )
 
     def episode_str_exclusive(self):
         episode = Episode.objects.get(video_id='ce-QHeZnVu4')
-        episode.error_occurred = False
         episode.exclusive = True
         episode.save()
         self.assertEqual(
@@ -81,13 +86,25 @@ class TestModels(APITestCase):
             'An Episode of Tom Scott is released on a Monday'
         )
 
+    def return_transcripts(self):
+        episode = Episode.objects.get(id=1)
+        self.assertTrue(
+            episode.transcripts()
+        )
+
+    def return_transcripts_false(self):
+        episode = Episode.objects.get(id=2)
+        self.assertFalse(episode.transcripts())
+
     def test_in_order(self):
         self.podcast_str()
         self.podcast_slug()
         self.episode_str()
-        self.episode_str_with_error()
+        self.transcript_str()
         self.episode_str_exclusive()
         self.episode_release_day()
+        self.return_transcripts()
+        self.return_transcripts_false()
 
 
 class EpisodeSerializerTestCase(APITestCase):
@@ -120,9 +137,6 @@ class EpisodeSerializerTestCase(APITestCase):
         data = self.serializer.data
         self.assertEqual(data['title'], self.episode.title)
 
-    def test_transcript_field_content(self):
-        self.assertIsNotNone(self.episode.transcript)
-
     def test_published_date(self):
         data = self.serializer.data
         self.assertEqual('2023-08-25T20:55:33Z', data['published_date'])
@@ -145,10 +159,8 @@ class EpisodeSerializerTestCase(APITestCase):
         data = {
             'channel_id': Podcast.objects.values_list('id', flat=True).first(),
             'title': 'Test Title',
-            'transcript': 'test transcript',
             'exclusive': True,
             'video_id': 'test1234',
-            'error_occurred': False,
             'published_date': convert_date_from_picker('02/25/2024'),
             'is_draft': False
         }
@@ -158,10 +170,8 @@ class EpisodeSerializerTestCase(APITestCase):
         episode = serializer.save()
 
         self.assertEqual(episode.title, 'Test Title')
-        self.assertEqual(episode.transcript, 'test transcript')
         self.assertTrue(episode.exclusive)
         self.assertEqual(episode.video_id, 'test1234')
-        self.assertFalse(episode.error_occurred)
         self.assertEqual(episode.published_date, datetime(
             2024, 2, 25, 0, 0, 1, tzinfo=ZoneInfo(key='UTC'))),
         self.assertFalse(episode.is_draft)
@@ -172,7 +182,6 @@ class EpisodeSerializerTestCase(APITestCase):
             channel=self.podcast,
             title='Test Title 2',
             video_id='test12345',
-            transcript='test transcript 2',
             published_date=datetime(
                 2024, 2, 24, 0, 0, 1, tzinfo=ZoneInfo(key='UTC'))
         )
