@@ -37,6 +37,16 @@ class TestModels(APITestCase):
             published_date='2022-12-03T20:55:33Z'
         )
         Transcript.objects.get(episode_id=2).delete()
+        Episode.objects.create(
+            id=3,
+            video_id='testest1234',
+            channel_id=podcast.id,
+            title='Another random podcast',
+            published_date='2022-12-03T20:55:33Z'
+        )
+        transcript = Transcript.objects.get(episode_id=3)
+        transcript.error_occurred = True
+        transcript.save()
 
     def tearDown(self):
         self.mocked_get_transcript.stop()
@@ -88,13 +98,21 @@ class TestModels(APITestCase):
 
     def return_transcripts(self):
         episode = Episode.objects.get(id=1)
-        self.assertTrue(
+        self.assertIsNotNone(
             episode.transcripts()
         )
 
     def return_transcripts_false(self):
         episode = Episode.objects.get(id=2)
-        self.assertFalse(episode.transcripts())
+        self.assertIsNone(episode.transcripts())
+
+    def has_error_occurred_true(self):
+        episode = Episode.objects.get(id=3)
+        self.assertTrue(episode.has_error_occurred())
+
+    def has_error_occurred_false(self):
+        episode = Episode.objects.get(id=1)
+        self.assertFalse(episode.has_error_occurred())
 
     def test_in_order(self):
         self.podcast_str()
@@ -105,6 +123,8 @@ class TestModels(APITestCase):
         self.episode_release_day()
         self.return_transcripts()
         self.return_transcripts_false()
+        self.has_error_occurred_true()
+        self.has_error_occurred_false()
 
 
 class EpisodeSerializerTestCase(APITestCase):
