@@ -42,7 +42,13 @@ class Episode(models.Model):
         transcripts = Transcript.objects.filter(episode__id=self.id)
         if transcripts.exists():
             return transcripts
-        return False
+        return None
+
+    def has_error_occurred(self):
+        return Transcript.objects.filter(
+            episode__id=self.id,
+            error_occurred=True
+        ).exists()
 
 
 class Transcript(models.Model):
