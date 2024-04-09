@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Podcast, Episode
+from .models import Podcast, Episode, Transcript
 from creatoradmin.utils import get_video_id
 
 
@@ -24,14 +24,6 @@ class EpisodeSerializer(serializers.ModelSerializer):
     )
     video_id = serializers.CharField(write_only=True)
     channel = PodcastSerializer(many=False, read_only=True)
-    highlight = serializers.SerializerMethodField()
-
-    def get_highlight(self, obj):
-        if hasattr(obj, 'meta') and \
-                hasattr(obj.meta, 'highlight') and \
-                hasattr(obj.meta.highlight, 'transcript'):
-            return list(obj.meta.highlight.transcript)
-        return None
 
     class Meta:
         model = Episode
@@ -41,13 +33,10 @@ class EpisodeSerializer(serializers.ModelSerializer):
             'channel',
             'title',
             'video_id',
-            'transcript',
             'published_date',
-            'error_occurred',
             'private_video',
             'is_draft',
             'exclusive',
-            'highlight',
         ]
 
     def create(self, validated_data):
@@ -58,6 +47,33 @@ class EpisodeSerializer(serializers.ModelSerializer):
         if 'video_id' in validated_data:
             processed_video_id = get_video_id(validated_data['video_id'])
             validated_data['video_id'] = processed_video_id
-
         instance = super().update(instance, validated_data)
         return instance
+
+    def to_representation(self, instance):
+        add_video_id = self.context.get('obtain_video_id', False)
+        if add_video_id:
+            return instance
+        return super().to_representation(instance)
+
+
+class TranscriptSerializer(serializers.ModelSerializer):
+    episode = EpisodeSerializer(many=False, read_only=True)
+    highlight = serializers.SerializerMethodField()
+
+    def get_highlight(self, obj):
+        if hasattr(obj, 'meta') and \
+                hasattr(obj.meta, 'highlight') and \
+                hasattr(obj.meta.highlight, 'transcript'):
+            return list(obj.meta.highlight.transcript)
+        return None
+
+    class Meta:
+        model = Transcript
+        fields = [
+            'id',
+            'episode',
+            'error_occurred',
+            'transcript',
+            'highlight'
+        ]
