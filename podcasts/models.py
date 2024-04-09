@@ -39,7 +39,8 @@ class Episode(models.Model):
         return f'{self.channel.name} - {self.title}'
 
     def transcripts(self):
-        transcripts = Transcript.objects.filter(episode__id=self.id)
+        transcripts = Transcript.objects.filter(
+            episode__id=self.id, error_occurred=False)
         if transcripts.exists():
             return transcripts
         return None
