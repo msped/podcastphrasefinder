@@ -7,14 +7,14 @@ from rest_framework.views import APIView
 from rest_framework import status
 from elasticsearch_dsl import Q
 
-from .documents import EpisodeDocument
+from .documents import TranscriptDocument
 from .models import Podcast
-from .serializers import EpisodeSerializer, PodcastSerializer
+from .serializers import PodcastSerializer, TranscriptSerializer
 
 
 class SearchEpisodeView(APIView):
-    serializer_class = EpisodeSerializer
-    search_document = EpisodeDocument
+    serializer_class = TranscriptSerializer
+    search_document = TranscriptDocument
 
     def get(self, request):
         user_query = self.request.query_params.get('q', None)
@@ -25,29 +25,29 @@ class SearchEpisodeView(APIView):
                     "multi_match",
                     query=user_query,
                     fields=[
-                        "title", "transcript"
+                        "episode__title", "transcript"
                     ],
                     fuzziness="auto"
                 ) & Q(
                     "bool",
                     should=[
-                        Q("match", private_video=False),
+                        Q("match", episode__private_video=False),
                         Q("match", error_occurred=False),
-                        Q("match", is_draft=False)
+                        Q("match", episode__is_draft=False)
                     ],
                     minimum_should_match=2
                 )
 
                 if slug:
                     es_query &= Q(
-                        "match", channel__slug=slug
+                        "match", episode__channel__slug=slug
                     )
 
-                search = EpisodeDocument.search().query(
+                search = TranscriptDocument.search().query(
                     es_query).highlight('transcript', fragment_size=150).highlight_options(
                         order='score',
-                        pre_tags='<b>',
-                        post_tags='</b>'
+                        pre_tags='<em><b>',
+                        post_tags='</b></em>'
                 )
                 response = search.execute()
                 serializer = self.serializer_class(response, many=True)
