@@ -1,5 +1,6 @@
 from __future__ import absolute_import, unicode_literals
 import os
+import sys
 from datetime import datetime as date
 from html import unescape
 from urllib.parse import urlencode
@@ -7,8 +8,8 @@ from celery import shared_task
 from celery.utils.log import get_task_logger
 from django.db import transaction
 
-from .models import Episode, Podcast, EpisodeReleaseDay
-from .utils import call_api, get_transcript, check_for_private_video
+from .models import Episode, Podcast, EpisodeReleaseDay, Transcript
+from .utils import call_api, create_transcript_models, check_for_private_video
 
 api_key = os.environ.get('YOUTUBE_V3_API_KEY')
 
@@ -42,39 +43,36 @@ def add_back_catalogue_task(channel_id, yt_channel_id, video_filter):
             video_title = unescape(video['snippet']['title'])
             if not video_filter or video_filter in video_title:
                 video_id = video['id']['videoId']
-                transcript, error = get_transcript(video_id)
-                if len(transcript) > 3000 and not error or error:
-                    video_data.append({
-                        'video_id': video_id,
-                        'channel_id': channel_id,
-                        'title': video_title,
-                        'transcript': transcript,
-                        'error_occurred': error,
-                        'published_date': video['snippet']['publishedAt']
-                    })
-                    logger.info(f"{video_title} - Error: {error}")
+                video_data.append({
+                    'video_id': video_id,
+                    'channel_id': channel_id,
+                    'title': video_title,
+                    'published_date': video['snippet']['publishedAt']
+                })
+                logger.info(f"{video_title}")
 
         if next_page_token == "":
             break
         url_params['pageToken'] = next_page_token
 
-    Episode.objects.bulk_create([Episode(**data) for data in video_data])
+    return create_transcript_models(video_data)
 
 
 @shared_task
 def check_for_private_videos():
-    episodes = Episode.objects.filter(error_occurred=False)
+    episodes = Episode.objects.filter(is_draft=False)
 
-    video_ids = {}
+    videos = {}
 
     for episode in episodes:
-        video_visibility = check_for_private_video(episode.video_id)
-        if episode.private_video != video_visibility:
-            video_ids[episode.video_id] = video_visibility
+        if episode.transcripts():
+            is_private = check_for_private_video(episode.video_id)
+            if episode.private_video != is_private:
+                videos[episode.id] = is_private
 
     with transaction.atomic():
-        for key, value in video_ids.items():
-            Episode.objects.filter(video_id=key).update(private_video=value)
+        for key, value in videos.items():
+            Episode.objects.filter(id=key).update(private_video=value)
 
 
 @shared_task
@@ -138,17 +136,13 @@ def get_new_episodes():
                     video_title = unescape(video['snippet']['title'])
                     if not podcast.video_filter or \
                             podcast.video_filter in video_title:
-                        transcript, error = get_transcript(video_id)
-                        if len(transcript) > 3000 and not error or error:
-                            video_data.append({
-                                'video_id': video_id,
-                                'channel_id': podcast.id,
-                                'title': video_title,
-                                'transcript': transcript,
-                                'error_occurred': error,
-                                'published_date': video['snippet']['publishedAt']
-                            })
-                            logger.info(f"{video_title} - Error: {error}")
+                        video_data.append({
+                            'video_id': video_id,
+                            'channel_id': podcast.id,
+                            'title': video_title,
+                            'published_date': video['snippet']['publishedAt']
+                        })
+                        logger.info(f"{video_title}")
                 else:
                     video_break = True
 
@@ -156,7 +150,4 @@ def get_new_episodes():
                 break
             url_params['pageToken'] = next_page_token
 
-    if len(video_data) > 0:
-        Episode.objects.bulk_create([Episode(**data) for data in video_data])
-        return video_data
-    return 'No episodes found.'
+    return create_transcript_models(video_data)
