@@ -7,7 +7,7 @@ from ..tasks import (
     check_avatar,
     get_new_episodes
 )
-from ..models import Episode, Podcast, EpisodeReleaseDay
+from ..models import Episode, Podcast, EpisodeReleaseDay, Transcript
 
 
 class BackCatalogueTaskTest(TestCase):
@@ -45,13 +45,7 @@ class BackCatalogueTaskTest(TestCase):
 class TestCheckForPrivateVideos(TestCase):
 
     def setUp(self):
-        self.mocked_get_transcript = mock.patch(
-            'youtube_transcript_api.YouTubeTranscriptApi.get_transcript'
-        )
-        self.mock_get_transcript = self.mocked_get_transcript.start()
-        mocked_transcript_length = 'mockedtranscriptlengthnew' * 121
-        self.mock_get_transcript.return_value = [
-            {'text': mocked_transcript_length}]
+        mocked_transcript = 'mockedtranscriptlengthnew' * 121
         Podcast.objects.create(
             name='Test Podcast',
             channel_id='UCBa659QWEk1AI4Tg--mrJ2A',
@@ -61,44 +55,66 @@ class TestCheckForPrivateVideos(TestCase):
 
         video_data = [
             {
+                'id': 1,
                 'video_id': 'ce-QHeZnVu4',
                 'channel_id': channel.id,
                 'title': 'The giant archive hidden under the British countryside',
-                'transcript': 'test transcript 1',
                 'published_date': '2023-08-25T20:55:33Z',
-                'error_occurred': False,
-                'private_video': False
+                'is_draft': False,
+                'private_video': False,
             },
             {
+                'id': 2,
                 'video_id': '1yfX84RMQ3M',
                 'channel_id': channel.id,
                 'title': 'This man built his office inside an elevator',
-                'transcript': 'test transcript 2',
                 'published_date': '2023-12-21T13:45:33Z',
-                'error_occurred': False,
-                'private_video': True
+                'private_video': True,
+                'is_draft': False,
             },
             {
+                'id': 3,
                 'video_id': 'Xw1EKgEl_RY',
                 'channel_id': channel.id,
                 'title': 'Test Podcast Episode',
-                'transcript': 'test transcript 3',
                 'published_date': '2023-08-25T15:35:33Z',
-                'error_occurred': False,
-                'private_video': False
+                'is_draft': False,
+                'private_video': False,
 
             }
         ]
 
         Episode.objects.bulk_create([Episode(**data) for data in video_data])
 
-    def tearDown(self):
-        self.mocked_get_transcript.stop()
+        transcripts = [
+            {
+                'id': 1,
+                'episode_id': 1,
+                'transcript': mocked_transcript,
+                'error_occurred': False
+            },
+            {
+                'id': 2,
+                'episode_id': 2,
+                'transcript': mocked_transcript,
+                'error_occurred': False
+            },
+            {
+                'id': 3,
+                'episode_id': 3,
+                'transcript': mocked_transcript,
+                'error_occurred': False
+            },
+        ]
+
+        Transcript.objects.bulk_create(
+            [Transcript(**data) for data in transcripts])
 
     @mock.patch('podcasts.utils.check_for_private_video')
-    def test_check_for_private_videos(self, mock_get):
+    def test_check_for_private_videos(self, mock_check_for_private_video):
         """Should change two fields, one to true and another to false"""
-        mock_get.status_code.side_effect = [False, False, True]
+        mock_check_for_private_video.return_value.side_effect = [
+            False, False, True]
 
         self.assertFalse(Episode.objects.get(
             video_id='ce-QHeZnVu4').private_video)
