@@ -253,3 +253,40 @@ class PodcastSerializerTestCase(APITestCase):
     def test_channel_id_field_content(self):
         data = self.serializer.data
         self.assertEqual(data['channel_id'], self.podcast.channel_id)
+
+
+class TranscriptSerializerTestCase(APITestCase):
+    def setUp(self):
+        mocked_transcript = 'mockedtranscriptlengthnew' * 121
+        Podcast.objects.create(
+            name='Have a Word Podcast',
+            channel_id='UChl6sFeO_O0drTc1CG1ymFw',
+            avatar='https//www.example.com'
+        )
+        self.podcast = Podcast.objects.get(name='Have a Word Podcast')
+        Episode.objects.create(
+            video_id='of-Oa7Ps8Rs',
+            title='Michelle de Swarte | Have A Word Podcast #223',
+            channel_id=self.podcast.id,
+            published_date='2023-08-25T20:55:33Z',
+        )
+        self.episode = Episode.objects.get(video_id='of-Oa7Ps8Rs')
+        self.transcript = Transcript.objects.create(
+            episode=self.episode,
+            transcript=mocked_transcript,
+            error_occurred=False
+        )
+        self.serializer = TranscriptSerializer(instance=self.transcript)
+
+    def test_transcript(self):
+        data = self.serializer.data
+        self.assertEqual(data['transcript'], self.transcript.transcript)
+
+    def test_episode(self):
+        data = self.serializer.data
+        self.assertEqual(data['episode']['id'], self.episode.id)
+
+    def test_error_occurred(self):
+        data = self.serializer.data
+        self.assertEqual(data['error_occurred'],
+                         self.transcript.error_occurred)
