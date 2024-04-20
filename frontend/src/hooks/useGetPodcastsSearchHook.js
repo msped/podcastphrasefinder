@@ -6,25 +6,32 @@ const useGetPodcastsSearchHook = (query) => {
     const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
-        const fetchDataFromService = () => {
-            getPodcastsSearchService(query)
-            .then(setResults)
-            setIsLoading(false)
+        if (query.length === 0) {
+            setResults([]);
+            return;
         }
-
+    
+        setIsLoading(true);
         const timeoutId = setTimeout(() => {
             if (query.length >= 3) {
                 fetchDataFromService();
             }
-            if (query.length == 0){
-                setResults([]);
-                setIsLoading(!isLoading);
-            }
-        }, 750)
-        return () => {
-            clearTimeout(timeoutId)
+        }, 750);
+    
+        function fetchDataFromService() {
+            getPodcastsSearchService(query)
+                .then(data => {
+                    setResults(data);
+                    setIsLoading(false);
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+                    setIsLoading(false);
+                });
         }
-    }, [query])
+    
+        return () => clearTimeout(timeoutId); 
+    }, [query]);
 
     return { results, isLoading };
 }

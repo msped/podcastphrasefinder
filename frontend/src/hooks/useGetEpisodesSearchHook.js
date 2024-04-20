@@ -6,24 +6,32 @@ const useGetEpisodesSearchHook = (query, slug) => {
     const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
-        const fetchDataFromService = () => {
-            getEpisodesSearchService(query, slug)
-            .then(setResults)
-            setIsLoading(false)
+        if (query.length === 0) {
+            setResults([]);
+            return;
         }
+
+        setIsLoading(true);
         const timeoutId = setTimeout(() => {
             if (query.length >= 3) {
                 fetchDataFromService();
             }
-            if (query.length == 0){
-                setResults([]);
-                setIsLoading(!isLoading);
-            }
-        }, 750)
-        return () => {
-            clearTimeout(timeoutId)
+        }, 750);
+
+        function fetchDataFromService() {
+            getEpisodesSearchService(query, slug)
+                .then(data => {
+                    setResults(data);
+                    setIsLoading(false);
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+                    setIsLoading(false);
+                });
         }
-    }, [query])
+
+        return () => clearTimeout(timeoutId); 
+    }, [query, slug]);
 
     return { results, isLoading };
 }
