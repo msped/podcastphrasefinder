@@ -28,15 +28,15 @@ describe('getEpisodesSearchService', () => {
         });
     });
 
-    it('makes an API call with the correct arguments including channel id', async () => {
+    it('makes an API call with the correct arguments including slug', async () => {
         const query = 'test';
-        const channelId = 'UCsufaClk5if2RGqABb-09Uw'
         const mockData = {
             "id": 1,
             "video_id": "b-UYSj6Q0Ao",
             "channel": {
                 "id": 2,
                 "name": "The Rest Is Politics",
+                "slug": "the-rest-is-politics",
                 "channel_id": "UCsufaClk5if2RGqABb-09Uw",
             },
             "title": "Suella's speeding, Japan in focus, and what's the point of the G7?",
@@ -45,10 +45,10 @@ describe('getEpisodesSearchService', () => {
 
         apiClient.get.mockResolvedValueOnce({ data: mockData });
 
-        const result = await getEpisodesSearchService(query, channelId);
+        const result = await getEpisodesSearchService(query, mockData.channel.slug);
 
         expect(apiClient.get).toHaveBeenCalledWith('podcasts/episode/search', {
-            params: { q: query, c: channelId }
+            params: { q: query, s: mockData.channel.slug }
         });
     });
 
