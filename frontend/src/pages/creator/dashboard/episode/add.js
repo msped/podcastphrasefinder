@@ -8,7 +8,7 @@ import {
     Typography,
 } from '@mui/material';
 
-import AddEpisodeFromYouTubeForm from '@/forms/AddEpisodeFromYouTubeForm';
+import AddEpisodeFromYouTubeForm from '@/pages/creator/_forms/AddEpisodeFromYouTubeForm';
 
 
 function TabPanel(props) {

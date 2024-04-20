@@ -1,8 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import "@testing-library/jest-dom";
-import Add from '@/pages/creator/episode/add'; 
+import Add from '@/pages/creator/dashboard/episode/add'; 
 
-jest.mock('../../forms/AddEpisodeFromYouTubeForm', () => () => <div>AddEpisodeFromYouTubeForm Component</div>);
+jest.mock('../../pages/creator/_forms/AddEpisodeFromYouTubeForm', () => () => <div>AddEpisodeFromYouTubeForm Component</div>);
 
 describe('Add Component Tests', () => {
     test('renders Add an Episode header', () => {
