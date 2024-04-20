@@ -10,17 +10,19 @@ nextRouter.useRouter.mockImplementation(() => ({ route: '/' }))
 
 describe('EpisodePanel', () => {
     const episode = {
-        "id": 1,
-        "video_id": "b-UYSj6Q0Ao",
-        "channel": {
-            "id": 2,
-            "name": "The Rest Is Politics",
-            "slug": "the-rest-is-politics",
-            "channel_id": "UCsufaClk5if2RGqABb-09Uw",
-            "avatar": "https://yt3.ggpht.com/sROZx5jI62ZX-7Udpthim3reUrYnjGwBrzoJ_JuvKjLcxnHuceC1IHLWIfoykgi28rmW_EIV=s800-c-k-c0x00ffffff-no-rj"
+        'episode': {
+            "id": 1,
+            "video_id": "b-UYSj6Q0Ao",
+            "channel": {
+                "id": 2,
+                "name": "The Rest Is Politics",
+                "slug": "the-rest-is-politics",
+                "channel_id": "UCsufaClk5if2RGqABb-09Uw",
+                "avatar": "https://yt3.ggpht.com/sROZx5jI62ZX-7Udpthim3reUrYnjGwBrzoJ_JuvKjLcxnHuceC1IHLWIfoykgi28rmW_EIV=s800-c-k-c0x00ffffff-no-rj"
+            },
+            'published_date': '2023-08-25T20:55:33Z',
+            "title": "Suella's speeding, Japan in focus, and what's the point of the G7?",
         },
-        'published_date': '2023-08-25T20:55:33Z',
-        "title": "Suella's speeding, Japan in focus, and what's the point of the G7?",
         "transcript": "This is a test transcript of a podcast from the Rest is Politics.",
         "highlight": [
             'test1',
@@ -28,23 +30,29 @@ describe('EpisodePanel', () => {
             'test3',
             'test4',
             'test5',
-        ]
+        ],
+        'error_occurred': false,
+        'id': 1
     };
 
     const episodeNoHighlight = {
-        "id": 2,
-        "video_id": "b-UYEj6Q0Ao",
-        "channel": {
+        'episode': {
             "id": 2,
-            "name": "The Rest Is Politics",
-            "slug": "the-rest-is-politics",
-            "channel_id": "UCsufaClk5if2RGqABb-09Uw",
-            "avatar": "https://yt3.ggpht.com/sROZx5jI62ZX-7Udpthim3reUrYnjGwBrzoJ_JuvKjLcxnHuceC1IHLWIfoykgi28rmW_EIV=s800-c-k-c0x00ffffff-no-rj"
+            "video_id": "b-UYEj6Q0Ao",
+            "channel": {
+                "id": 2,
+                "name": "The Rest Is Politics",
+                "slug": "the-rest-is-politics",
+                "channel_id": "UCsufaClk5if2RGqABb-09Uw",
+                "avatar": "https://yt3.ggpht.com/sROZx5jI62ZX-7Udpthim3reUrYnjGwBrzoJ_JuvKjLcxnHuceC1IHLWIfoykgi28rmW_EIV=s800-c-k-c0x00ffffff-no-rj"
+            },
+            'published_date': '2023-08-25T20:55:33Z',
+            "title": "Suella's speeding, Japan in focus, and what's the point of the G7?",
         },
-        'published_date': '2023-08-25T20:55:33Z',
-        "title": "Suella's speeding, Japan in focus, and what's the point of the G7?",
         "transcript": "This is a test transcript of a podcast from the Rest is Politics.",
-        "highlight": null
+        "highlight": null,
+        'error_occurred': false,
+        'id': 2
     };
 
     it('renders the episode link', () => {
@@ -63,7 +71,7 @@ describe('EpisodePanel', () => {
 
     it("checks that the correct length of time is displayed", () => {
         render(<EpisodePanel episode={episode} />)
-        const published_date = new Date(episode.published_date);
+        const published_date = new Date(episode.episode.published_date);
         const current_date_time = new Date();
 
         const component = screen.getByTestId('time-since-test-id')
@@ -82,7 +90,7 @@ describe('EpisodePanel', () => {
     it('YouTube channel link is rendered', () => {
         render(<EpisodePanel episode={episode} />)
         const channelLink = screen.getByText('The Rest Is Politics');
-        expect(channelLink.href).toEqual(`https://www.youtube.com/channel/${episode.channel.channel_id}`)
+        expect(channelLink.href).toEqual(`https://www.youtube.com/channel/${episode.episode.channel.channel_id}`)
     })
 
     // test highlight not open (should be unmounted i.e. not in the doc)
