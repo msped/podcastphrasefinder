@@ -2,8 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 
-from .utils import get_transcript
-
 
 class Podcast(models.Model):
     owner = models.ForeignKey(
@@ -30,27 +28,37 @@ class Episode(models.Model):
     video_id = models.CharField(max_length=11, unique=True)
     channel = models.ForeignKey(Podcast, on_delete=models.CASCADE)
     title = models.CharField(max_length=125)
-    transcript = models.TextField(blank=True, null=True)
-    error_occurred = models.BooleanField(default=False)
     published_date = models.DateTimeField()
     private_video = models.BooleanField(default=False)
     exclusive = models.BooleanField(default=False)
     is_draft = models.BooleanField(default=False)
 
     def __str__(self):
-        if self.error_occurred:
-            return f'ERROR {self.channel.name} - {self.title}'
-        elif self.exclusive:
+        if self.exclusive:
             return f'Exclusive: {self.channel.name} - {self.title}'
         return f'{self.channel.name} - {self.title}'
 
-    def save(self, *args, **kwargs):
-        if not self.transcript or self.error_occurred:
-            transcript, error = get_transcript(self.video_id)
-            self.transcript = transcript
-            if error:
-                self.error_occurred = True
-        super().save(*args, **kwargs)
+    def transcripts(self):
+        transcripts = Transcript.objects.filter(
+            episode__id=self.id, error_occurred=False)
+        if transcripts.exists():
+            return transcripts
+        return None
+
+    def has_error_occurred(self):
+        return Transcript.objects.filter(
+            episode__id=self.id,
+            error_occurred=True
+        ).exists()
+
+
+class Transcript(models.Model):
+    episode = models.ForeignKey(Episode, on_delete=models.CASCADE)
+    transcript = models.TextField(blank=True, null=True)
+    error_occurred = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.episode.title} - Transcript'
 
 
 class EpisodeReleaseDay(models.Model):

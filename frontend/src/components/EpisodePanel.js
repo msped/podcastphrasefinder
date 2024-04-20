@@ -99,12 +99,14 @@ const styles = {
             'md': '35%'
         },
         padding: '0 0'
-    }
-
+    },
+    cardContent: {
+        width: '100%'
+    },
 }
 
 export default function EpisodePanel({ episode }) {
-    const published_date = new Date(episode.published_date)
+    const published_date = new Date(episode.episode.published_date)
     const current_date_time = new Date()
     const [highlightIndex, setHighlightIndex] = useState(0)
     const highlightIndexLength = episode.highlight ? episode.highlight.length : 0
@@ -126,35 +128,35 @@ export default function EpisodePanel({ episode }) {
         <Card sx={styles.root}>
             <CardContent sx={styles.cardContent}>
                 <Grid container spacing={2}>
-                    <Grid item xs={2}>
+                    <Grid item xs={3} sm={2}>
                         <Box sx={styles.logoWrapper}>
                             <Image
-                                src={episode.channel.avatar}
+                                src={episode.episode.channel.avatar}
                                 style={{...styles.logo}}
-                                alt={`${episode.channel.name} logo`}
+                                alt={`${episode.episode.channel.name} logo`}
                                 width={160}
                                 height={90}
                             />
                         </Box>
                     </Grid>
-                    <Grid item xs={10}>
+                    <Grid item xs={9} sm={10}>
                         <Stack spacing={.1}>
                             <Typography
                                 variant='h6'
                                 component='span'
                                 sx={styles.episodeInformation}
                             >
-                                {episode.title}{episode.exclusive && <ExclusiveChip />}
+                                {episode.episode.title}{episode.episode.exclusive && <ExclusiveChip />}
                             </Typography>
                             <Typography sx={styles.publishedDate} data-testid='time-since-test-id'>
                                 {formatDistance(published_date, current_date_time)} ago
                             </Typography>
                             <Link
-                                href={`https://www.youtube.com/channel/${episode.channel.channel_id}`}
+                                href={`https://www.youtube.com/channel/${episode.episode.channel.channel_id}`}
                                 target='_blank'
                                 sx={styles.channelInformation}
                             >
-                                {episode.channel.name}
+                                {episode.episode.channel.name}
                             </Link>
                             {
                                 episode.highlight && (

@@ -49,24 +49,32 @@ describe("EpisodesSearchResults", () => {
         useGetEpisodesSearchHook.mockImplementation(() => ({
             results: [
                 {
-                    id: "1",
-                    title: "Episode 1",
-                    channel: {
-                        name: "Channel A",
-                        avatar: "https://www/example.com/"
+                    episode: {
+                        id: "1",
+                        title: "Episode 1",
+                        channel: {
+                            name: "Channel A",
+                            slug: "channel-a",
+                            avatar: "https://www/example.com/"
+                        },
+                        published_date: '2020-08-03T07:59:59+00:00',
                     },
-                    published_date: '2023-08-25T20:55:33Z',
-                    transcript: "Here we go, the first episode of this podcast"
+                    transcript: "Here we go, the first test episode of this podcast",
+                    highlight: null
                 },
                 {
-                    id: "2",
-                    title: "Episode 2",
-                    channel: {
-                        name: "Channel B",
-                        avatar: "https://www/example.com/"
+                    episode: {
+                        id: "2",
+                        title: "Episode 2",
+                        channel: {
+                            name: "Channel B",
+                            slug: "channel-b",
+                            avatar: "https://www/example.com/"
+                        },
+                        published_date: '2023-12-05T07:59:59+00:00',
                     },
-                    published_date: '2023-08-25T20:55:33Z',
-                    transcript: "Welcome to the rest is politics with me, Rory Stewart"
+                    transcript: "test for the rest is politics with me, Rory Stewart",
+                    highlight: null
                 },
             ],
             isLoading: false,

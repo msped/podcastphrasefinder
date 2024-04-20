@@ -2,17 +2,32 @@ from unittest.mock import patch
 from django.test import TestCase
 from requests.exceptions import RequestException
 
+from ..models import Podcast, Transcript
 from ..utils import (
     call_api,
     get_transcript,
     check_for_private_video,
-    get_avatar
+    get_avatar,
+    create_transcript_models
 )
+
 
 class TestUtils(TestCase):
 
     def setUp(self):
         self.channel_id = 'test_channe_id'
+        Podcast.objects.create(
+            id=1,
+            name='test',
+            channel_id='test0987654321',
+            avatar='https//www.example.com'
+        )
+        Podcast.objects.create(
+            id=2,
+            name='test podcast',
+            channel_id='test3490439783',
+            avatar='https//www.example.com'
+        )
 
     @patch('podcasts.utils.requests.get')
     def test_call_api_success(self, mock_get):
@@ -81,3 +96,51 @@ class TestUtils(TestCase):
         avatar_url = get_avatar(self.channel_id)
 
         self.assertEqual(avatar_url, 'https://example.com/avatar.jpg')
+
+    @patch('youtube_transcript_api.YouTubeTranscriptApi.get_transcript')
+    def test_create_transcript_models(self, mock_get_transcript):
+        transcript = 'test' * 80
+        mock_get_transcript.return_value = [transcript, transcript]
+        video_data = [
+            {
+                'video_id': 'Test5678',
+                'channel_id': 1,
+                'title': 'Test title 2',
+                'published_date': '2023-12-29T23:00:20Z'
+            },
+            {
+                'video_id': 'Test91011',
+                'channel_id': 1,
+                'title': 'Test title 3',
+                'published_date': '2024-03-10T23:00:20Z'
+            }
+        ]
+        response = create_transcript_models(video_data)
+        self.assertEqual(len(response), 2)
+        self.assertEqual(
+            Transcript.objects.all().count(),
+            2
+        )
+
+    @patch('youtube_transcript_api.YouTubeTranscriptApi.get_transcript')
+    def test_create_transcript_models_less_then_3000(self, mock_get_transcript):
+        mock_get_transcript.return_value = 'test test test'
+        video_data = [{
+            'video_id': 'Test1234',
+            'channel_id': 2,
+            'title': 'Test title',
+            'published_date': '2023-09-10T23:00:20Z'
+        }]
+        response = create_transcript_models(video_data)
+        # print(response)
+        self.assertEqual(response[0].video_id, 'Test1234')
+        self.assertEqual(response[0].channel.id, 2)
+        self.assertEqual(response[0].title, 'Test title')
+        self.assertEqual(response[0].published_date, '2023-09-10T23:00:20Z')
+        self.assertTrue(response[0].private_video)
+        self.assertFalse(response[0].exclusive)
+        self.assertFalse(response[0].is_draft)
+
+    def test_create_transcript_models_no_episodes(self):
+        response = create_transcript_models([])
+        self.assertEqual(response, 'No episodes found.')
