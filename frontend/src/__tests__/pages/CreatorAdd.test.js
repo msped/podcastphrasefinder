@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import "@testing-library/jest-dom";
-import Add from '@/pages/creator/dashboard/episode/add'; 
+import Add from '@/pages/creator/dashboard/episodes/add'; 
 
 jest.mock('../../pages/creator/_forms/AddEpisodeFromYouTubeForm', () => () => <div>AddEpisodeFromYouTubeForm Component</div>);
 
