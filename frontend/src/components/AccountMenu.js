@@ -22,7 +22,8 @@ const styles = {
     accountAvatar: {
         width: 32,
         height: 32,
-        mx: .5 
+        mx: .5,
+        cursor: 'pointer'
     },
     menuPaperProps: {
         overflow: 'visible',
