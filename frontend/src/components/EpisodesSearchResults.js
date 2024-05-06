@@ -28,9 +28,9 @@ export default function EpisodesSearchResults({ query, slug }) {
         if (!isLoading && results.length > 0 && query.length > 3) {
             return (
                 <Grid container spacing={2}>
-                    {results.map((item) => (
-                        <Grid item key={item.id} xs={12}>
-                            <EpisodePanel episode={item}/>
+                    {results.map((result, index) => (
+                        <Grid item key={index} xs={12}>
+                            <EpisodePanel item={result}/>
                         </Grid>
                     ))}
                 </Grid>

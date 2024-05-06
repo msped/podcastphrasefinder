@@ -16,7 +16,7 @@ export default function SignIn() {
     }
 
     return (
-        <Button onClick={() => signIn('google', { callbackUrl: '/dashboard' })}>
+        <Button onClick={() => signIn('google', { callbackUrl: '/creator/dashboard/episodes' })}>
             Sign in
         </Button>
     )

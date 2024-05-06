@@ -7,7 +7,6 @@ import * as nextAuthReact from 'next-auth/react';
 import '@testing-library/jest-dom'
 
 // Mocks for Next.js functions and components
-jest.mock('next/link', () => ({ children }) => children);
 jest.mock('next-auth/react', () => ({
     signOut: jest.fn(),
     useSession: jest.fn(),

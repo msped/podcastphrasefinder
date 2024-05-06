@@ -6,12 +6,12 @@ import MenuItem from '@mui/material/MenuItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Divider from '@mui/material/Divider';
 import Tooltip from '@mui/material/Tooltip';
-import AddIcon from '@mui/icons-material/Add';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import { signOut, useSession } from 'next-auth/react'
 
+import Link from 'next/link';
 
 const styles = {
     accountMenuBox: {
@@ -22,7 +22,8 @@ const styles = {
     accountAvatar: {
         width: 32,
         height: 32,
-        mx: .5 
+        mx: .5,
+        cursor: 'pointer'
     },
     menuPaperProps: {
         overflow: 'visible',
@@ -83,21 +84,21 @@ export default function AccountMenu() {
                 open={open}
                 onClose={handleClose}
                 onClick={handleClose}
-                PaperProps={{
+                slotProps={{
                     elevation: 0,
                     sx: styles.menuPaperProps,
                 }}
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-                <MenuItem href='/dashboard'>
+                <MenuItem href='/creator/dashboard/episodes' component={Link}>
                     <ListItemIcon>
                         <DashboardIcon fontSize="small" />
                     </ListItemIcon>
                     Creator dashboard
                 </MenuItem>
                 <Divider />
-                <MenuItem href='/settings'>
+                <MenuItem href='/settings' component={Link}>
                     <ListItemIcon>
                         <Settings fontSize="small" />
                     </ListItemIcon>

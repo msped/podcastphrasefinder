@@ -49,29 +49,35 @@ describe("EpisodesSearchResults", () => {
         useGetEpisodesSearchHook.mockImplementation(() => ({
             results: [
                 {
+                    id: 90,
                     episode: {
-                        id: "1",
+                        id: 1,
                         title: "Episode 1",
                         channel: {
                             name: "Channel A",
                             slug: "channel-a",
                             avatar: "https://www/example.com/"
                         },
-                        published_date: '2020-08-03T07:59:59+00:00',
+                        published_date: '2023-07-24T23:00:06+00:00',
+                        private_video: false,
+                        exclusive: false
                     },
                     transcript: "Here we go, the first test episode of this podcast",
                     highlight: null
                 },
                 {
+                    id: 9,
                     episode: {
-                        id: "2",
+                        id: 2,
                         title: "Episode 2",
                         channel: {
                             name: "Channel B",
                             slug: "channel-b",
                             avatar: "https://www/example.com/"
                         },
-                        published_date: '2023-12-05T07:59:59+00:00',
+                        published_date: '2023-06-03T23:00:06+00:00',
+                        private_video: false,
+                        exclusive: false
                     },
                     transcript: "test for the rest is politics with me, Rory Stewart",
                     highlight: null

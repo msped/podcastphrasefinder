@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import AddEpisodeFromYouTubeForm from '@/forms/AddEpisodeFromYouTubeForm';
+import AddEpisodeFromYouTubeForm from '@/pages/creator/_forms/AddEpisodeFromYouTubeForm';
 import mockRouter from 'next-router-mock';
 import '@testing-library/jest-dom';
 import { LocalizationProvider } from '@mui/x-date-pickers';

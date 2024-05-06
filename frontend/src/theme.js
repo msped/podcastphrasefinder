@@ -19,6 +19,9 @@ const theme = createTheme({
         type: 'dark',
     },
     typography: {
+        button: {
+            textTransform: 'none'
+        },
         fontFamily: roboto.style.fontFamily
     },
     overrides: {
