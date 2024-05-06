@@ -56,7 +56,7 @@ describe('EpisodePanel', () => {
     };
 
     it('renders the episode link', () => {
-        render(<EpisodePanel episode={episode} />);
+        render(<EpisodePanel item={episode} />);
         const episodeName = screen.getByText(
             /Suella's speeding, Japan in focus, and what's the point of the G7?/i
         );
@@ -64,13 +64,13 @@ describe('EpisodePanel', () => {
     });
 
     it('shows the podcast channel in the panel', () => {
-        render(<EpisodePanel episode={episode} />);
+        render(<EpisodePanel item={episode} />);
         const channelName = screen.getByText(/The Rest Is Politics/i);
         expect(channelName).toBeInTheDocument();
     });
 
     it("checks that the correct length of time is displayed", () => {
-        render(<EpisodePanel episode={episode} />)
+        render(<EpisodePanel item={episode} />)
         const published_date = new Date(episode.episode.published_date);
         const current_date_time = new Date();
 
@@ -80,7 +80,7 @@ describe('EpisodePanel', () => {
     })
 
     it('renders the avatar', () => {
-        render(<EpisodePanel episode={episode} />)
+        render(<EpisodePanel item={episode} />)
     
         const avatar = screen.getByAltText("The Rest Is Politics logo")
     
@@ -88,21 +88,21 @@ describe('EpisodePanel', () => {
     })
 
     it('YouTube channel link is rendered', () => {
-        render(<EpisodePanel episode={episode} />)
+        render(<EpisodePanel item={episode} />)
         const channelLink = screen.getByText('The Rest Is Politics');
         expect(channelLink.href).toEqual(`https://www.youtube.com/channel/${episode.episode.channel.channel_id}`)
     })
 
     // test highlight not open (should be unmounted i.e. not in the doc)
     it('Render episode panel with highlight accordion collasped', () => {
-        render(<EpisodePanel episode={episode} />)
+        render(<EpisodePanel item={episode} />)
         const highlightDropdownText = screen.queryByText('test1');
         expect(highlightDropdownText).not.toBeInTheDocument();
     })
 
     // test highlight open and see 1
     it('Test opening highlight show first item in the array', () => {
-        render(<EpisodePanel episode={episode} />)
+        render(<EpisodePanel item={episode} />)
         const accordionToggleButton = screen.getByText('See transcript matches');
         fireEvent.click(accordionToggleButton);
         const getFirstMatch = screen.queryByText('test1');
@@ -111,7 +111,7 @@ describe('EpisodePanel', () => {
 
     // test highlight open and cycle
     it('Open highlight and cycle through the matches', () => {
-        render(<EpisodePanel episode={episode} />)
+        render(<EpisodePanel item={episode} />)
         const accordionToggleButton = screen.getByText('See transcript matches');
         fireEvent.click(accordionToggleButton);
         const nextMatchButton = screen.getByLabelText('next match')
@@ -125,7 +125,7 @@ describe('EpisodePanel', () => {
 
     // test highlight not showing when null
     it('Test not highlight shows with no highlight', () => {
-        render(<EpisodePanel episode={episodeNoHighlight} />)
+        render(<EpisodePanel item={episodeNoHighlight} />)
         const highlightDropdownText = screen.queryByText('See transcript matches');
         expect(highlightDropdownText).not.toBeInTheDocument();
     })

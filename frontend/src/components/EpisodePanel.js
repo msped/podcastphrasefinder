@@ -105,15 +105,15 @@ const styles = {
     },
 }
 
-export default function EpisodePanel({ episode }) {
-    const published_date = new Date(episode.episode.published_date)
+export default function EpisodePanel({ item }) {
+    const published_date = new Date(item.episode.published_date)
     const current_date_time = new Date()
     const [highlightIndex, setHighlightIndex] = useState(0)
-    const highlightIndexLength = episode.highlight ? episode.highlight.length : 0
+    const highlightIndexLength = item.highlight ? item.highlight.length : 0
     const [isExpanded, setIsExpanded] = useState(false)
 
     const handleHighlightSelection = (direction) => () => {
-        if (direction === 'next' && highlightIndex < episode.highlight.length - 1) {
+        if (direction === 'next' && highlightIndex < item.highlight.length - 1) {
             setHighlightIndex(highlightIndex + 1);
         } else if (direction === 'prev' && highlightIndex > 0) {
             setHighlightIndex(highlightIndex - 1);
@@ -131,9 +131,9 @@ export default function EpisodePanel({ episode }) {
                     <Grid item xs={3} sm={2}>
                         <Box sx={styles.logoWrapper}>
                             <Image
-                                src={episode.episode.channel.avatar}
+                                src={item.episode.channel.avatar}
                                 style={{...styles.logo}}
-                                alt={`${episode.episode.channel.name} logo`}
+                                alt={`${item.episode.channel.name} logo`}
                                 width={160}
                                 height={90}
                             />
@@ -146,20 +146,20 @@ export default function EpisodePanel({ episode }) {
                                 component='span'
                                 sx={styles.episodeInformation}
                             >
-                                {episode.episode.title}{episode.episode.exclusive && <ExclusiveChip />}
+                                {item.episode.title}{item.episode.exclusive && <ExclusiveChip />}
                             </Typography>
                             <Typography sx={styles.publishedDate} data-testid='time-since-test-id'>
                                 {formatDistance(published_date, current_date_time)} ago
                             </Typography>
                             <Link
-                                href={`https://www.youtube.com/channel/${episode.episode.channel.channel_id}`}
+                                href={`https://www.youtube.com/channel/${item.episode.channel.channel_id}`}
                                 target='_blank'
                                 sx={styles.channelInformation}
                             >
-                                {episode.episode.channel.name}
+                                {item.episode.channel.name}
                             </Link>
                             {
-                                episode.highlight && (
+                                item.highlight && (
                                     <Accordion 
                                         disableGutters
                                         sx={styles.accordionStyles}
@@ -181,7 +181,7 @@ export default function EpisodePanel({ episode }) {
                         </Stack>
                     </Grid>
                 </Grid>
-                {episode.highlight && (
+                {item.highlight && (
                     <Collapse in={isExpanded} mountOnEnter unmountOnExit>
                         <Stack direction='column' spcaing={2}>
                             <Button 
@@ -194,7 +194,7 @@ export default function EpisodePanel({ episode }) {
                             </Button>
                             <Typography
                                 dangerouslySetInnerHTML={
-                                    {__html: episode.highlight[highlightIndex]}
+                                    {__html: item.highlight[highlightIndex]}
                                 }
                                 sx={styles.highlightText}
                             ></Typography>
