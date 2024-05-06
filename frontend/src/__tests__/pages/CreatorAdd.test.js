@@ -4,6 +4,10 @@ import Add from '@/pages/creator/dashboard/episodes/add';
 
 jest.mock('../../pages/creator/_forms/AddEpisodeFromYouTubeForm', () => () => <div>AddEpisodeFromYouTubeForm Component</div>);
 
+jest.mock("next/navigation", () => ({
+    usePathname: () => "localhost:3000/creator/dashboard/episodes",
+}));
+
 describe('Add Component Tests', () => {
     test('renders Add an Episode header', () => {
         render(<Add />);
