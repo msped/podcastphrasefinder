@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 
 import AddEpisodeFromYouTubeForm from '@/pages/creator/_forms/AddEpisodeFromYouTubeForm';
+import withDashboardLayout from '../../_components/withDashboardLayout';
 
 
 function TabPanel(props) {
@@ -61,4 +62,4 @@ const Add = () => {
     )
 }
 
-export default Add
+export default withDashboardLayout(Add)
