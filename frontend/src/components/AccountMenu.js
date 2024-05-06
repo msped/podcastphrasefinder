@@ -91,7 +91,7 @@ export default function AccountMenu() {
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-                <MenuItem href='/creator/dashboard' component={Link}>
+                <MenuItem href='/creator/dashboard/episodes' component={Link}>
                     <ListItemIcon>
                         <DashboardIcon fontSize="small" />
                     </ListItemIcon>
