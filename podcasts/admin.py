@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from .models import Episode, Podcast, EpisodeReleaseDay, Transcript
+from organisations.models import Membership
 
 admin.site.register(EpisodeReleaseDay)
 
@@ -10,6 +11,11 @@ class EpisodeReleaseDayInlineAdmin(admin.TabularInline):
     extra = 1
 
 
+class MembershipInlineAdmin(admin.TabularInline):
+    model = Membership
+    extra = 0
+
+
 class TranscriptInlineAdmin(admin.TabularInline):
     model = Transcript
     extra = 0
@@ -17,7 +23,7 @@ class TranscriptInlineAdmin(admin.TabularInline):
 
 @admin.register(Podcast)
 class PodcastAdmin(admin.ModelAdmin):
-    inlines = [EpisodeReleaseDayInlineAdmin]
+    inlines = [EpisodeReleaseDayInlineAdmin, MembershipInlineAdmin]
 
     class Meta:
         model = Podcast
