@@ -1,5 +1,6 @@
 from unittest import mock
 from datetime import datetime as date
+from django.contrib.auth.models import User
 from django.test import TestCase
 from ..tasks import (
     add_back_catalogue_task,
@@ -20,6 +21,8 @@ class BackCatalogueTaskTest(TestCase):
         mocked_transcript_length = 'mockedtranscriptlengthnew' * 121
         self.mock_get_transcript.return_value = [
             {'text': mocked_transcript_length}]
+        self.user = User.objects.create_user(
+            username='admin', password='admin')
 
     def tearDown(self):
         self.mocked_get_transcript.stop()
@@ -27,6 +30,7 @@ class BackCatalogueTaskTest(TestCase):
     def test_add_back_catalogue_task(self):
         # no need to mock avatar as runs in signal
         podcast = Podcast.objects.create(
+            owner=self.user,
             name='jawed',
             channel_id='UC4QobU6STFB0P71PMvOGN5A',
             avatar='https//www.example.com'
@@ -46,7 +50,10 @@ class TestCheckForPrivateVideos(TestCase):
 
     def setUp(self):
         mocked_transcript = 'mockedtranscriptlengthnew' * 121
+        self.user = User.objects.create_user(
+            username='admin', password='admin')
         Podcast.objects.create(
+            owner=self.user,
             name='Test Podcast',
             channel_id='UCBa659QWEk1AI4Tg--mrJ2A',
             avatar='https//www.example.com'
@@ -136,7 +143,10 @@ class TestCheckForPrivateVideos(TestCase):
 class TestCheckAvatar(TestCase):
 
     def setUp(self):
+        self.user = User.objects.create_user(
+            username='admin', password='admin')
         Podcast.objects.create(
+            owner=self.user,
             name='Test Podcast',
             channel_id='UCBa659QWEk1AI4Tg--mrJ2A',
             avatar='https//www.example.com'
@@ -221,7 +231,10 @@ class TestGetNewEpisodes(TestCase):
         mocked_transcript_length = 'mockedtranscriptlengthnew' * 121
         self.mock_get_transcript.return_value = [
             {'text': mocked_transcript_length}]
+        self.user = User.objects.create_user(
+            username='admin', password='admin')
         Podcast.objects.create(
+            owner=self.user,
             name='Have a Word Podcast',
             channel_id='UChl6sFeO_O0drTc1CG1ymFw',
             avatar='https//www.example.com'

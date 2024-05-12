@@ -53,6 +53,7 @@ class TestAddYoutubeEpisodeView(APITestCase):
             username='admin', password='admin')
         self.client.force_authenticate(user=self.user)
         self.podcast = Podcast.objects.create(
+            owner=self.user,
             name='Test Podcast',
             channel_id='testtesttest',
             avatar='https://test.test/'

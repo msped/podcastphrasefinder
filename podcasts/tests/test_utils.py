@@ -1,4 +1,5 @@
 from unittest.mock import patch
+from django.contrib.auth.models import User
 from django.test import TestCase
 from requests.exceptions import RequestException
 
@@ -16,14 +17,20 @@ class TestUtils(TestCase):
 
     def setUp(self):
         self.channel_id = 'test_channe_id'
+        self.user = User.objects.create_user(
+            username='admin', password='admin')
+        self.user2 = User.objects.create_user(
+            username='notadmin', password='admin')
         Podcast.objects.create(
             id=1,
+            owner=self.user,
             name='test',
             channel_id='test0987654321',
             avatar='https//www.example.com'
         )
         Podcast.objects.create(
             id=2,
+            owner=self.user2,
             name='test podcast',
             channel_id='test3490439783',
             avatar='https//www.example.com'

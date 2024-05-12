@@ -1,6 +1,7 @@
 from datetime import datetime
 from unittest import mock
 from zoneinfo import ZoneInfo
+from django.contrib.auth.models import User
 from rest_framework.test import APITestCase
 from ..models import Podcast, Episode, EpisodeReleaseDay, Transcript
 from ..serializers import PodcastSerializer, EpisodeSerializer, TranscriptSerializer
@@ -17,7 +18,10 @@ class TestModels(APITestCase):
         mocked_transcript_length = 'mockedtranscriptlengthnew' * 121
         self.mock_get_transcript.return_value = [
             {'text': mocked_transcript_length}]
+        self.user = User.objects.create_user(
+            username='admin', password='admin')
         podcast = Podcast.objects.create(
+            owner=self.user,
             name='Tom Scott',
             channel_id='UCBa659QWEk1AI4Tg--mrJ2A',
             avatar='https//www.example.com'
@@ -136,7 +140,10 @@ class EpisodeSerializerTestCase(APITestCase):
         mocked_transcript_length = 'mockedtranscriptlengthnew' * 121
         self.mock_get_transcript.return_value = [
             {'text': mocked_transcript_length}]
+        self.user = User.objects.create_user(
+            username='admin', password='admin')
         Podcast.objects.create(
+            owner=self.user,
             name='Have a Word Podcast',
             channel_id='UChl6sFeO_O0drTc1CG1ymFw',
             avatar='https//www.example.com'
@@ -228,7 +235,10 @@ class PodcastSerializerTestCase(APITestCase):
         mocked_transcript_length = 'mockedtranscriptlengthnew' * 121
         self.mock_get_transcript.return_value = [
             {'text': mocked_transcript_length}]
+        self.user = User.objects.create_user(
+            username='admin', password='admin')
         self.podcast = Podcast.objects.create(
+            owner=self.user,
             name='Have a Word Podcast',
             channel_id='UChl6sFeO_O0drTc1CG1ymFw',
             avatar='https://www.exmaple.com/'
@@ -258,7 +268,10 @@ class PodcastSerializerTestCase(APITestCase):
 class TranscriptSerializerTestCase(APITestCase):
     def setUp(self):
         mocked_transcript = 'mockedtranscriptlengthnew' * 121
+        self.user = User.objects.create_user(
+            username='admin', password='admin')
         Podcast.objects.create(
+            owner=self.user,
             name='Have a Word Podcast',
             channel_id='UChl6sFeO_O0drTc1CG1ymFw',
             avatar='https//www.example.com'
