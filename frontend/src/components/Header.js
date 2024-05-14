@@ -3,11 +3,16 @@ import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 import Image from 'next/image';
 import Link from 'next/link';
 
 import logo from '../../public/static/images/podcastphrasefinder-no-bg.png'
-import SignIn from '@/components/SignIn';
+import { signIn } from "next-auth/react";
+import AccountMenu from '@/components/AccountMenu';
+import PodcastSwitcher from '@/components/PodcastSwitcher';
+import SignedIn from '@/components/SignedIn';
+import SignedOut from '@/components/SignedOut';
 
 const styles = {
     logoLink: {
@@ -45,6 +50,11 @@ export default function Header() {
                             PodcastPhraseFinder
                         </Typography>
                     </Link>
+
+                    <SignedIn>
+                        <PodcastSwitcher />
+                    </SignedIn>
+
                     <Box sx={{
                         flexGrow: 1,
                     }}>
@@ -56,7 +66,14 @@ export default function Header() {
                     <Link href='/podcasts' style={{...styles.headerLink}}>
                         Podcasts
                     </Link>
-                    <SignIn />
+                    <SignedIn>
+                        <AccountMenu />
+                    </SignedIn>
+                    <SignedOut>
+                    <Button onClick={() => signIn('google', { callbackUrl: '/creator/dashboard/episodes' })}>
+                        Sign in
+                    </Button>
+                    </SignedOut>
                 </Toolbar>
             </AppBar>
         </Box>
