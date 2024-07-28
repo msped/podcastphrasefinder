@@ -54,7 +54,10 @@ export default function DashboardLayout({ children }) {
                         </Button>
                     </Link>
                 </Stack>
-                <Box sx={{ flexGrow: 1 }}>
+                <Box sx={{ flexGrow: 1, paddingLeft: {
+                    xs: 0,
+                    md: 4
+                }}}>
                     {children}
                 </Box>
             </Box>
