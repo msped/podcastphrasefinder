@@ -34,6 +34,13 @@ export const authOptions = {
     session: {
         strategy: "jwt",
         maxAge: BACKEND_REFRESH_TOKEN_LIFETIME,
+        cookie: {
+            name: "pod-finder-session",
+            secure: process.env.NODE_ENV === "production",
+            httpOnly: true,
+            sameSite: "lax",
+            path: "/"
+        }
     },
     providers: [
         GoogleProvider({
