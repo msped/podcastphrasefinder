@@ -52,7 +52,9 @@ export default function Header() {
                     </Link>
 
                     <SignedIn>
-                        <PodcastSwitcher />
+                        <Box mx={2}>
+                            <PodcastSwitcher />
+                        </Box>
                     </SignedIn>
 
                     <Box sx={{
