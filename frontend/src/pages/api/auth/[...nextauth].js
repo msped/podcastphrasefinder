@@ -22,7 +22,7 @@ const SIGN_IN_HANDLERS = {
             account['meta'] = response.data;
             return true;
         } catch (error) {
-            console.error(error);
+            console.error("Sign in handler error: ", error);
             return false
         }
     },
