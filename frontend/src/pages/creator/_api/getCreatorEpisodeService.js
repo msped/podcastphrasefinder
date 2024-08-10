@@ -1,9 +1,9 @@
 import apiClient from "../../../api/apiClient";
 
-const getEpisodesSearchService = () => {
-    return apiClient
-        .get('creator/episodes')
-        .then((res) => res.data)
+const getEpisodesSearchService = async (selectedPodcastOrg) => {
+    const res = await apiClient
+        .get(`creator/${selectedPodcastOrg}/episodes`);
+    return res.data;
 }
 
 export default getEpisodesSearchService;
