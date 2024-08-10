@@ -23,5 +23,6 @@ urlpatterns = [
     path('api/auth/org/', include('organisations.urls')),
     path('api/', include('podcasts.urls')),
     path('api/creator/', include('creatoradmin.urls')),
+    path('api/orgs/', include('organisations.urls')),
     path("__debug__/", include("debug_toolbar.urls")),
 ]
