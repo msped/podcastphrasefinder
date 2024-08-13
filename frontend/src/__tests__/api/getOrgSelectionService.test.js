@@ -6,7 +6,7 @@ jest.mock('../../api/apiClient');
 describe('getOrgSelectionService', () => {
     it('should call apiClient.get with the correct URL', () => {
         const expectedUrl = 'orgs/memberships/user';
-        const mockResponse = { data: { slug: 'test-org' } };
+        const mockResponse = { data: { slug: 'test-org' }, status: 200 };
         apiClient.get.mockResolvedValue(mockResponse);
 
         getOrgSelectionService();
