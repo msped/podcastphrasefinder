@@ -8,8 +8,8 @@ const useGetCreatorEpisodesHook = () => {
     const { selectedPodcastOrg } = useContext(PodcastContext);
 
     useEffect(() => {
-        function fetchDataFromService() {
-            const episodes = getCreatorEpisodeService(selectedPodcastOrg)
+        async function fetchDataFromService() {
+            const episodes = await getCreatorEpisodeService(selectedPodcastOrg)
             setResults(episodes);
             setIsLoading(false);
         }
