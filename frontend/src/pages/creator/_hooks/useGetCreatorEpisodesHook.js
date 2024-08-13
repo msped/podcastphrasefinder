@@ -1,24 +1,25 @@
-import { useEffect, useState } from 'react'
-import getCreatorEpisodeService from '@/pages/creator/_api/getCreatorEpisodeService'
+import { useEffect, useState, useContext } from 'react';
+import getCreatorEpisodeService from '@/pages/creator/_api/getCreatorEpisodeService';
+import { PodcastContext } from '@/context/PodcastContext';
 
 const useGetCreatorEpisodesHook = () => {
     const [results, setResults] = useState([])
     const [isLoading, setIsLoading] = useState(true)
+    const { selectedPodcastOrg } = useContext(PodcastContext);
 
     useEffect(() => {
         function fetchDataFromService() {
-            getCreatorEpisodeService()
-                .then(data => {
-                    setResults(data);
-                    setIsLoading(false);
-                })
-                .catch(error => {
-                    console.error("Error fetching data:", error);
-                    setIsLoading(false);
-                });
+            const episodes = getCreatorEpisodeService(selectedPodcastOrg)
+            setResults(episodes);
+            setIsLoading(false);
         }
-        fetchDataFromService();
-    }, []);
+        if (selectedPodcastOrg !== null) {
+            fetchDataFromService();
+        } else {
+            setIsLoading(false);
+            setResults([]);
+        }
+    }, [selectedPodcastOrg]);
 
     return { results, isLoading };
 }
