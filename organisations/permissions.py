@@ -1,22 +1,24 @@
 from rest_framework import permissions
 
+from .models import Membership
 
-class IsPodcastOwnerOrReadOnly(permissions.BasePermission):
+
+class IsOrgOwner(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
-        return obj.podcast.owner == request.user
+        return obj.podcast.membership_set.filter(user=request.user, role='Owner').exists()
 
 
-class IsAdminOrReadOnly(permissions.BasePermission):
-    def has_object_permiions(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        return obj.user == request.user
-
-
-class IsMemberOrReadOnly(permissions.BasePermission):
+class IsOrgAdmin(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
-        return obj.user == request.user
+        return obj.podcast.membership_set.filter(user=request.user, role='Admin').exists()
+
+
+class IsOrgMember(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return obj.podcast.membership_set.filter(user=request.user, role='Member').exists()
