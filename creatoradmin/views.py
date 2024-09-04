@@ -2,6 +2,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
+from organisations.permissions import IsOrgAdmin, IsOrgMember, IsOrgOwner
 from podcasts.models import Episode, Podcast
 from podcasts.serializers import EpisodeSerializer
 from podcasts.utils import get_transcript
@@ -50,3 +52,14 @@ class AddYouTubeEpisode(APIView):
             serializer.save()
             return Response(status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CreatorEpisodes(ListAPIView):
+    permission_classes = [
+        IsOrgAdmin | IsOrgMember | IsOrgOwner,
+        IsAuthenticated
+    ]
+    serializer_class = EpisodeSerializer
+
+    def get_queryset(self):
+        return Episode.objects.filter(channel__slug=self.kwargs['slug'])
