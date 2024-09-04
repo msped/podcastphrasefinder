@@ -9,8 +9,9 @@ from ..serializers import MembershipSerializer
 class MembershipSerializerTestCase(APITestCase):
     def setUp(self):
         self.factory = APIRequestFactory()
-        self.user = User.objects.create_user(
+        self.user = User.objects.create(
             username='testuser', password='12345')
+        self.client.login(username='testuser', password='12345')
         self.podcast = Podcast.objects.create(
             owner=self.user,
             name='Test Podcast',
@@ -37,12 +38,15 @@ class MembershipSerializerTestCase(APITestCase):
             instance=self.membership, context=serializer_context)
 
         data = serializer.data
-        self.assertEqual(set(data.keys()), set(
-            ['id', 'user', 'podcast', 'role']))
+        self.assertEqual(data['user']['id'], self.user.id)
+        self.assertEqual(data['podcast']['id'], self.podcast.id)
+        self.assertEqual(data['role'], self.member_role)
+        self.assertFalse(data['is_primary'])
 
     def test_field_content(self):
         serializer = MembershipSerializer(instance=self.membership)
 
-        self.assertEqual(serializer.data['user'], self.user.id)
-        self.assertEqual(serializer.data['podcast'], self.podcast.id)
+        self.assertEqual(serializer.data['user']['id'], self.user.id)
+        self.assertEqual(serializer.data['podcast']['id'], self.podcast.id)
         self.assertEqual(serializer.data['role'], self.member_role)
+        self.assertFalse(serializer.data['is_primary'])
