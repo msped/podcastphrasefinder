@@ -1,34 +1,123 @@
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from .models import Membership
 from .serializers import MembershipSerializer
 from podcasts.models import Podcast
 from podcasts.serializers import PodcastSerializer
+from .permissions import IsOrgOwner, IsOrgAdmin, IsOrgMember
 
 
+# List all Podcasts where the user is the owner or create a podcast
 class PodcastListCreateView(generics.ListCreateAPIView):
-    queryset = Podcast.objects.filter()
     serializer_class = PodcastSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        podcast = serializer.save(owner=self.request.user)
+        Membership.objects.create(
+            user=self.request.user,
+            podcast_id=podcast.id,
+            role='Owner',
+            is_primary=True
+        )
+
+    def get_queryset(self):
+        return Podcast.objects.filter(owner=self.request.user)
+
+
+# Handles the changing of the selected membership (podcast)
+class UserOrgSelectionView(APIView):
+    permission_classes = [
+        permissions.IsAuthenticated,
+        IsOrgOwner | IsOrgAdmin | IsOrgMember
+    ]
+
+    def get(self, request):
+        org = Membership.objects.filter(
+            user=request.user, is_primary=True).first()
+        if org:
+            serializer = MembershipSerializer(org, many=False)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def post(self, request):
+        qs = Membership.objects.filter(user=request.user, is_primary=True)
+        if qs.exists():
+            qs.update(is_primary=False)
+
+        podcast_slug = request.data.get("slug")
+        if not podcast_slug:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            org = Membership.objects.get(
+                user=request.user, podcast__slug=podcast_slug)
+            org.is_primary = True
+            org.save()
+            serializer = MembershipSerializer(org, many=False)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Membership.DoesNotExist:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+# List users memberships and allow creation of memberships
 
 
 class MembershipListCreateView(generics.ListCreateAPIView):
-    queryset = Membership.objects.all()
     serializer_class = MembershipSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            permission_classes = [
+                IsOrgAdmin | IsOrgOwner,
+                permissions.IsAuthenticated
+            ]
+        else:
+            permission_classes = [
+                IsOrgAdmin | IsOrgOwner | IsOrgMember,
+                permissions.IsAuthenticated
+            ]
+        return [permission() for permission in permission_classes]
+
+    # need to work on this as it currently wont work
+    # def perform_create(self, serializer):
+    #     serializer.save(
+    #         user=self.request.user,
+    #         podcast_id=self.request.data.get('podcast_id')
+    #     )
+
+    def get_queryset(self):
+        return Membership.objects.filter(user=self.request.user)
 
 
+# Allow the update and delete of a membership
 class MembershipDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Membership.objects.all()
     serializer_class = MembershipSerializer
     permission_classes = [permissions.IsAuthenticated]
-    lookup_field = 'username'
-    lookup_url_kwarg = 'username'
+    lookup_field = 'id'
+    lookup_url_kwarg = 'id'
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [
+                IsOrgAdmin | IsOrgOwner | IsOrgMember,
+                permissions.IsAuthenticated
+            ]
+        elif self.request.method == 'PATCH':
+            self.permission_classes = [
+                IsOrgAdmin | IsOrgOwner,
+                permissions.IsAuthenticated
+            ]
+        elif self.request.method == 'DELETE':
+            self.permission_classes = [
+                IsOrgOwner | IsOrgAdmin, permissions.IsAuthenticated
+            ]
+        else:
+            self.permission_classes
+
+        return super(MembershipDetailView, self).get_permissions()
 
     def perform_update(self, serializer):
         serializer.save(user=self.request.user)
