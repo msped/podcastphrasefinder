@@ -9,7 +9,7 @@ const useGetCreatorEpisodesHook = () => {
 
     useEffect(() => {
         async function fetchDataFromService() {
-            const episodes = await getCreatorEpisodeService(selectedPodcastOrg)
+            const episodes = await getCreatorEpisodeService(selectedPodcastOrg.slug)
             setResults(episodes);
             setIsLoading(false);
         }
