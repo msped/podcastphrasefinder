@@ -3,91 +3,108 @@ import withDashboardLayout from '../../_components/withDashboardLayout'
 import {
     Box,
     Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TablePagination,
-    TableRow,
+    Link,
+    Stack,
 } from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { DataGrid, useGridApiRef } from '@mui/x-data-grid';
 import useGetCreatorEpisodesHook from '../../_hooks/useGetCreatorEpisodesHook';
-import LoadingSpinner from '@/components/LoadingSpinner';
+
+const renderIcon = (value) => value ? <CheckCircleIcon color='success'/> : <CancelIcon color='error'/>
 
 const columns = [
-    { id: 'title', label: 'Title', minWidth: 175 },
-    { id: 'exclusive', label: 'Exclusive', minWidth: 100 },
-    { id: 'published_date', label: 'Published Date', minWidth: 170 },
-    { id: 'private_video', label: 'Private Video', minWidth: 170 },
-    { id: 'is_draft', label: 'Draft', minWidth: 170 },
+    { field: 'title', headerName: 'Title', minWidth: 400 },
+    { 
+        field: 'exclusive',
+        headerName: 'Exclusive',
+        minWidth: 100,
+        headerAlign: 'center',
+        GridColDef: 'center',
+        renderCell: (params) => (
+            <Box display='flex' justifyContent='center' alignItems='center' pt={1}>
+                {renderIcon(params.value)}
+            </Box>
+        ),
+    },
+    {
+        field: 'published_date',
+        headerName: 'Published Date',
+        headerAlign: 'center',
+        minWidth: 125,
+        valueGetter: (params) => {
+            const date = new Date(params).toLocaleDateString('en-GB');
+            return date
+        },
+    },
+    {
+        field: 'private_video',
+        headerName: 'Visibilitiy',
+        headerAlign: 'center',
+        renderCell: (params) => (
+            <Box display='flex' justifyContent='center' alignItems='center' pt={1}>
+                {params.value ? 'Private' : 'Public'}
+            </Box>
+        )
+    },
+    { 
+        field: 'is_draft',
+        headerName: 'Draft',
+        headerAlign: 'center',
+        renderCell: (params) => (
+            <Box display='flex' justifyContent='center' alignItems='center' pt={1}>
+                {renderIcon(params.value)}
+            </Box>
+        )
+    },
+    {
+        field: 'actions',
+        type: 'actions',
+        headerName: 'Actions',
+        width: 150,
+        renderCell: ({ id }) => {
+            return (
+                <Stack spacing={2} direction='row'>
+                    <Link href={`creator/episodes/${id}/edit`} color='inherit'>
+                        {<EditIcon />}
+                    </Link>
+                    <Link href={`to/do`} color='inherit'> {/* handle delete */}
+                        {<DeleteIcon />}
+                    </Link>
+                </Stack>
+            )
+        },
+    },
 ];
 
 function EpisodesDashboard() {
     const { results, isLoading } = useGetCreatorEpisodesHook();
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    // const apiRef = useGridApiRef(); for row selection
 
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
-    };
-
-    if (isLoading) {
-        return <LoadingSpinner />
-    }
     return (
         <Box>
             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                <TableContainer sx={{ maxHeight: 440 }}>
-                    <Table stickyHeader aria-label="sticky table">
-                        <TableHead>
-                            <TableRow>
-                            {columns.map((column) => (
-                                <TableCell
-                                key={column.id}
-                                style={{ minWidth: column.minWidth }}
-                                >
-                                    {column.label}
-                                </TableCell>
-                            ))}
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {results
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((row) => {
-                                return (
-                                <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                                    {columns.map((column) => {
-                                    const value = row[column.id];
-                                    return (
-                                        <TableCell key={column.id} align={column.align}>
-                                        {column.format && typeof value === 'number'
-                                            ? column.format(value)
-                                            : value}
-                                        </TableCell>
-                                    );
-                                    })}
-                                </TableRow>
-                                );
-                            })}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <TablePagination
-                    rowsPerPageOptions={[10, 25, 100]}
-                    component="div"
-                    count={results.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
+                <DataGrid
+                    rows={results}
+                    columns={columns}
+                    pageSizeOptions={[10, 25, 50]}
+                    initialState={{
+                        pagination: { paginationModel: { pageSize: 10 } }
+                    }}
+                    disableSelectionOnClick
+                    autoHeight
+                    // checkboxSelection
+                    loading={isLoading}
+                    slotProps={{
+                        loadingOverlay: {
+                            variant: 'skeleton',
+                            noRowsVariant: 'skeleton',
+                        },
+                    }}
                 />
-                </Paper>
+            </Paper>
         </Box>
     )
 }
