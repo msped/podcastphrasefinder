@@ -68,7 +68,10 @@ const PodcastSwitcher = () => {
                                 sx={{
                                     cursor: 'pointer',
                                     alignItems: 'center',
-                                    padding: 1
+                                    padding: 1,
+                                    '&:hover': {
+                                        backgroundColor: 'rgba(171, 71, 188, 0.08)'
+                                    }
                                 }}
                             >
                                 <Grid container spacing={3}>
@@ -94,9 +97,8 @@ const PodcastSwitcher = () => {
                         ))}
                         </Stack>
 
-                        {filteredPodcasts && <Divider variant='middle' />}
+                        {filteredPodcasts && <Divider variant='middle' sx={{ paddingY: 1 }}/>}
                         
-
                         <Button sx={{ color: '#fff' }} startIcon={<AddIcon />} fullWidth>
                             Create a Podcast
                         </Button>
