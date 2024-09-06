@@ -1,53 +1,111 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import {
-    MenuItem,
     Box,
-    Select,
     Skeleton,
     Button,
+    Divider,
+    Typography,
+    Stack,
+    Grid,
+    Avatar,
 } from '@mui/material';
+import { ClickAwayListener } from '@mui/base/ClickAwayListener';
+import AddIcon from '@mui/icons-material/Add';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import useGetPodcastOrgsHook from '@/hooks/useGetPodcastOrgsHook';
 import { PodcastContext } from '@/context/PodcastContext';
 
 const PodcastSwitcher = () => {
+    const [open, setOpen] = useState(false);
     const { selectedPodcastOrg, handlePodcastOrgChange } = useContext(PodcastContext);
     const { podcasts, isLoading } = useGetPodcastOrgsHook();
 
     if (isLoading) {
-        return <Skeleton variant='rectangular' sx={{ borderRadius: '5px' }} width={140} height={40}/>;
+        return <Skeleton variant='rectangular' sx={{ borderRadius: '5px' }} data-testid='podcast-switcher-skeleton' width={140} height={40}/>;
     }
 
-    if (!podcasts || podcasts.length === 0) {
-        // This is a placeholder until I can get around to building it out.
-        // Will need to decide if I should add this in as a page or a pop
-        // up modal in the future. Will probably change with the creation
-        // of the actual component instead of the select element.
-        return <Button>Add your podcast</Button>;
+    const handleSwitchOpen = () => {
+        setOpen(!open);
     }
+
+    const filteredPodcasts = podcasts && podcasts.length > 0 ? podcasts.filter(item => item.slug !== selectedPodcastOrg?.slug): null;
 
     return (
-        <Box>
-            <Select
-                id="organisation-switcher"
-                value={selectedPodcastOrg ? selectedPodcastOrg : 0}
-                onChange={(e) => handlePodcastOrgChange(e.target.value)}
-                size='small'
-                defaultValue={0}
+        <>
+            <Button 
+                onClick={handleSwitchOpen}
+                endIcon={open ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
+                sx={{
+                    color: '#fff',
+                    border: '1px solid rgba(81, 81, 81, 1)',
+                    borderRadius: '5px',
+                }}
             >
-                <MenuItem disabled value={0}>
-                    Select a Podcast
-                </MenuItem>
-                {podcasts.map((org) => (
-                    <MenuItem key={org.podcast.id} value={org.podcast.slug}>
-                        {org.podcast.name}
-                    </MenuItem>
-                ))}
-            </Select>
-        </Box>
+                {!podcasts || podcasts.length === 0 ? 'Select a podcast' : selectedPodcastOrg?.name}
+            </Button>
+            {open && (
+                <ClickAwayListener onClickAway={handleSwitchOpen}>
+                    <Box sx={{
+                        zIndex: 1,
+                        position: 'absolute',
+                        padding: 1,
+                        backgroundColor: '#2E2E2E',
+                        borderRadius: '7.5px',
+                        width: '230px',
+                        maxHeight: '350px',
+                        overflowY: 'auto'
+                    }}>
+                        <Stack direction='column' spacing={1}>
+                        {filteredPodcasts && filteredPodcasts.map(item => (
+                            <Box 
+                                key={item.id} 
+                                onClick={() => {
+                                    handlePodcastOrgChange(item.podcast.slug)
+                                    handleSwitchOpen()
+                                
+                                }}
+                                sx={{
+                                    cursor: 'pointer',
+                                    alignItems: 'center',
+                                    padding: 1
+                                }}
+                            >
+                                <Grid container spacing={3}>
+                                    <Grid item xs={3}>
+                                        <Avatar
+                                            alt={item.podcast.name}
+                                            src={item.podcast.avatar}
+                                            sx={{ marginRight: 1, width: 35, height: 35 }}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={8}>
+                                        <Stack direction='column' spacing={0}>
+                                            <Typography noWrap fontWeight={500}>
+                                                {item.podcast.name}
+                                            </Typography>
+                                            <Typography variant='caption' fontWeight={500} color='textSecondary'>
+                                                {item.role}
+                                            </Typography>
+                                        </Stack>
+                                    </Grid>
+                                </Grid>
+                            </Box>
+                        ))}
+                        </Stack>
+
+                        {filteredPodcasts && <Divider variant='middle' />}
+                        
+
+                        <Button sx={{ color: '#fff' }} startIcon={<AddIcon />} fullWidth>
+                            Create a Podcast
+                        </Button>
+
+                    </Box>
+                </ClickAwayListener>
+            )}
+        </>
     );
 };
-
-// This will need refactoring into an actual component in the future.
-// For now this select will do the job. 
 
 export default PodcastSwitcher;
