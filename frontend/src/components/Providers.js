@@ -4,6 +4,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { CacheProvider } from '@emotion/react';
+import { PodcastProvider } from '@/context/PodcastContext';
 import createEmotionCache from '@/createEmotionCache';
 import theme from '@/theme';
 
@@ -13,18 +14,20 @@ export default function Providers({ children, props }) {
 
     const {
         emotionCache=clientSideEmotionCache,
-        pageProps: { session, ...pageProps}
+        pageProps: { session, selectedPodcastOrg, ...pageProps}
     } = props;
 
     return (
         <SessionProvider session={session}>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <CacheProvider value={emotionCache}>
-                    <ThemeProvider theme={theme}>
-                        {children}
-                    </ThemeProvider>
-                </CacheProvider>
-            </LocalizationProvider>
+            <PodcastProvider selectedPodcastOrg={selectedPodcastOrg}>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <CacheProvider value={emotionCache}>
+                        <ThemeProvider theme={theme}>
+                            {children}
+                        </ThemeProvider>
+                    </CacheProvider>
+                </LocalizationProvider>
+            </PodcastProvider>
         </SessionProvider>
     )
 }

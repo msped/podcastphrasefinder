@@ -1,5 +1,6 @@
 import json
 from unittest import mock
+from django.contrib.auth.models import User
 from rest_framework.test import APITestCase
 
 from ..models import Podcast, Episode
@@ -15,12 +16,18 @@ class TestPodcastViews(APITestCase):
         mocked_transcript_length = 'mockedtranscriptlengthnew' * 121
         self.mock_get_transcript.return_value = [
             {'text': mocked_transcript_length}]
+        self.user = User.objects.create_user(
+            username='Have a word', password='admin')
+        self.user2 = User.objects.create_user(
+            username='Mild High Club', password='admin')
         Podcast.objects.create(
+            owner=self.user,
             name='Have a Word Podcast',
             channel_id='UChl6sFeO_O0drTc1CG1ymFw',
             avatar='https//www.example.com'
         )
         Podcast.objects.create(
+            owner=self.user2,
             name='The Mild High Club',
             channel_id='UCIpglRjjRPp2_qfsak-jSSw',
             avatar='https//www.example.com'

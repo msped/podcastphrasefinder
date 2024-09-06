@@ -22,7 +22,7 @@ const SIGN_IN_HANDLERS = {
             account['meta'] = response.data;
             return true;
         } catch (error) {
-            console.error(error);
+            console.error("Sign in handler error: ", error);
             return false
         }
     },
@@ -34,6 +34,13 @@ export const authOptions = {
     session: {
         strategy: "jwt",
         maxAge: BACKEND_REFRESH_TOKEN_LIFETIME,
+        cookie: {
+            name: "pod-finder-session",
+            secure: process.env.NODE_ENV === "production",
+            httpOnly: true,
+            sameSite: "lax",
+            path: "/"
+        }
     },
     providers: [
         GoogleProvider({

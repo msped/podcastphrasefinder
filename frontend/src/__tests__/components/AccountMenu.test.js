@@ -1,23 +1,16 @@
 import * as React from 'react';
 import { render, waitFor, screen, act } from '@testing-library/react';
 import AccountMenu from '@/components/AccountMenu';
-import { RouterContext } from 'next/dist/shared/lib/router-context';
+import mockRouter from 'next-router-mock';
 import userEvent from '@testing-library/user-event'
 import * as nextAuthReact from 'next-auth/react';
 import '@testing-library/jest-dom'
 
-// Mocks for Next.js functions and components
+jest.mock('next/router', () => require('next-router-mock'));
 jest.mock('next-auth/react', () => ({
     signOut: jest.fn(),
     useSession: jest.fn(),
 }));
-
-const mockRouter = {
-    route: '/',
-    pathname: '',
-    query: '',
-    asPath: '',
-};
 
 const mockSession = {
     data: {
@@ -31,14 +24,13 @@ const mockSession = {
 
 describe('<AccountMenu />', () => {
     beforeEach(() => {
+        mockRouter.push('/')
         nextAuthReact.useSession.mockImplementation(() => mockSession);
     });
 
     it('opens menu and contains the Sign Out option', async () => {
         render(
-            <RouterContext.Provider value={mockRouter}>
-                <AccountMenu />
-            </RouterContext.Provider>
+            <AccountMenu />
         );
 
         const avatar = screen.getByLabelText(/account settings/i);
@@ -58,9 +50,7 @@ describe('<AccountMenu />', () => {
 
     it('calls the signOut method with the correct parameter on clicking Sign Out', async () => {
         render(
-            <RouterContext.Provider value={mockRouter}>
-                <AccountMenu />
-            </RouterContext.Provider>
+            <AccountMenu />
         );
 
         const avatar = screen.getByLabelText(/account settings/i);
@@ -80,9 +70,7 @@ describe('<AccountMenu />', () => {
 
     it('calls the signOut method with the correct parameter on clicking Sign Out', async () => {
         render(
-            <RouterContext.Provider value={mockRouter}>
-                <AccountMenu />
-            </RouterContext.Provider>
+            <AccountMenu />
         );
 
         const avatar = screen.getByLabelText(/account settings/i);

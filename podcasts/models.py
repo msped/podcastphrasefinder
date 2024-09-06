@@ -5,7 +5,7 @@ from django.template.defaultfilters import slugify
 
 class Podcast(models.Model):
     owner = models.ForeignKey(
-        User, on_delete=models.CASCADE, null=True, blank=True)  # Blank is admin ownership
+        User, on_delete=models.CASCADE, related_name='owned_podcast')
     name = models.CharField(max_length=50)
     slug = models.SlugField(unique=True, blank=True, null=True)
     channel_id = models.CharField(max_length=24)
