@@ -48,7 +48,7 @@ describe('PodcastProvider', () => {
         });
 
         expect(getOrgSelectionService).toHaveBeenCalled();
-        expect(contextValue.selectedPodcastOrg).toBe('test-podcast');
+        expect(contextValue.selectedPodcastOrg).toMatchObject({"slug": "test-podcast"});
     });
 
     test('handles organization change correctly', async () => {
@@ -74,7 +74,7 @@ describe('PodcastProvider', () => {
 
         // Ensure initial fetch happened
         expect(getOrgSelectionService).toHaveBeenCalled();
-        expect(contextValue.selectedPodcastOrg).toBe('initial-podcast');
+        expect(contextValue.selectedPodcastOrg.slug).toBe('initial-podcast');
 
         // Simulating org change
         await act(async () => {
@@ -82,6 +82,6 @@ describe('PodcastProvider', () => {
         });
 
         expect(postOrgSelectionService).toHaveBeenCalledWith('new-org');
-        expect(contextValue.selectedPodcastOrg).toBe('changed-podcast');
+        expect(contextValue.selectedPodcastOrg).toMatchObject({slug: 'changed-podcast'});
     });
 });
