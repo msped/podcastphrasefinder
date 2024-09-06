@@ -15,7 +15,7 @@ const PodcastProvider = ({ children }) => {
             try {
                 const fetchedOrg = await getOrgSelectionService();
                 if (fetchedOrg) {
-                    setSelectedPodcastOrg(fetchedOrg.podcast.slug);    
+                    setSelectedPodcastOrg(fetchedOrg.podcast);    
                 }
                 setIsFetched(true);
             } catch (err) {
@@ -32,7 +32,7 @@ const PodcastProvider = ({ children }) => {
         try {
             const orgResponse = await postOrgSelectionService(org);
             if (orgResponse) {
-                setSelectedPodcastOrg(orgResponse.podcast.slug);
+                setSelectedPodcastOrg(orgResponse.podcast);
             }
         } catch (err) {
             console.error("Error updating organization selection:", err);
