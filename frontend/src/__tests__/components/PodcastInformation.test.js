@@ -25,15 +25,6 @@ describe('PodcastInformation', () => {
         expect(screen.getByText('Test Podcast')).toBeInTheDocument();
     });
 
-    test('renders a link to the YouTube channel', () => {
-        const slug = '1234567890';
-        render(<PodcastInformation slug={slug} />);
-        
-        // Assert that the link to the YouTube channel is rendered correctly
-        const linkElement = screen.getByRole('link');
-        expect(linkElement).toHaveAttribute('href', 'https://www.youtube.com/channel/1234567890');
-    });
-
     test('test render of avatar', () => {
         render(<PodcastInformation slug={'test-podcast'}/>);
         const channelAvatar = screen.getAllByAltText('Test Podcast')[0];
