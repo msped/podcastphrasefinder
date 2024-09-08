@@ -16,6 +16,6 @@ urlpatterns = [
         GetPodcastInformation.as_view(),
         name='get_podcast_information'
     ),
-    path('podcast/<slug:slug>/random',
+    path('podcasts/<slug:slug>/episode/random',
          RandomEpisodeView.as_view(), name="get_random_episode"),
 ]
