@@ -152,3 +152,16 @@ class TestPodcastViews(APITestCase):
             '/api/podcasts/testingthisview'
         )
         self.assertEqual(response.status_code, 404)
+
+    def test_get_random_podcast_200(self):
+        podcast = Podcast.objects.get(name='Have a Word Podcast')
+        response = self.client.get(
+            f'/api/podcasts/{podcast.slug}/episode/random'
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_random_podcast_404(self):
+        response = self.client.get(
+            '/api/podcasts/testingthisview/episode/random'
+        )
+        self.assertEqual(response.status_code, 404)
