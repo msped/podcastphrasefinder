@@ -3,7 +3,8 @@ from django.urls import path
 from .views import (
     SearchEpisodeView,
     SearchPodcastsView,
-    GetPodcastInformation
+    GetPodcastInformation,
+    RandomEpisodeView,
 )
 
 urlpatterns = [
@@ -15,4 +16,6 @@ urlpatterns = [
         GetPodcastInformation.as_view(),
         name='get_podcast_information'
     ),
+    path('podcasts/<slug:slug>/episode/random',
+         RandomEpisodeView.as_view(), name="get_random_episode"),
 ]

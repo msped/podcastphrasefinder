@@ -6,10 +6,11 @@ from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 from rest_framework import status
 from elasticsearch_dsl import Q
+from random import choice
 
 from .documents import TranscriptDocument
-from .models import Podcast
-from .serializers import PodcastSerializer, TranscriptSerializer
+from .models import Podcast, Episode
+from .serializers import PodcastSerializer, TranscriptSerializer, EpisodeSerializer
 
 
 class SearchEpisodeView(APIView):
@@ -78,4 +79,18 @@ class GetPodcastInformation(APIView):
     def get(self, request, slug):
         channel = get_object_or_404(Podcast, slug=slug)
         serializer = PodcastSerializer(channel, many=False)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class RandomEpisodeView(APIView):
+    serializer_class = EpisodeSerializer
+
+    def get(self, request, slug):
+        pks = Episode.objects.filter(
+            channel__slug=slug).values_list('pk', flat=True)
+        if not pks:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        random_pk = choice(pks)
+        response = get_object_or_404(Episode, pk=random_pk)
+        serializer = self.serializer_class(response, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
