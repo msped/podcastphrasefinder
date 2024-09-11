@@ -5,9 +5,10 @@ import {
     Card,
     CardContent,
     Stack,
-    CardActionArea,
-    Avatar
+    Avatar,
+    Box
 } from '@mui/material';
+import RandomEpisodeGenerator from '@/components/RandomEpisodeGenerator';
 
 import useGetPodcastInformationHook from '@/hooks/useGetPodcastInformationHook';
 import PodcastInformationSkeleton from '@/skeletons/PodcastInformationSkeleton';
@@ -32,54 +33,55 @@ export default function PodcastInformation({ slug }) {
                 {isLoading || !podcast ? (
                     <PodcastInformationSkeleton />
                 ) : (
-                    <CardActionArea href={`https://www.youtube.com/channel/${podcast.channel_id}`} target='_blank'>
-                        <CardContent sx={{ padding: 3 }}>
-                            <Stack direction='column' spacing={1}>
-                                <Stack alignItems='center' justifyItems='center'>
-                                    <Avatar
-                                        alt={podcast.name}
-                                        src={podcast.avatar}
-                                        sx={{
-                                            height: 60,
-                                            width: 60,
-                                            display: {
-                                                xs: 'inline-block',
-                                                sm: 'none'
-                                            }
-                                        }}
-                                    />
-                                </Stack>
-                                <Stack direction='row' spacing={2} marginY={1}>
-                                    <Avatar
-                                        alt={podcast.name}
-                                        src={podcast.avatar}
-                                        sx={{
-                                            height: 60,
-                                            width: 60,
-                                            display: {
-                                                xs: 'none',
-                                                sm: 'inline-block',
-                                            }
-                                        }}
-                                    />
-                                    <Typography 
-                                        variant='h3'
-                                        component='h1'
-                                        fontWeight='500'
-                                        sx={{
-                                            textAlign: {
-                                                xs: 'center',
-                                                sm: 'left'
-                                            },
-                                            flexGrow: 1
-                                        }}
-                                    >
-                                        {podcast.name}
-                                    </Typography>
-                                </Stack>
+                    <CardContent sx={{ padding: 3 }}>
+                        <Stack direction='column' spacing={2}>
+                            <Stack alignItems='center' justifyItems='center'>
+                                <Avatar
+                                    alt={podcast.name}
+                                    src={podcast.avatar}
+                                    sx={{
+                                        height: 60,
+                                        width: 60,
+                                        display: {
+                                            xs: 'inline-block',
+                                            sm: 'none'
+                                        }
+                                    }}
+                                />
                             </Stack>
-                        </CardContent>
-                    </CardActionArea>
+                            <Stack direction='row' spacing={2} marginY={1}>
+                                <Avatar
+                                    alt={podcast.name}
+                                    src={podcast.avatar}
+                                    sx={{
+                                        height: 60,
+                                        width: 60,
+                                        display: {
+                                            xs: 'none',
+                                            sm: 'inline-block',
+                                        }
+                                    }}
+                                />
+                                <Typography 
+                                    variant='h3'
+                                    component='h1'
+                                    fontWeight='500'
+                                    sx={{
+                                        textAlign: {
+                                            xs: 'center',
+                                            sm: 'left'
+                                        },
+                                        flexGrow: 1
+                                    }}
+                                >
+                                    {podcast.name}
+                                </Typography>
+                            </Stack>
+                            <Box>
+                                <RandomEpisodeGenerator slug={slug} />
+                            </Box>
+                        </Stack>
+                    </CardContent>
                 )}
             </Card>
         </>
