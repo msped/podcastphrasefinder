@@ -1,17 +1,25 @@
-import React from 'react'
-import withDashboardLayout from '../../_components/withDashboardLayout'
+import React, { useState } from 'react';
+import withDashboardLayout from '../../_components/withDashboardLayout';
 import {
     Box,
     Paper,
     Link,
     Stack,
+    Button,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogContentText,
+    DialogActions,
 } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { DataGrid, useGridApiRef } from '@mui/x-data-grid';
-import useGetCreatorEpisodesHook from '../../_hooks/useGetCreatorEpisodesHook';
+import { DataGrid } from '@mui/x-data-grid';
+import useGetCreatorEpisodesHook from '@/pages/creator/_hooks/useGetCreatorEpisodesHook';
+import useDeleteEpisodesHook from '@/pages/creator/_hooks/useDeleteEpisodesHook'
+
 
 const renderIcon = (value) => value ? <CheckCircleIcon color='success'/> : <CancelIcon color='error'/>
 
@@ -70,9 +78,6 @@ const columns = [
                     <Link href={`creator/episodes/${id}/edit`} color='inherit'>
                         {<EditIcon />}
                     </Link>
-                    <Link href={`to/do`} color='inherit'> {/* handle delete */}
-                        {<DeleteIcon />}
-                    </Link>
                 </Stack>
             )
         },
@@ -80,32 +85,96 @@ const columns = [
 ];
 
 function EpisodesDashboard() {
-    const { results, isLoading } = useGetCreatorEpisodesHook();
-    // const apiRef = useGridApiRef(); for row selection
+    const [open, setOpen] = useState(false)
+    const { results, isLoading, setResults } = useGetCreatorEpisodesHook();
+    const [rowSelectionModel, setRowSelectionModel] = useState([]);
+    const {
+        statusResponse,
+        isLoading: isLoadingDelete,
+        deleteEpisodes 
+    } = useDeleteEpisodesHook()
+
+    const toggleDialog = () => {
+        setOpen(!open);
+    }
+
+    const handleDeleteEpisode = async () => {
+        await deleteEpisodes(rowSelectionModel[0]);
+        toggleDialog();
+        if (statusResponse === 204) {
+            setResults((prevResults) => 
+                prevResults.filter((result) => result.id !== rowSelectionModel[0])
+            );
+            setRowSelectionModel([]);
+        } else {
+            alert("There was an error performing this action. Please try again.");
+        }
+    }
 
     return (
-        <Box>
-            <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                <DataGrid
-                    rows={results}
-                    columns={columns}
-                    pageSizeOptions={[10, 25, 50]}
-                    initialState={{
-                        pagination: { paginationModel: { pageSize: 10 } }
-                    }}
-                    disableSelectionOnClick
-                    autoHeight
-                    // checkboxSelection
-                    loading={isLoading}
-                    slotProps={{
-                        loadingOverlay: {
-                            variant: 'skeleton',
-                            noRowsVariant: 'skeleton',
-                        },
-                    }}
-                />
-            </Paper>
-        </Box>
+        <>
+            <Box>
+                <Stack direction='row' spacing={2} my={2}>
+                    <Button 
+                        startIcon={<DeleteIcon />} 
+                        variant='contained' 
+                        color='error' 
+                        onClick={toggleDialog}
+                        disabled={rowSelectionModel.length === 0}
+                    >
+                        Delete
+                    </Button>
+                </Stack>
+                <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+                    <DataGrid
+                        rows={results}
+                        columns={columns}
+                        pageSizeOptions={[10, 25, 50]}
+                        initialState={{
+                            pagination: { paginationModel: { pageSize: 10 } }
+                        }}
+                        disableSelectionOnClick
+                        disableMultipleRowSelection
+                        autoHeight
+                        checkboxSelection
+                        loading={isLoading || isLoadingDelete}
+                        onRowSelectionModelChange={(newRowSelectionModel) => {
+                            setRowSelectionModel(newRowSelectionModel);
+                        }}
+                        rowSelectionModel={rowSelectionModel}
+                        slotProps={{
+                            loadingOverlay: {
+                                variant: 'skeleton',
+                                noRowsVariant: 'skeleton',
+                            },
+                        }}
+                    />
+                </Paper>
+            </Box>
+            <Dialog
+                open={open}
+                onClose={toggleDialog}
+                aria-labelledby="delete-confirmation-title"
+                aria-describedby="delete-confirmation-dialog"
+            >
+                <DialogTitle id="delete-confirmation-title">
+                    {"Are you sure?"}
+                </DialogTitle>
+                <DialogContent>
+                    <Stack spacing={2}>
+                        <DialogContentText id="delete-confirmation-description">
+                            Are you sure you want to delete the selected episode? This action <b>cannot</b> be undone.
+                        </DialogContentText>
+                    </Stack>
+                </DialogContent>
+                <DialogActions>
+                    <Button variant='contained' onClick={toggleDialog} disabled={isLoadingDelete}>Cancel</Button>
+                    <Button variant='contained' onClick={handleDeleteEpisode} disabled={isLoadingDelete} color='error'>
+                        Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </>
     )
 }
 
