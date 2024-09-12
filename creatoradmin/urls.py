@@ -4,7 +4,7 @@ from .views import (
     YouTubeVideoIdCheck,
     AddYouTubeEpisode,
     CreatorEpisodes,
-    BulkDeleteEpisodes,
+    EpisodeDetailView,
 )
 
 urlpatterns = [
@@ -13,5 +13,5 @@ urlpatterns = [
          name='youtube_add_check'),
     path('<slug:slug>/episodes', CreatorEpisodes.as_view(), name='creator_episodes'),
     path('episodes/<pk>',
-         BulkDeleteEpisodes.as_view(), name='bulk_deleteepisodes'),
+         EpisodeDetailView.as_view(), name='bulk_deleteepisodes'),
 ]
