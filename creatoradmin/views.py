@@ -2,7 +2,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView
+from organisations.models import Membership
 from organisations.permissions import IsOrgAdmin, IsOrgMember, IsOrgOwner
 from podcasts.models import Episode, Podcast
 from podcasts.serializers import EpisodeSerializer
@@ -62,4 +63,17 @@ class CreatorEpisodes(ListAPIView):
     serializer_class = EpisodeSerializer
 
     def get_queryset(self):
-        return Episode.objects.filter(channel__slug=self.kwargs['slug'])
+        selected_org = Membership.objects.filter(
+            user=self.request.user, is_primary=True).first()
+        if selected_org:
+            return Episode.objects.filter(channel__slug=selected_org.podcast.slug)
+        return None
+
+
+class EpisodeDetailView(RetrieveUpdateDestroyAPIView):
+    permission_classes = [
+        IsOrgAdmin | IsOrgMember | IsOrgOwner,
+        IsAuthenticated
+    ]
+    queryset = Episode.objects.all()
+    serializer_class = EpisodeSerializer

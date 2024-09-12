@@ -1,7 +1,9 @@
 from unittest.mock import patch
 from django.contrib.auth.models import User
 from rest_framework.test import APITestCase, APIClient
+from rest_framework import status
 
+from organisations.models import Membership
 from podcasts.models import Podcast, Episode
 
 
@@ -102,3 +104,112 @@ class TestAddYoutubeEpisodeView(APITestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertIn('video_id', response.data)
+
+
+class TestCreatorEpisodesView(APITestCase):
+    pass
+
+
+class TestEpisodeDetailView(APITestCase):
+    def setUp(self):
+        self.owner = User.objects.create_user(
+            username='owner', password='password')
+        self.admin = User.objects.create_user(
+            username='admin', password='password')
+        self.member = User.objects.create_user(
+            username='member', password='password')
+        self.other = User.objects.create_user(
+            username='other', password='password')
+
+        self.podcast = Podcast.objects.create(
+            owner=self.owner,
+            name='Test Podcast',
+            channel_id='testtesttest',
+            avatar='https://test.test/'
+        )
+        self.episode = Episode.objects.create(
+            channel=self.podcast,
+            title='Test Episode',
+            video_id='test1234',
+            published_date='2023-09-06T12:00:00Z'
+        )
+
+        Membership.objects.create(
+            user=self.owner, role='Owner', podcast=self.podcast)
+        Membership.objects.create(
+            user=self.admin, role='Admin', podcast=self.podcast)
+        Membership.objects.create(
+            user=self.member, role='Member', podcast=self.podcast)
+
+        self.client.force_authenticate(user=self.owner)
+        self.detail_url = f'/api/creator/episodes/{self.episode.pk}'
+
+    def test_get_episode_detail_as_owner(self):
+        response = self.client.get(self.detail_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['title'], 'Test Episode')
+
+    def test_update_episode_detail_as_owner(self):
+        data = {'title': 'Updated Title'}
+        response = self.client.patch(self.detail_url, data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['title'], 'Updated Title')
+
+    def test_delete_episode_detail_as_owner(self):
+        response = self.client.delete(self.detail_url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Episode.objects.filter(pk=self.episode.pk).exists())
+
+    def test_access_episode_detail_as_admin(self):
+        self.client.force_authenticate(user=self.admin)
+        response = self.client.get(self.detail_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_update_episode_detail_as_admin(self):
+        self.client.force_authenticate(user=self.admin)
+        data = {'title': 'Updated Title by Admin'}
+        response = self.client.patch(self.detail_url, data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['title'], 'Updated Title by Admin')
+
+    def test_delete_episode_detail_as_admin(self):
+        self.client.force_authenticate(user=self.admin)
+        response = self.client.delete(self.detail_url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Episode.objects.filter(pk=self.episode.pk).exists())
+
+    def test_access_episode_detail_as_member(self):
+        self.client.force_authenticate(user=self.member)
+        response = self.client.get(self.detail_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_update_episode_detail_as_member(self):
+        self.client.force_authenticate(user=self.member)
+        data = {'title': 'Updated Title by Member'}
+        response = self.client.patch(self.detail_url, data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_delete_episode_detail_as_member(self):
+        self.client.force_authenticate(user=self.member)
+        response = self.client.delete(self.detail_url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_get_episode_detail_unauthenticated(self):
+        self.client.logout()
+        response = self.client.get(self.detail_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_update_episode_detail_unauthenticated(self):
+        self.client.logout()
+        data = {'title': 'Updated Title'}
+        response = self.client.patch(self.detail_url, data)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_delete_episode_detail_unauthenticated(self):
+        self.client.logout()
+        response = self.client.delete(self.detail_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_get_episode_detail_not_found(self):
+        response = self.client.get('/api/creator/episodes/9999/')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

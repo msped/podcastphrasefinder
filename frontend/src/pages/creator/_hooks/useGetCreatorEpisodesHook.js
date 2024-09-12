@@ -21,7 +21,7 @@ const useGetCreatorEpisodesHook = () => {
         }
     }, [selectedPodcastOrg]);
 
-    return { results, isLoading };
+    return { results, isLoading, setResults };
 }
 
 export default useGetCreatorEpisodesHook;
