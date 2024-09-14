@@ -72,11 +72,9 @@ const columns = [
         width: 75,
         renderCell: ({ id }) => {
             return (
-                <Stack spacing={2} direction='row'>
-                    <Link href={`creator/episodes/${id}/edit`} color='inherit'>
-                        {<EditIcon />}
-                    </Link>
-                </Stack>
+                <Link href={`episodes/${id}/edit`} color='inherit'>
+                    {<EditIcon />}
+                </Link>
             )
         },
     },
