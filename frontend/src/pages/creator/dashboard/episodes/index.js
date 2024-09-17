@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import withDashboardLayout from '../../_components/withDashboardLayout';
 import {
     Box,
-    Paper,
     Link,
     Stack,
     Button,
@@ -21,7 +20,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import DraftsIcon from '@mui/icons-material/Drafts';
 import PublishIcon from '@mui/icons-material/Publish';
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, GridToolbarQuickFilter } from '@mui/x-data-grid';
 import useGetCreatorEpisodesHook from '@/pages/creator/_hooks/useGetCreatorEpisodesHook';
 import useDeleteEpisodesHook from '@/pages/creator/_hooks/useDeleteEpisodesHook';
 
@@ -137,10 +136,17 @@ function EpisodesDashboard() {
                         setRowSelectionModel(newRowSelectionModel);
                     }}
                     rowSelectionModel={rowSelectionModel}
+                    disableColumnSelector
+                    disableColumnFilter
+                    disableDensitySelector
+                    slots={{ toolbar: GridToolbarQuickFilter }}
                     slotProps={{
                         loadingOverlay: {
                             variant: 'skeleton',
                             noRowsVariant: 'skeleton',
+                        },
+                        toolbar: {
+                            showQuickFilter: true,
                         },
                     }}
                     sx={{
