@@ -1,61 +1,50 @@
-import { render, screen, act } from '@testing-library/react';
-import { SessionProvider } from "next-auth/react";
-import "@testing-library/jest-dom"
-import { PodcastProvider, PodcastContext } from '@/context/PodcastContext';
-import getCreatorEpisodeService from '@/pages/creator/_api/getCreatorEpisodeService';
+import { renderHook, act } from '@testing-library/react';
 import useGetCreatorEpisodesHook from '@/pages/creator/_hooks/useGetCreatorEpisodesHook';
-import apiClient from '@/api/apiClient';
+import getCreatorEpisodeService from '@/pages/creator/_api/getCreatorEpisodeService';
+import { PodcastContext } from '@/context/PodcastContext';
 
 jest.mock('../../pages/creator/_api/getCreatorEpisodeService');
-jest.mock('../../api/apiClient');
 
 describe('useGetCreatorEpisodesHook', () => {
-    let Wrapper;
+    const mockEpisodes = [{ id: 1, title: 'Test Episode' }];
 
     beforeEach(() => {
         jest.clearAllMocks();
-        Wrapper = ({ children, selectedPodcastOrg, mockSession }) => {
-            return (
-                <SessionProvider session={mockSession}>
-                    <PodcastProvider selectedPodcastOrg={selectedPodcastOrg}>
-                        {children}
-                    </PodcastProvider>
-                </SessionProvider>
-            );
-        };
     });
 
     it('should fetch episodes when selectedPodcastOrg is available', async () => {
-        const mockPodcastOrg = 'test-org';
-        const mockEpisodes = [{ id: 1, title: 'Test Episode' }];
-        const mockSession = { data: { user: { id: 1 } } };
+        const mockPodcastOrg = { slug: 'test-org' };
         getCreatorEpisodeService.mockResolvedValueOnce(mockEpisodes);
 
-        render(
-        <Wrapper selectedPodcastOrg={mockPodcastOrg} mockSession={mockSession}>
-            <div data-testid="test-container" />
-        </Wrapper>
+        const wrapper = ({ children }) => (
+            <PodcastContext.Provider value={{ selectedPodcastOrg: mockPodcastOrg }}>
+                {children}
+            </PodcastContext.Provider>
         );
-        
-        const result = await getCreatorEpisodeService();
 
-        expect(getCreatorEpisodeService).toHaveBeenCalledTimes(1);
-        expect(result).toEqual(mockEpisodes);
+        const { result } = renderHook(() => useGetCreatorEpisodesHook(), { wrapper });
+
+        expect(result.current.isLoading).toBe(true);
+
+        await act(async () => {
+            await new Promise((resolve) => setTimeout(resolve, 0)); 
+        });
+
+        expect(getCreatorEpisodeService).toHaveBeenCalledWith(mockPodcastOrg.slug);
+        expect(result.current.results).toEqual(mockEpisodes);
+        expect(result.current.isLoading).toBe(false);
     });
 
     it('should not fetch episodes when selectedPodcastOrg is null', async () => {
-        const mockSession = { data: { user: { id: 1 } } };
-        render(
-        <Wrapper selectedPodcastOrg={null} mockSession={mockSession}>
-            <div data-testid="test-container" />
-        </Wrapper>
+        const wrapper = ({ children }) => (
+            <PodcastContext.Provider value={{ selectedPodcastOrg: null }}>
+                {children}
+            </PodcastContext.Provider>
         );
 
-        // Wait for the useEffect to complete
-        await act(async () => {
-            await new Promise((resolve) => setTimeout(resolve, 0));
-        });
+        const { result } = renderHook(() => useGetCreatorEpisodesHook(), { wrapper });
 
+        expect(result.current.isLoading).toBe(false);
         expect(getCreatorEpisodeService).not.toHaveBeenCalled();
     });
 });
