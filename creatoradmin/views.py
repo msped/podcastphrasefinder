@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -5,8 +6,8 @@ from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView
 from organisations.models import Membership
 from organisations.permissions import IsOrgAdmin, IsOrgMember, IsOrgOwner
-from podcasts.models import Episode, Podcast
-from podcasts.serializers import EpisodeSerializer
+from podcasts.models import Episode, Podcast, Transcript
+from podcasts.serializers import EpisodeSerializer, TranscriptSerializer
 from podcasts.utils import get_transcript
 
 from .utils import get_video_id, convert_date_from_picker
@@ -71,9 +72,19 @@ class CreatorEpisodes(ListAPIView):
 
 
 class EpisodeDetailView(RetrieveUpdateDestroyAPIView):
+    # Why Transcript? Its the episode with the transcript
+    # instead of just the episode.
     permission_classes = [
         IsOrgAdmin | IsOrgMember | IsOrgOwner,
         IsAuthenticated
     ]
-    queryset = Episode.objects.all()
-    serializer_class = EpisodeSerializer
+    queryset = Transcript.objects.all()
+    serializer_class = TranscriptSerializer
+    lookup_field = 'episode__id'
+    lookup_url_kwarg = 'pk'
+
+    def destroy(self, request, *args, **kwargs):
+        # Delete the episode, will delete the transcipt
+        episode = get_object_or_404(Episode, pk=kwargs['pk'])
+        episode.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
