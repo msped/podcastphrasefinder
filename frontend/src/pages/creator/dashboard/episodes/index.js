@@ -145,9 +145,6 @@ function EpisodesDashboard() {
                             variant: 'skeleton',
                             noRowsVariant: 'skeleton',
                         },
-                        toolbar: {
-                            showQuickFilter: true,
-                        },
                     }}
                     sx={{
                         '&  .MuiDataGrid-columnHeader--moving': {
