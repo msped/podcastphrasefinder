@@ -25,6 +25,9 @@ const apiClient = () => {
             return response;
         },
         (error) => {
+            if (error.status === 401) {
+                window.location.href = '/';
+            }
             return Promise.reject(error)
         }
     )
