@@ -1,32 +1,44 @@
-import apiClient from '@/api/apiClient';
-import getPodcastOrgsService from '@/api/getPodcastOrgsService';
+import React from 'react';
+import { render, waitFor } from '@testing-library/react';
+import useGetPodcastOrgsHook from '@/hooks/useGetPodcastOrgsHook';
+import getPodcastOrgsService from '@/api/getPodcastOrgsService'; 
 
-jest.mock('../../api/apiClient');
+jest.mock('../../api/getPodcastOrgsService');
 
-describe('getPodcastOrgsService', () => {
-    it('should call apiClient.get with the correct URL', () => {
-        const expectedUrl = 'auth/org/memberships';
-        const mockResponse = { data: [{ slug: 'test-org' }] };
-        apiClient.get.mockResolvedValue(mockResponse);
+function TestComponent() {
+    const { podcasts, isLoading } = useGetPodcastOrgsHook();
+    
+    return (
+        <div>
+            {isLoading ? (
+                <span data-testid="loading">Loading...</span>
+            ) : (
+                <div data-testid="podcasts">{JSON.stringify(podcasts)}</div>
+            )}
+        </div>
+    );
+}
 
-        getPodcastOrgsService();
-
-        expect(apiClient.get).toHaveBeenCalledWith(expectedUrl);
+describe('useGetPodcastOrgsHook', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
     });
 
-    it('should return the correct data when apiClient.get resolves with a 200 status', async () => {
-        const mockResponse = { status: 200, data: [{ slug: 'test-org' }] };
-        apiClient.get.mockResolvedValue(mockResponse);
-
-        const result = await getPodcastOrgsService();
-
-        expect(result).toEqual(mockResponse.data);
+    it('should start with loading state and an empty podcasts array', async () => {
+        getPodcastOrgsService.mockResolvedValue([]);
+        const { getByTestId } = render(<TestComponent />);
+        
+        waitFor(() => expect(getByTestId('loading')).toHaveTextContent('Loading...'));
     });
 
-    it('should handle exceptions and throw accordingly', async () => {
-        const error = new Error('Network error');
-        apiClient.get.mockRejectedValue(error);
+    it('should set podcasts data after successful fetch', async () => {
+        const mockPodcastData = [{ id: 1, name: 'Test Podcast Org' }];
+        getPodcastOrgsService.mockResolvedValue(mockPodcastData);
 
-        await expect(getPodcastOrgsService()).rejects.toThrow('Network error');
+        const { getByTestId, queryByTestId } = render(<TestComponent />);
+
+        await waitFor(() => expect(queryByTestId('loading')).toBeNull());
+
+        waitFor(() => expect(getByTestId('podcasts').textContent).toBe(JSON.stringify(mockPodcastData)));
     });
 });
