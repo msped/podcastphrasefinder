@@ -147,13 +147,13 @@ class TestEpisodeDetailView(APITestCase):
     def test_get_episode_detail_as_owner(self):
         response = self.client.get(self.detail_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['title'], 'Test Episode')
+        self.assertEqual(response.data['episode']['title'], 'Test Episode')
 
     def test_update_episode_detail_as_owner(self):
-        data = {'title': 'Updated Title'}
-        response = self.client.patch(self.detail_url, data)
+        data = {'episode': {'title': 'Updated Title'}}
+        response = self.client.patch(self.detail_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['title'], 'Updated Title')
+        self.assertEqual(response.data['episode']['title'], 'Updated Title')
 
     def test_delete_episode_detail_as_owner(self):
         response = self.client.delete(self.detail_url)
@@ -167,10 +167,11 @@ class TestEpisodeDetailView(APITestCase):
 
     def test_update_episode_detail_as_admin(self):
         self.client.force_authenticate(user=self.admin)
-        data = {'title': 'Updated Title by Admin'}
-        response = self.client.patch(self.detail_url, data)
+        data = {'episode': {'title': 'Updated Title by Admin'}}
+        response = self.client.patch(self.detail_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['title'], 'Updated Title by Admin')
+        self.assertEqual(response.data['episode']
+                         ['title'], 'Updated Title by Admin')
 
     def test_delete_episode_detail_as_admin(self):
         self.client.force_authenticate(user=self.admin)

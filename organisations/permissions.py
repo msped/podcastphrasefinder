@@ -2,7 +2,11 @@ from rest_framework import permissions
 
 
 def _get_podcast_or_channel(obj):
-    return getattr(obj, 'podcast', getattr(obj, 'channel', None))
+    return getattr(
+        obj, 'podcast',
+        getattr(obj, 'channel',
+                getattr(getattr(obj, 'episode', None),
+                        'channel', None)))
 
 
 class IsOrgOwner(permissions.BasePermission):

@@ -20,6 +20,10 @@ export default function DashboardLayout({ children }) {
 
     const isDesktop = useMediaQuery(theme.breakpoints.up('md')) 
 
+    const isActive = (path) => {
+        return pathname === path;
+    }
+
     return (
         <Container maxWidth='xl'>
             <Box sx={{ display: isDesktop ? 'flex' : 'block', py: 2 }}>
@@ -34,7 +38,7 @@ export default function DashboardLayout({ children }) {
                             sx={{
                                 display: 'flex',
                                 color: '#fff',
-                                fontWeight: pathname.startsWith('/creator/dashboard/episodes/add') ? "700" : "400"
+                                fontWeight: isActive('/creator/dashboard/episodes/add') ? "700" : "400"
                             }}
                             startIcon={<AddIcon />}
                         >
@@ -46,7 +50,7 @@ export default function DashboardLayout({ children }) {
                             sx={{
                                 display: 'flex',
                                 color: '#fff',
-                                fontWeight: pathname.startsWith('/creator/dashboard/episodes') ? "700" : "400"
+                                fontWeight: isActive('/creator/dashboard/episodes') ? "700" : "400"
                             }}
                             startIcon={<ViewListIcon />}
                         >

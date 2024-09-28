@@ -58,7 +58,7 @@ class EpisodeSerializer(serializers.ModelSerializer):
 
 
 class TranscriptSerializer(serializers.ModelSerializer):
-    episode = EpisodeSerializer(many=False, read_only=True)
+    episode = EpisodeSerializer(many=False)
     highlight = serializers.SerializerMethodField()
 
     def get_highlight(self, obj):
@@ -77,3 +77,19 @@ class TranscriptSerializer(serializers.ModelSerializer):
             'transcript',
             'highlight'
         ]
+
+    def update(self, instance, validated_data):
+        episode_data = validated_data.pop('episode', {})
+        transcript_data = validated_data.pop('transcript', None)
+
+        if episode_data:
+            for key, value in episode_data.items():
+                if key not in ('channel_id', 'video_id'):
+                    setattr(instance.episode, key, value)
+            instance.episode.save()
+
+        if transcript_data is not None:
+            instance.transcript = transcript_data
+            instance.save()
+        instance = super().update(instance, validated_data)
+        return instance
