@@ -23,13 +23,13 @@ class PodcastListCreateViewTestCase(APITestCase):
         self.assertEqual(Podcast.objects.count(), 1)
 
     def test_list_podcast(self):
-        Podcast.objects.create(
+        podcast = Podcast.objects.create(
             name='Test Podcast',
             slug='test-podcast',
             channel_id='UChl6sFeO_O0drTc1CG1ymFw'
         )
         Membership.objects.create(
-            user=self.user, podcast_id=1, role='Owner', is_primary=True)
+            user=self.user, podcast_id=podcast.id, role='Owner', is_primary=True)
         response = self.client.get('/api/orgs/podcasts', format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
