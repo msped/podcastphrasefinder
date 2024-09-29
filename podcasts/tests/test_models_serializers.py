@@ -21,7 +21,6 @@ class TestModels(APITestCase):
         self.user = User.objects.create_user(
             username='admin', password='admin')
         podcast = Podcast.objects.create(
-            owner=self.user,
             name='Tom Scott',
             channel_id='UCBa659QWEk1AI4Tg--mrJ2A',
             avatar='https//www.example.com'
@@ -143,7 +142,6 @@ class EpisodeSerializerTestCase(APITestCase):
         self.user = User.objects.create_user(
             username='admin', password='admin')
         Podcast.objects.create(
-            owner=self.user,
             name='Have a Word Podcast',
             channel_id='UChl6sFeO_O0drTc1CG1ymFw',
             avatar='https//www.example.com'
@@ -238,7 +236,6 @@ class PodcastSerializerTestCase(APITestCase):
         self.user = User.objects.create_user(
             username='admin', password='admin')
         self.podcast = Podcast.objects.create(
-            owner=self.user,
             name='Have a Word Podcast',
             channel_id='UChl6sFeO_O0drTc1CG1ymFw',
             avatar='https://www.exmaple.com/'
@@ -271,7 +268,6 @@ class TranscriptSerializerTestCase(APITestCase):
         self.user = User.objects.create_user(
             username='admin', password='admin')
         Podcast.objects.create(
-            owner=self.user,
             name='Have a Word Podcast',
             channel_id='UChl6sFeO_O0drTc1CG1ymFw',
             avatar='https//www.example.com'

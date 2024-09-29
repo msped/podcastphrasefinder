@@ -13,7 +13,6 @@ class MembershipSerializerTestCase(APITestCase):
             username='testuser', password='12345')
         self.client.login(username='testuser', password='12345')
         self.podcast = Podcast.objects.create(
-            owner=self.user,
             name='Test Podcast',
             channel_id='UChl6sFeO_O0drTc1CG1ymFw',
             avatar='https://www.exmaple.com/'

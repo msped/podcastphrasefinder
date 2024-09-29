@@ -23,14 +23,12 @@ class TestUtils(TestCase):
             username='notadmin', password='admin')
         Podcast.objects.create(
             id=1,
-            owner=self.user,
             name='test',
             channel_id='test0987654321',
             avatar='https//www.example.com'
         )
         Podcast.objects.create(
             id=2,
-            owner=self.user2,
             name='test podcast',
             channel_id='test3490439783',
             avatar='https//www.example.com'
