@@ -1,11 +1,8 @@
 from django.db import models
-from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 
 
 class Podcast(models.Model):
-    owner = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='owned_podcast')
     name = models.CharField(max_length=50)
     slug = models.SlugField(unique=True, blank=True, null=True)
     channel_id = models.CharField(max_length=24)

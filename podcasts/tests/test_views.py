@@ -21,13 +21,11 @@ class TestPodcastViews(APITestCase):
         self.user2 = User.objects.create_user(
             username='Mild High Club', password='admin')
         Podcast.objects.create(
-            owner=self.user,
             name='Have a Word Podcast',
             channel_id='UChl6sFeO_O0drTc1CG1ymFw',
             avatar='https//www.example.com'
         )
         Podcast.objects.create(
-            owner=self.user2,
             name='The Mild High Club',
             channel_id='UCIpglRjjRPp2_qfsak-jSSw',
             avatar='https//www.example.com'

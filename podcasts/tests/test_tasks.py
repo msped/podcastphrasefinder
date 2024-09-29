@@ -30,7 +30,6 @@ class BackCatalogueTaskTest(TestCase):
     def test_add_back_catalogue_task(self):
         # no need to mock avatar as runs in signal
         podcast = Podcast.objects.create(
-            owner=self.user,
             name='jawed',
             channel_id='UC4QobU6STFB0P71PMvOGN5A',
             avatar='https//www.example.com'
@@ -53,7 +52,6 @@ class TestCheckForPrivateVideos(TestCase):
         self.user = User.objects.create_user(
             username='admin', password='admin')
         Podcast.objects.create(
-            owner=self.user,
             name='Test Podcast',
             channel_id='UCBa659QWEk1AI4Tg--mrJ2A',
             avatar='https//www.example.com'
@@ -146,7 +144,6 @@ class TestCheckAvatar(TestCase):
         self.user = User.objects.create_user(
             username='admin', password='admin')
         Podcast.objects.create(
-            owner=self.user,
             name='Test Podcast',
             channel_id='UCBa659QWEk1AI4Tg--mrJ2A',
             avatar='https//www.example.com'
@@ -234,7 +231,6 @@ class TestGetNewEpisodes(TestCase):
         self.user = User.objects.create_user(
             username='admin', password='admin')
         Podcast.objects.create(
-            owner=self.user,
             name='Have a Word Podcast',
             channel_id='UChl6sFeO_O0drTc1CG1ymFw',
             avatar='https//www.example.com'

@@ -14,7 +14,7 @@ class PodcastListCreateView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
-        podcast = serializer.save(owner=self.request.user)
+        podcast = serializer.save()
         Membership.objects.create(
             user=self.request.user,
             podcast_id=podcast.id,
@@ -23,7 +23,11 @@ class PodcastListCreateView(generics.ListCreateAPIView):
         )
 
     def get_queryset(self):
-        return Podcast.objects.filter(owner=self.request.user)
+
+        ownership_list = Membership.objects.filter(
+            user__id=self.request.user.id, is_primary=True
+        ).values_list('podcast__id', flat=True)
+        return Podcast.objects.filter(id__in=ownership_list)
 
 
 # Handles the changing of the selected membership (podcast)

@@ -23,12 +23,13 @@ class PodcastListCreateViewTestCase(APITestCase):
         self.assertEqual(Podcast.objects.count(), 1)
 
     def test_list_podcast(self):
-        Podcast.objects.create(
+        podcast = Podcast.objects.create(
             name='Test Podcast',
             slug='test-podcast',
-            owner=self.user,
             channel_id='UChl6sFeO_O0drTc1CG1ymFw'
         )
+        Membership.objects.create(
+            user=self.user, podcast_id=podcast.id, role='Owner', is_primary=True)
         response = self.client.get('/api/orgs/podcasts', format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
@@ -41,9 +42,9 @@ class UserOrgSelectionViewTestCase(APITestCase):
         self.user2 = User.objects.create_user(
             username='user2', password='password')
         self.podcast1 = Podcast.objects.create(
-            name='podcast1', slug='podcast1', owner=self.user1)
+            name='podcast1', slug='podcast1')
         self.podcast2 = Podcast.objects.create(
-            name='podcast2', slug='podcast2', owner=self.user1)
+            name='podcast2', slug='podcast2')
         self.membership1 = Membership.objects.create(
             user=self.user1, podcast=self.podcast1, role='Owner', is_primary=True)
         self.membership2 = Membership.objects.create(
@@ -99,7 +100,6 @@ class MembershipListCreateViewTestCase(APITestCase):
         self.podcast = Podcast.objects.create(
             name='Test Podcast',
             slug='test-podcast',
-            owner=self.user_owner,
             channel_id='UChl6sFeO_O0drTc1CG1ymFw'
         )
         Membership.objects.create(
@@ -189,7 +189,6 @@ class MembershipDetailViewTestCase(APITestCase):
         self.podcast = Podcast.objects.create(
             name='Another Podcast',
             slug='another-podcast',
-            owner=self.user_owner,
             channel_id='UChl6sFeO_O0drTc1CG1ymFw'
         )
         Membership.objects.create(
