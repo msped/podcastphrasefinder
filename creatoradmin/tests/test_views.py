@@ -59,6 +59,9 @@ class TestAddYoutubeEpisodeView(APITestCase):
             channel_id='testtesttest',
             avatar='https://test.test/'
         )
+        Membership.objects.create(
+            user=self.user, role='Owner', podcast=self.podcast, is_primary=True
+        )
 
     @patch('creatoradmin.utils.get_video_id')
     @patch('creatoradmin.utils.convert_date_from_picker')
@@ -77,7 +80,6 @@ class TestAddYoutubeEpisodeView(APITestCase):
         }
 
         response = self.client.post(self.url, payload)
-
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Episode.objects.count(), 1)
         episode = Episode.objects.first()
@@ -91,18 +93,18 @@ class TestAddYoutubeEpisodeView(APITestCase):
 
         payload = {
             'title': 'New Episode',
-            'transcript': 'This is a transcript.',
             'exclusive': '',
             'url': '',  # no url will provide video_id error
             'error_occurred': '',
             'published_date': '01/01/2021',
-            'is_draft': ''
+            'is_draft': '',
+            'transcript': 'This is a transcript.',
         }
 
-        response = self.client.post(self.url, payload)
+        response = self.client.post(self.url, payload, format='json')
 
         self.assertEqual(response.status_code, 400)
-        self.assertIn('video_id', response.data)
+        self.assertIn('video_id', response.data['episode'])
 
 
 class TestCreatorEpisodesView(APITestCase):
