@@ -78,6 +78,14 @@ class TranscriptSerializer(serializers.ModelSerializer):
             'highlight'
         ]
 
+    def create(self, validated_data):
+        episode_data = validated_data.pop('episode')
+        channel = episode_data.pop('channel')
+        episode = Episode.objects.create(channel=channel, **episode_data)
+        transcript = Transcript.objects.create(
+            episode=episode, **validated_data)
+        return transcript
+
     def update(self, instance, validated_data):
         episode_data = validated_data.pop('episode', {})
         transcript_data = validated_data.pop('transcript', None)
