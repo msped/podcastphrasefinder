@@ -31,22 +31,27 @@ class YouTubeVideoIdCheck(APIView):
 
 
 class AddYouTubeEpisode(APIView):
-    permission_classes = [IsAuthenticated]
-    serializer_class = EpisodeSerializer
+    permission_classes = [
+        IsOrgAdmin | IsOrgMember | IsOrgOwner,
+        IsAuthenticated
+    ]
+    serializer_class = TranscriptSerializer
 
     def post(self, request):
-        # This needs to be changed. Will open an issue so I can remember!
-        podcast_id = Podcast.objects.values_list('id', flat=True).first()
+        podcast_id = Membership.objects.filter(
+            user=self.request.user, is_primary=True).first().podcast.id
 
         data = {
-            'channel_id': podcast_id,
-            'title': request.data.get('title'),
+            'episode': {
+                'channel_id': podcast_id,
+                'title': request.data.get('title'),
+                'exclusive': bool(request.data.get('exclusive')),
+                'video_id': get_video_id(request.data.get('url')),
+                'error_occurred': bool(request.data.get('error_occurred')),
+                'published_date': convert_date_from_picker(request.data.get('published_date')),
+                'is_draft': bool(request.data.get('is_draft')),
+            },
             'transcript': request.data.get('transcript'),
-            'exclusive': bool(request.data.get('exclusive')),
-            'video_id': get_video_id(request.data.get('url')),
-            'error_occurred': bool(request.data.get('error_occurred')),
-            'published_date': convert_date_from_picker(request.data.get('published_date')),
-            'is_draft': bool(request.data.get('is_draft'))
         }
 
         serializer = self.serializer_class(data=data)
