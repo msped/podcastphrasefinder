@@ -108,7 +108,54 @@ class TestAddYoutubeEpisodeView(APITestCase):
 
 
 class TestCreatorEpisodesView(APITestCase):
-    pass
+    def setUp(self):
+        self.client = APIClient()
+        self.user = User.objects.create_user(
+            username='testuser', password='password')
+        self.client.force_authenticate(user=self.user)
+
+        self.podcast = Podcast.objects.create(
+            name='Test Podcast',
+            channel_id='testtesttest',
+            slug='test-podcast',
+            avatar='https://test.test/'
+        )
+        Membership.objects.create(
+            user=self.user, role='Owner', podcast=self.podcast, is_primary=True
+        )
+        self.episode1 = Episode.objects.create(
+            channel=self.podcast,
+            title='Test Episode 1',
+            video_id='test1234',
+            published_date='2023-09-06T12:00:00Z'
+        )
+        self.episode2 = Episode.objects.create(
+            channel=self.podcast,
+            title='Test Episode 2',
+            video_id='test5678',
+            published_date='2023-09-07T12:00:00Z'
+        )
+
+    def test_get_episodes_for_primary_org(self):
+        response = self.client.get(
+            f'/api/creator/{self.podcast.slug}/episodes')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 2)
+        self.assertEqual(response.data[0]['title'], 'Test Episode 1')
+        self.assertEqual(response.data[1]['title'], 'Test Episode 2')
+
+    def test_get_episodes_no_primary_org(self):
+        Membership.objects.filter(user=self.user).update(is_primary=False)
+        response = self.client.get(
+            f'/api/creator/{self.podcast.slug}/episodes')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 0)
+
+    def test_get_episodes_unauthenticated(self):
+        self.client.logout()
+        response = self.client.get(
+            f'/api/creator/{self.podcast.slug}/episodes')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
 class TestEpisodeDetailView(APITestCase):
