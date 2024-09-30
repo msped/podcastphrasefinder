@@ -149,10 +149,6 @@ CELERY_BEAT_SCHEDULE = {
         "task": "podcasts.tasks.check_for_private_videos",
         "schedule": crontab(0, 0, day_of_month='1'),
     },
-    "check_podcast_avatars": {
-        "task": "podcasts.tasks.check_avatar",
-        "schedule": crontab(0, 0, day_of_month='15')
-    },
     "get_new_episodes": {
         "task": "podcasts.tasks.get_new_episodes",
         "schedule": crontab(0, 0)

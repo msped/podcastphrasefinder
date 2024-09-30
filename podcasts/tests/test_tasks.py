@@ -5,7 +5,6 @@ from django.test import TestCase
 from ..tasks import (
     add_back_catalogue_task,
     check_for_private_videos,
-    check_avatar,
     get_new_episodes
 )
 from ..models import Episode, Podcast, EpisodeReleaseDay, Transcript
@@ -136,86 +135,6 @@ class TestCheckForPrivateVideos(TestCase):
             video_id='1yfX84RMQ3M').private_video)
         self.assertTrue(Episode.objects.get(
             video_id='Xw1EKgEl_RY').private_video)
-
-
-class TestCheckAvatar(TestCase):
-
-    def setUp(self):
-        self.user = User.objects.create_user(
-            username='admin', password='admin')
-        Podcast.objects.create(
-            name='Test Podcast',
-            channel_id='UCBa659QWEk1AI4Tg--mrJ2A',
-            avatar='https//www.example.com'
-        )
-
-    @mock.patch('requests.get')
-    def test_check_avatar_url_changed(self, mock_get):
-        mock_return = {
-            'items': [
-                {
-                    'snippet': {
-                        'thumbnails': {
-                            'high': {
-                                'url': 'https://www.example.com/new'
-                            }
-                        }
-                    }
-                }
-            ]
-        }
-        api_return = mock.Mock()
-        api_return.status_code = 200
-        api_return.json.return_value = mock_return
-        mock_get.return_value = api_return
-
-        self.assertEqual(
-            Podcast.objects.get(channel_id="UCBa659QWEk1AI4Tg--mrJ2A").avatar,
-            "https//www.example.com"
-        )
-
-        check_avatar()
-
-        self.assertEqual(
-            Podcast.objects.get(channel_id="UCBa659QWEk1AI4Tg--mrJ2A").avatar,
-            "https://www.example.com/new"
-        )
-
-    @mock.patch('requests.get')
-    def test_check_avatar_not_changed(self, mock_get):
-        mock_return = {
-            'items': [
-                {
-                    'snippet': {
-                        'thumbnails': {
-                            'high': {
-                                'url': 'https://www.example.com/'
-                            }
-                        }
-                    }
-                }
-            ]
-        }
-        api_return = mock.Mock()
-        api_return.status_code = 200
-        api_return.json.return_value = mock_return
-        mock_get.return_value = api_return
-
-        podcast = Podcast.objects.get(channel_id="UCBa659QWEk1AI4Tg--mrJ2A")
-        podcast.avatar = "https://www.example.com/"
-        podcast.save()
-
-        self.assertEqual(
-            Podcast.objects.get(channel_id="UCBa659QWEk1AI4Tg--mrJ2A").avatar,
-            "https://www.example.com/"
-        )
-
-        check_avatar()
-
-        self.assertEqual(
-            Podcast.objects.get(channel_id="UCBa659QWEk1AI4Tg--mrJ2A").avatar,
-            "https://www.example.com/"
-        )
 
 
 class TestGetNewEpisodes(TestCase):
