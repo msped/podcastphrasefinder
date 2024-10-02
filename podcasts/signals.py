@@ -4,15 +4,12 @@ from django.dispatch import receiver
 
 from .models import Podcast, Episode, Transcript
 from .tasks import add_back_catalogue_task
-from .utils import get_avatar, get_transcript
+from .utils import get_transcript
 
 
 @receiver(post_save, sender=Podcast)
 def add_back_catalogue_of_channel(sender, instance, update_fields=None, **kwargs):
     if connection.settings_dict['NAME'] != 'testdatabase':
-        if not instance.avatar:
-            instance.avatar = get_avatar(instance.channel_id)
-            instance.save(update_fields=['avatar'])
         if instance.run_auto_add_back_catalogue and not instance.has_add_back_catalogue_ran:
             add_back_catalogue_task.delay(
                 instance.id, instance.channel_id, instance.video_filter)

@@ -1,4 +1,8 @@
 from datetime import datetime
+import shutil
+import tempfile
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import override_settings
 from unittest import mock
 from zoneinfo import ZoneInfo
 from django.contrib.auth.models import User
@@ -8,7 +12,10 @@ from ..serializers import PodcastSerializer, EpisodeSerializer, TranscriptSerial
 
 from creatoradmin.utils import convert_date_from_picker
 
+MEDIA_ROOT = tempfile.mkdtemp()
 
+
+@override_settings(MEDIA_ROOT=MEDIA_ROOT)
 class TestModels(APITestCase):
     def setUp(self):
         self.mocked_get_transcript = mock.patch(
@@ -23,7 +30,7 @@ class TestModels(APITestCase):
         podcast = Podcast.objects.create(
             name='Tom Scott',
             channel_id='UCBa659QWEk1AI4Tg--mrJ2A',
-            avatar='https//www.example.com'
+            avatar=SimpleUploadedFile('test.png', content=b'4321')
         )
         Episode.objects.create(
             id=1,
@@ -53,6 +60,7 @@ class TestModels(APITestCase):
 
     def tearDown(self):
         self.mocked_get_transcript.stop()
+        shutil.rmtree(MEDIA_ROOT, ignore_errors=True)
 
     def podcast_str(self):
         podcast = Podcast.objects.get(name='Tom Scott')
@@ -130,6 +138,7 @@ class TestModels(APITestCase):
         self.has_error_occurred_false()
 
 
+@override_settings(MEDIA_ROOT=MEDIA_ROOT)
 class EpisodeSerializerTestCase(APITestCase):
     def setUp(self):
         self.mocked_get_transcript = mock.patch(
@@ -144,7 +153,7 @@ class EpisodeSerializerTestCase(APITestCase):
         Podcast.objects.create(
             name='Have a Word Podcast',
             channel_id='UChl6sFeO_O0drTc1CG1ymFw',
-            avatar='https//www.example.com'
+            avatar=SimpleUploadedFile('test.png', content=b'4321')
         )
         self.podcast = Podcast.objects.get(name='Have a Word Podcast')
         self.episode = Episode.objects.create(
@@ -176,7 +185,8 @@ class EpisodeSerializerTestCase(APITestCase):
         self.assertEqual(channel_data['id'], self.episode.channel.id)
         self.assertEqual(channel_data['name'], self.episode.channel.name)
         self.assertEqual(channel_data['slug'], self.episode.channel.slug)
-        self.assertEqual(channel_data['avatar'], self.episode.channel.avatar)
+        self.assertEqual(channel_data['avatar'],
+                         self.episode.channel.avatar.url)
         self.assertEqual(channel_data['channel_id'],
                          self.episode.channel.channel_id)
 
@@ -224,6 +234,7 @@ class EpisodeSerializerTestCase(APITestCase):
         self.assertEqual(updated_episode.video_id, 'test12346')
 
 
+@override_settings(MEDIA_ROOT=MEDIA_ROOT)
 class PodcastSerializerTestCase(APITestCase):
     def setUp(self):
         self.mocked_get_transcript = mock.patch(
@@ -238,12 +249,13 @@ class PodcastSerializerTestCase(APITestCase):
         self.podcast = Podcast.objects.create(
             name='Have a Word Podcast',
             channel_id='UChl6sFeO_O0drTc1CG1ymFw',
-            avatar='https://www.exmaple.com/'
+            avatar=SimpleUploadedFile('test.png', content=b'4321')
         )
         self.serializer = PodcastSerializer(instance=self.podcast)
 
     def tearDown(self):
         self.mocked_get_transcript.stop()
+        shutil.rmtree(MEDIA_ROOT, ignore_errors=True)
 
     def test_id_field_content(self):
         data = self.serializer.data
@@ -257,11 +269,16 @@ class PodcastSerializerTestCase(APITestCase):
         data = self.serializer.data
         self.assertEqual(data['slug'], self.podcast.slug)
 
+    def test_avatar_url(self):
+        data = self.serializer.data
+        self.assertEqual(data['avatar'], self.podcast.avatar.url)
+
     def test_channel_id_field_content(self):
         data = self.serializer.data
         self.assertEqual(data['channel_id'], self.podcast.channel_id)
 
 
+@override_settings(MEDIA_ROOT=MEDIA_ROOT)
 class TranscriptSerializerTestCase(APITestCase):
     def setUp(self):
         mocked_transcript = 'mockedtranscriptlengthnew' * 121
@@ -270,7 +287,7 @@ class TranscriptSerializerTestCase(APITestCase):
         Podcast.objects.create(
             name='Have a Word Podcast',
             channel_id='UChl6sFeO_O0drTc1CG1ymFw',
-            avatar='https//www.example.com'
+            avatar=SimpleUploadedFile('test.png', content=b'4321')
         )
         self.podcast = Podcast.objects.get(name='Have a Word Podcast')
         Episode.objects.create(
@@ -286,6 +303,9 @@ class TranscriptSerializerTestCase(APITestCase):
             error_occurred=False
         )
         self.serializer = TranscriptSerializer(instance=self.transcript)
+
+    def tearDown(self):
+        shutil.rmtree(MEDIA_ROOT, ignore_errors=True)
 
     def test_transcript(self):
         data = self.serializer.data

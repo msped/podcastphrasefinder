@@ -1,6 +1,5 @@
 from __future__ import absolute_import, unicode_literals
 import os
-import sys
 from datetime import datetime as date
 from html import unescape
 from urllib.parse import urlencode
@@ -8,7 +7,7 @@ from celery import shared_task
 from celery.utils.log import get_task_logger
 from django.db import transaction
 
-from .models import Episode, Podcast, EpisodeReleaseDay, Transcript
+from .models import Episode, EpisodeReleaseDay
 from .utils import call_api, create_transcript_models, check_for_private_video
 
 api_key = os.environ.get('YOUTUBE_V3_API_KEY')
@@ -73,27 +72,6 @@ def check_for_private_videos():
     with transaction.atomic():
         for key, value in videos.items():
             Episode.objects.filter(id=key).update(private_video=value)
-
-
-@shared_task
-def check_avatar():
-    podcasts = Podcast.objects.all()
-
-    for podcast in podcasts:
-        url_params = {
-            'key': api_key,
-            'id': podcast.channel_id,
-            'part': 'snippet',
-        }
-        response = call_api(
-            'https://www.googleapis.com/youtube/v3/channels?'
-            + urlencode(url_params)
-        )
-        channel = response.get('items', [])
-        response_avatar = channel[0]['snippet']['thumbnails']['high']['url']
-        if response_avatar != podcast.avatar:
-            podcast.avatar = response_avatar
-            podcast.save()
 
 
 @shared_task

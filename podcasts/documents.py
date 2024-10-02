@@ -15,7 +15,7 @@ class TranscriptDocument(Document):
                     "name": fields.TextField(),
                     "slug": fields.TextField(),
                     "channel_id": fields.TextField(),
-                    "avatar": fields.TextField()
+                    "avatar": fields.FileField()
                 }
             ),
             "title": fields.TextField(),

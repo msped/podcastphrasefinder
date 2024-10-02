@@ -1,3 +1,7 @@
+import shutil
+import tempfile
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import override_settings
 from unittest import mock
 from datetime import datetime as date
 from django.contrib.auth.models import User
@@ -5,12 +9,14 @@ from django.test import TestCase
 from ..tasks import (
     add_back_catalogue_task,
     check_for_private_videos,
-    check_avatar,
     get_new_episodes
 )
 from ..models import Episode, Podcast, EpisodeReleaseDay, Transcript
 
+MEDIA_ROOT = tempfile.mkdtemp()
 
+
+@override_settings(MEDIA_ROOT=MEDIA_ROOT)
 class BackCatalogueTaskTest(TestCase):
 
     def setUp(self):
@@ -26,13 +32,14 @@ class BackCatalogueTaskTest(TestCase):
 
     def tearDown(self):
         self.mocked_get_transcript.stop()
+        shutil.rmtree(MEDIA_ROOT, ignore_errors=True)
 
     def test_add_back_catalogue_task(self):
         # no need to mock avatar as runs in signal
         podcast = Podcast.objects.create(
             name='jawed',
             channel_id='UC4QobU6STFB0P71PMvOGN5A',
-            avatar='https//www.example.com'
+            avatar=SimpleUploadedFile('jawed', b'3425')
         )
         add_back_catalogue_task.apply(args=(
             podcast.id,
@@ -45,6 +52,7 @@ class BackCatalogueTaskTest(TestCase):
         )
 
 
+@override_settings(MEDIA_ROOT=MEDIA_ROOT)
 class TestCheckForPrivateVideos(TestCase):
 
     def setUp(self):
@@ -54,7 +62,7 @@ class TestCheckForPrivateVideos(TestCase):
         Podcast.objects.create(
             name='Test Podcast',
             channel_id='UCBa659QWEk1AI4Tg--mrJ2A',
-            avatar='https//www.example.com'
+            avatar=SimpleUploadedFile('test.png', content=b'4321')
         )
         channel = Podcast.objects.get(name='Test Podcast')
 
@@ -115,6 +123,9 @@ class TestCheckForPrivateVideos(TestCase):
         Transcript.objects.bulk_create(
             [Transcript(**data) for data in transcripts])
 
+    def tearDown(self):
+        shutil.rmtree(MEDIA_ROOT, ignore_errors=True)
+
     @mock.patch('podcasts.utils.check_for_private_video')
     def test_check_for_private_videos(self, mock_check_for_private_video):
         """Should change two fields, one to true and another to false"""
@@ -138,86 +149,7 @@ class TestCheckForPrivateVideos(TestCase):
             video_id='Xw1EKgEl_RY').private_video)
 
 
-class TestCheckAvatar(TestCase):
-
-    def setUp(self):
-        self.user = User.objects.create_user(
-            username='admin', password='admin')
-        Podcast.objects.create(
-            name='Test Podcast',
-            channel_id='UCBa659QWEk1AI4Tg--mrJ2A',
-            avatar='https//www.example.com'
-        )
-
-    @mock.patch('requests.get')
-    def test_check_avatar_url_changed(self, mock_get):
-        mock_return = {
-            'items': [
-                {
-                    'snippet': {
-                        'thumbnails': {
-                            'high': {
-                                'url': 'https://www.example.com/new'
-                            }
-                        }
-                    }
-                }
-            ]
-        }
-        api_return = mock.Mock()
-        api_return.status_code = 200
-        api_return.json.return_value = mock_return
-        mock_get.return_value = api_return
-
-        self.assertEqual(
-            Podcast.objects.get(channel_id="UCBa659QWEk1AI4Tg--mrJ2A").avatar,
-            "https//www.example.com"
-        )
-
-        check_avatar()
-
-        self.assertEqual(
-            Podcast.objects.get(channel_id="UCBa659QWEk1AI4Tg--mrJ2A").avatar,
-            "https://www.example.com/new"
-        )
-
-    @mock.patch('requests.get')
-    def test_check_avatar_not_changed(self, mock_get):
-        mock_return = {
-            'items': [
-                {
-                    'snippet': {
-                        'thumbnails': {
-                            'high': {
-                                'url': 'https://www.example.com/'
-                            }
-                        }
-                    }
-                }
-            ]
-        }
-        api_return = mock.Mock()
-        api_return.status_code = 200
-        api_return.json.return_value = mock_return
-        mock_get.return_value = api_return
-
-        podcast = Podcast.objects.get(channel_id="UCBa659QWEk1AI4Tg--mrJ2A")
-        podcast.avatar = "https://www.example.com/"
-        podcast.save()
-
-        self.assertEqual(
-            Podcast.objects.get(channel_id="UCBa659QWEk1AI4Tg--mrJ2A").avatar,
-            "https://www.example.com/"
-        )
-
-        check_avatar()
-
-        self.assertEqual(
-            Podcast.objects.get(channel_id="UCBa659QWEk1AI4Tg--mrJ2A").avatar,
-            "https://www.example.com/"
-        )
-
-
+@override_settings(MEDIA_ROOT=MEDIA_ROOT)
 class TestGetNewEpisodes(TestCase):
 
     def setUp(self):
@@ -233,7 +165,7 @@ class TestGetNewEpisodes(TestCase):
         Podcast.objects.create(
             name='Have a Word Podcast',
             channel_id='UChl6sFeO_O0drTc1CG1ymFw',
-            avatar='https//www.example.com'
+            avatar=SimpleUploadedFile('test.png', content=b'4321')
         )
         channel = Podcast.objects.get(name='Have a Word Podcast')
         Episode.objects.create(
@@ -245,6 +177,7 @@ class TestGetNewEpisodes(TestCase):
 
     def tearDown(self):
         self.mocked_get_transcript.stop()
+        shutil.rmtree(MEDIA_ROOT, ignore_errors=True)
 
     @mock.patch('requests.get')
     def test_get_new_episode(self, mock_get):

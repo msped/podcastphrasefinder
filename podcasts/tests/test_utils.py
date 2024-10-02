@@ -1,6 +1,9 @@
+import shutil
+import tempfile
 from unittest.mock import patch
 from django.contrib.auth.models import User
-from django.test import TestCase
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import TestCase, override_settings
 from requests.exceptions import RequestException
 
 from ..models import Podcast, Transcript
@@ -8,11 +11,13 @@ from ..utils import (
     call_api,
     get_transcript,
     check_for_private_video,
-    get_avatar,
     create_transcript_models
 )
 
+MEDIA_ROOT = tempfile.mkdtemp()
 
+
+@override_settings(MEDIA_ROOT=MEDIA_ROOT)
 class TestUtils(TestCase):
 
     def setUp(self):
@@ -25,14 +30,17 @@ class TestUtils(TestCase):
             id=1,
             name='test',
             channel_id='test0987654321',
-            avatar='https//www.example.com'
+            avatar=SimpleUploadedFile('test.png', content=b'4321')
         )
         Podcast.objects.create(
             id=2,
             name='test podcast',
             channel_id='test3490439783',
-            avatar='https//www.example.com'
+            avatar=SimpleUploadedFile('test podcast.png', content=b'1234')
         )
+
+    def tearDown(self):
+        shutil.rmtree(MEDIA_ROOT, ignore_errors=True)
 
     @patch('podcasts.utils.requests.get')
     def test_call_api_success(self, mock_get):
@@ -80,27 +88,6 @@ class TestUtils(TestCase):
         mock_call_api.status_code = 200
         response = check_for_private_video('7moEbc-xYF8')
         self.assertFalse(response)
-
-    @patch('podcasts.utils.call_api')
-    def test_get_avatar(self, mock_call_api):
-        mock_response = {
-            'items': [
-                {
-                    'snippet': {
-                        'thumbnails': {
-                            'high': {
-                                'url': 'https://example.com/avatar.jpg'
-                            }
-                        }
-                    }
-                }
-            ]
-        }
-        mock_call_api.return_value = mock_response
-
-        avatar_url = get_avatar(self.channel_id)
-
-        self.assertEqual(avatar_url, 'https://example.com/avatar.jpg')
 
     @patch('youtube_transcript_api.YouTubeTranscriptApi.get_transcript')
     def test_create_transcript_models(self, mock_get_transcript):
