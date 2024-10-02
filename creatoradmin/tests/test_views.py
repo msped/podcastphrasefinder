@@ -1,3 +1,7 @@
+import shutil
+import tempfile
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import override_settings
 from unittest.mock import patch
 from django.contrib.auth.models import User
 from rest_framework.test import APITestCase, APIClient
@@ -6,7 +10,10 @@ from rest_framework import status
 from organisations.models import Membership
 from podcasts.models import Podcast, Episode
 
+MEDIA_ROOT = tempfile.mkdtemp()
 
+
+@override_settings(MEDIA_ROOT=MEDIA_ROOT)
 class TestVideoIdCheck(APITestCase):
     def setUp(self):
         self.client = APIClient()
@@ -23,6 +30,7 @@ class TestVideoIdCheck(APITestCase):
 
     def tearDown(self):
         self.mocked_get_transcript.stop()
+        shutil.rmtree(tempfile.gettempdir(), ignore_errors=True)
 
     @patch('creatoradmin.utils.get_video_id')
     @patch('podcasts.models.Episode.objects')
@@ -57,7 +65,7 @@ class TestAddYoutubeEpisodeView(APITestCase):
         self.podcast = Podcast.objects.create(
             name='Test Podcast',
             channel_id='testtesttest',
-            avatar='https://test.test/'
+            avatar=SimpleUploadedFile('test.png', content=b'4321')
         )
         Membership.objects.create(
             user=self.user, role='Owner', podcast=self.podcast, is_primary=True
@@ -107,6 +115,7 @@ class TestAddYoutubeEpisodeView(APITestCase):
         self.assertIn('video_id', response.data['episode'])
 
 
+@override_settings(MEDIA_ROOT=MEDIA_ROOT)
 class TestCreatorEpisodesView(APITestCase):
     def setUp(self):
         self.client = APIClient()
@@ -118,7 +127,7 @@ class TestCreatorEpisodesView(APITestCase):
             name='Test Podcast',
             channel_id='testtesttest',
             slug='test-podcast',
-            avatar='https://test.test/'
+            avatar=SimpleUploadedFile('test.png', content=b'4321')
         )
         Membership.objects.create(
             user=self.user, role='Owner', podcast=self.podcast, is_primary=True
@@ -135,6 +144,9 @@ class TestCreatorEpisodesView(APITestCase):
             video_id='test5678',
             published_date='2023-09-07T12:00:00Z'
         )
+
+    def tearDown(self):
+        shutil.rmtree(MEDIA_ROOT, ignore_errors=True)
 
     def test_get_episodes_for_primary_org(self):
         response = self.client.get(
@@ -158,6 +170,7 @@ class TestCreatorEpisodesView(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
+@override_settings(MEDIA_ROOT=MEDIA_ROOT)
 class TestEpisodeDetailView(APITestCase):
     def setUp(self):
         self.owner = User.objects.create_user(
@@ -172,7 +185,7 @@ class TestEpisodeDetailView(APITestCase):
         self.podcast = Podcast.objects.create(
             name='Test Podcast',
             channel_id='testtesttest',
-            avatar='https://test.test/'
+            avatar=SimpleUploadedFile('test.png', content=b'4321')
         )
         self.episode = Episode.objects.create(
             channel=self.podcast,
@@ -190,6 +203,9 @@ class TestEpisodeDetailView(APITestCase):
 
         self.client.force_authenticate(user=self.owner)
         self.detail_url = f'/api/creator/episodes/{self.episode.pk}'
+
+    def tearDown(self):
+        shutil.rmtree(MEDIA_ROOT, ignore_errors=True)
 
     def test_get_episode_detail_as_owner(self):
         response = self.client.get(self.detail_url)

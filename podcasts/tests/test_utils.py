@@ -1,6 +1,9 @@
+import shutil
+import tempfile
 from unittest.mock import patch
 from django.contrib.auth.models import User
-from django.test import TestCase
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import TestCase, override_settings
 from requests.exceptions import RequestException
 
 from ..models import Podcast, Transcript
@@ -11,7 +14,10 @@ from ..utils import (
     create_transcript_models
 )
 
+MEDIA_ROOT = tempfile.mkdtemp()
 
+
+@override_settings(MEDIA_ROOT=MEDIA_ROOT)
 class TestUtils(TestCase):
 
     def setUp(self):
@@ -24,14 +30,17 @@ class TestUtils(TestCase):
             id=1,
             name='test',
             channel_id='test0987654321',
-            avatar='https//www.example.com'
+            avatar=SimpleUploadedFile('test.png', content=b'4321')
         )
         Podcast.objects.create(
             id=2,
             name='test podcast',
             channel_id='test3490439783',
-            avatar='https//www.example.com'
+            avatar=SimpleUploadedFile('test podcast.png', content=b'1234')
         )
+
+    def tearDown(self):
+        shutil.rmtree(MEDIA_ROOT, ignore_errors=True)
 
     @patch('podcasts.utils.requests.get')
     def test_call_api_success(self, mock_get):

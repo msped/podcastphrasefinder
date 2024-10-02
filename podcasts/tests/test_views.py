@@ -1,3 +1,7 @@
+import shutil
+import tempfile
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import override_settings
 import json
 from unittest import mock
 from django.contrib.auth.models import User
@@ -5,7 +9,10 @@ from rest_framework.test import APITestCase
 
 from ..models import Podcast, Episode
 
+MEDIA_ROOT = tempfile.mkdtemp()
 
+
+@override_settings(MEDIA_ROOT=MEDIA_ROOT)
 class TestPodcastViews(APITestCase):
 
     def setUp(self):
@@ -23,12 +30,12 @@ class TestPodcastViews(APITestCase):
         Podcast.objects.create(
             name='Have a Word Podcast',
             channel_id='UChl6sFeO_O0drTc1CG1ymFw',
-            avatar='https//www.example.com'
+            avatar=SimpleUploadedFile('haw.png', b'1234')
         )
         Podcast.objects.create(
             name='The Mild High Club',
             channel_id='UCIpglRjjRPp2_qfsak-jSSw',
-            avatar='https//www.example.com'
+            avatar=SimpleUploadedFile('mhc.png', b'4321')
         )
         have_a_word_podcast = Podcast.objects.get(name='Have a Word Podcast')
         mild_high_club = Podcast.objects.get(name='The Mild High Club')
@@ -73,6 +80,7 @@ class TestPodcastViews(APITestCase):
 
     def tearDown(self):
         self.mocked_get_transcript.stop()
+        shutil.rmtree(MEDIA_ROOT, ignore_errors=True)
 
     def test_search_episode_phrase_returns_200(self):
         response = self.client.get(
