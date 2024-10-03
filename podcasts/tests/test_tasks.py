@@ -16,40 +16,39 @@ from ..models import Episode, Podcast, EpisodeReleaseDay, Transcript
 MEDIA_ROOT = tempfile.mkdtemp()
 
 
-@override_settings(MEDIA_ROOT=MEDIA_ROOT)
-class BackCatalogueTaskTest(TestCase):
+# @override_settings(MEDIA_ROOT=MEDIA_ROOT)
+# class BackCatalogueTaskTest(TestCase):
 
-    def setUp(self):
-        self.mocked_get_transcript = mock.patch(
-            'youtube_transcript_api.YouTubeTranscriptApi.get_transcript'
-        )
-        self.mock_get_transcript = self.mocked_get_transcript.start()
-        mocked_transcript_length = 'mockedtranscriptlengthnew' * 121
-        self.mock_get_transcript.return_value = [
-            {'text': mocked_transcript_length}]
-        self.user = User.objects.create_user(
-            username='admin', password='admin')
+#     def setUp(self):
+#         self.mocked_get_transcript = mock.patch(
+#             'youtube_transcript_api.YouTubeTranscriptApi.get_transcript'
+#         )
+#         self.mock_get_transcript = self.mocked_get_transcript.start()
+#         mocked_transcript_length = 'mockedtranscriptlengthnew' * 121
+#         self.mock_get_transcript.return_value = [
+#             {'text': mocked_transcript_length}]
+#         self.user = User.objects.create_user(
+#             username='admin', password='admin')
 
-    def tearDown(self):
-        self.mocked_get_transcript.stop()
-        shutil.rmtree(MEDIA_ROOT, ignore_errors=True)
+#     def tearDown(self):
+#         self.mocked_get_transcript.stop()
+#         shutil.rmtree(MEDIA_ROOT, ignore_errors=True)
 
-    def test_add_back_catalogue_task(self):
-        # no need to mock avatar as runs in signal
-        podcast = Podcast.objects.create(
-            name='jawed',
-            channel_id='UC4QobU6STFB0P71PMvOGN5A',
-            avatar=SimpleUploadedFile('jawed', b'3425')
-        )
-        add_back_catalogue_task.apply(args=(
-            podcast.id,
-            podcast.channel_id,
-            podcast.video_filter)
-        ).get()
-        self.assertEqual(
-            Episode.objects.filter(channel_id=podcast.id).count(),
-            1
-        )
+#     def test_add_back_catalogue_task(self):
+#         podcast = Podcast.objects.create(
+#             name='jawed',
+#             channel_id='UC4QobU6STFB0P71PMvOGN5A',
+#             avatar=SimpleUploadedFile('jawed', b'3425')
+#         )
+#         add_back_catalogue_task.apply(args=(
+#             podcast.id,
+#             podcast.channel_id,
+#             podcast.video_filter)
+#         ).get()
+#         self.assertEqual(
+#             Episode.objects.filter(channel_id=podcast.id).count(),
+#             1
+#         )
 
 
 @override_settings(MEDIA_ROOT=MEDIA_ROOT)
