@@ -59,15 +59,6 @@ const styles = {
             md: '1.25rem',
         }
     },
-    channelInformation: {
-        fontSize: {
-            xs: '.7rem',
-            sm: '.85rem',
-        },
-        fontWeight: '600',
-        color: '#fff',
-        textDecoration: 'none'
-    },
     publishedDate: {
         color: '#AAAAAA',
         fontSize: {
@@ -130,6 +121,7 @@ export default function EpisodePanel({ item }) {
                 <Grid container spacing={2}>
                     <Grid item xs={3} sm={2}>
                         <Box sx={styles.logoWrapper}>
+                            {item.episode.channel.avatar && (
                             <Image
                                 src={item.episode.channel.avatar}
                                 style={{...styles.logo}}
@@ -137,6 +129,7 @@ export default function EpisodePanel({ item }) {
                                 width={160}
                                 height={90}
                             />
+                            )}
                         </Box>
                     </Grid>
                     <Grid item xs={9} sm={10}>
@@ -151,13 +144,14 @@ export default function EpisodePanel({ item }) {
                             <Typography sx={styles.publishedDate} data-testid='time-since-test-id'>
                                 {formatDistance(published_date, current_date_time)} ago
                             </Typography>
-                            <Link
-                                href={`https://www.youtube.com/channel/${item.episode.channel.channel_id}`}
-                                target='_blank'
-                                sx={styles.channelInformation}
-                            >
+                            <Typography variant='caption' sx={{
+                                fontSize: {
+                                    xs: '.85rem',
+                                    md: '.9rem',
+                                }
+                            }}>
                                 {item.episode.channel.name}
-                            </Link>
+                            </Typography>
                             {
                                 item.highlight && (
                                     <Accordion 
