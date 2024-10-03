@@ -10,11 +10,7 @@ class Podcast(models.Model):
     name = models.CharField(max_length=50)
     slug = models.SlugField(unique=True, blank=True, null=True)
     channel_id = models.CharField(max_length=24)
-    video_filter = models.CharField(max_length=10, blank=True, null=True)
     avatar = models.ImageField(upload_to=upload_to, blank=True, null=True)
-    run_auto_add_back_catalogue = models.BooleanField(default=True)
-    has_add_back_catalogue_ran = models.BooleanField(default=False)
-    run_get_new_episodes = models.BooleanField(default=True)
 
     def __str__(self):
         return f'{self.name}'
