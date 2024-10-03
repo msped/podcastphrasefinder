@@ -9,7 +9,6 @@ def upload_to(instance, filename):
 class Podcast(models.Model):
     name = models.CharField(max_length=50)
     slug = models.SlugField(unique=True, blank=True, null=True)
-    channel_id = models.CharField(max_length=24)
     avatar = models.ImageField(upload_to=upload_to, blank=True, null=True)
 
     def __str__(self):
