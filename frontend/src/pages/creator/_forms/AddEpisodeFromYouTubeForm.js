@@ -13,7 +13,7 @@ import {
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import toast from 'react-hot-toast';
 
-import usePostAddYouTubeFormHook from '@/hooks/usePostAddYouTubeFormHook';
+import usePostAddYouTubeFormHook from '@/pages/creator/_hooks/usePostAddYouTubeFormHook';
 
 import YouTubeUrlField from '@/components/YouTubeUrlField';
 import LoadingSpinner from '@/components/LoadingSpinner';

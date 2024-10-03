@@ -1,9 +1,9 @@
 import React from 'react';
 import { render, waitFor } from '@testing-library/react';
-import usePostAddYouTubeFormHook from '@/hooks/usePostAddYouTubeFormHook';
-import postAddYouTubeFormService from '@/api/postAddYouTubeFormService';
+import usePostAddYouTubeFormHook from '@/pages/creator/_hooks/usePostAddYouTubeFormHook';
+import postAddYouTubeFormService from '@/pages/creator/_api/postAddYouTubeFormService';
 
-jest.mock('../../api/postAddYouTubeFormService', () => jest.fn());
+jest.mock('../../pages/creator/_api/postAddYouTubeFormService', () => jest.fn());
 
 const TestComponent = ({ formData }) => {
     const { status, isLoading, error } = usePostAddYouTubeFormHook(formData);

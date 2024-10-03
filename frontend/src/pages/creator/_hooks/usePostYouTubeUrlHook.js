@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import postYouTubeUrlService from '@/api/postYouTubeUrlService'
+import postYouTubeUrlService from '@/pages/creator/_api/postYouTubeUrlService'
 
 const usePostYouTubeUrlHook = (url) => {
     const [transcript, setTranscript] = useState([])

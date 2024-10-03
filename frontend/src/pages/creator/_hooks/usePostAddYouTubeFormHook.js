@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import postAddYouTubeFormService from '@/api/postAddYouTubeFormService'
+import postAddYouTubeFormService from '@/pages/creator/_api/postAddYouTubeFormService'
 
 const usePostAddYouTubeFormHook = (formData) => {
     const [status, setStatus] = useState(null)

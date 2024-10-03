@@ -9,7 +9,7 @@ import { AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
 
 jest.mock('next/router', () => require('next-router-mock'));
 
-jest.mock('../../hooks/usePostAddYouTubeFormHook', () => jest.fn());
+jest.mock('../../pages/creator/_hooks/usePostAddYouTubeFormHook', () => jest.fn());
 
 jest.mock('../../components/YouTubeUrlField', () => () => <input data-testid="youtube-url-field" />);
 jest.mock('../../components/LoadingSpinner', () => () => <div>Loading...</div>);
@@ -20,7 +20,7 @@ jest.mock("@mui/x-date-pickers/DateTimePicker", () => {
 });
 
 describe('<AddEpisodeFromYouTubeForm />', () => {
-    const mockUsePostAddYouTubeFormHook = require('../../hooks/usePostAddYouTubeFormHook');
+    const mockUsePostAddYouTubeFormHook = require('../../pages/creator/_hooks/usePostAddYouTubeFormHook');
 
     beforeEach(() => {
         // Reset mocks before each test

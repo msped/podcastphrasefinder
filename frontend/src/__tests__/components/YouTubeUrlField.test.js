@@ -3,9 +3,9 @@ import { render, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import YouTubeUrlField from '@/components/YouTubeUrlField';
 import '@testing-library/jest-dom';
-import usePostYouTubeUrlHook from '@/hooks/usePostYouTubeUrlHook';
+import usePostYouTubeUrlHook from '@/pages/creator/_hooks/usePostYouTubeUrlHook';
 
-jest.mock('../../hooks/usePostYouTubeUrlHook');
+jest.mock('../../pages/creator/_hooks/usePostYouTubeUrlHook');
 
 describe('YouTubeUrlField', () => {
     const handleIsButtonDisabled = jest.fn();
