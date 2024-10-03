@@ -29,7 +29,6 @@ class TestModels(APITestCase):
             username='admin', password='admin')
         podcast = Podcast.objects.create(
             name='Tom Scott',
-            channel_id='UCBa659QWEk1AI4Tg--mrJ2A',
             avatar=SimpleUploadedFile('test.png', content=b'4321')
         )
         Episode.objects.create(
@@ -152,7 +151,6 @@ class EpisodeSerializerTestCase(APITestCase):
             username='admin', password='admin')
         Podcast.objects.create(
             name='Have a Word Podcast',
-            channel_id='UChl6sFeO_O0drTc1CG1ymFw',
             avatar=SimpleUploadedFile('test.png', content=b'4321')
         )
         self.podcast = Podcast.objects.get(name='Have a Word Podcast')
@@ -187,8 +185,6 @@ class EpisodeSerializerTestCase(APITestCase):
         self.assertEqual(channel_data['slug'], self.episode.channel.slug)
         self.assertEqual(channel_data['avatar'],
                          self.episode.channel.avatar.url)
-        self.assertEqual(channel_data['channel_id'],
-                         self.episode.channel.channel_id)
 
     def test_create_episode_serializer(self):
         data = {
@@ -248,7 +244,6 @@ class PodcastSerializerTestCase(APITestCase):
             username='admin', password='admin')
         self.podcast = Podcast.objects.create(
             name='Have a Word Podcast',
-            channel_id='UChl6sFeO_O0drTc1CG1ymFw',
             avatar=SimpleUploadedFile('test.png', content=b'4321')
         )
         self.serializer = PodcastSerializer(instance=self.podcast)
@@ -273,10 +268,6 @@ class PodcastSerializerTestCase(APITestCase):
         data = self.serializer.data
         self.assertEqual(data['avatar'], self.podcast.avatar.url)
 
-    def test_channel_id_field_content(self):
-        data = self.serializer.data
-        self.assertEqual(data['channel_id'], self.podcast.channel_id)
-
 
 @override_settings(MEDIA_ROOT=MEDIA_ROOT)
 class TranscriptSerializerTestCase(APITestCase):
@@ -286,7 +277,6 @@ class TranscriptSerializerTestCase(APITestCase):
             username='admin', password='admin')
         Podcast.objects.create(
             name='Have a Word Podcast',
-            channel_id='UChl6sFeO_O0drTc1CG1ymFw',
             avatar=SimpleUploadedFile('test.png', content=b'4321')
         )
         self.podcast = Podcast.objects.get(name='Have a Word Podcast')

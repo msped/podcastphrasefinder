@@ -13,8 +13,6 @@ class PodcastListCreateViewTestCase(APITestCase):
 
     def test_create_podcast(self):
         data = {
-            'owner': self.user.id,
-            'channel_id': 'UChl6sFeO_O0drTc1CG1ymFw',
             'name': 'New Podcast'
         }
         response = self.client.post(
@@ -26,7 +24,6 @@ class PodcastListCreateViewTestCase(APITestCase):
         podcast = Podcast.objects.create(
             name='Test Podcast',
             slug='test-podcast',
-            channel_id='UChl6sFeO_O0drTc1CG1ymFw'
         )
         Membership.objects.create(
             user=self.user, podcast_id=podcast.id, role='Owner', is_primary=True)
@@ -100,7 +97,6 @@ class MembershipListCreateViewTestCase(APITestCase):
         self.podcast = Podcast.objects.create(
             name='Test Podcast',
             slug='test-podcast',
-            channel_id='UChl6sFeO_O0drTc1CG1ymFw'
         )
         Membership.objects.create(
             user=self.user_owner, podcast=self.podcast, role='Owner')
@@ -189,7 +185,6 @@ class MembershipDetailViewTestCase(APITestCase):
         self.podcast = Podcast.objects.create(
             name='Another Podcast',
             slug='another-podcast',
-            channel_id='UChl6sFeO_O0drTc1CG1ymFw'
         )
         Membership.objects.create(
             user=self.user_owner, podcast=self.podcast, role='Owner')

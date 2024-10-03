@@ -92,14 +92,13 @@ describe('<AddEpisodeFromYouTubeForm />', () => {
             error: {
                 response: {
                     data: {
-                        channel_id: 'must not be null.'
+                        title: 'must not be null.'
                     }
                 }
             },
         })
         const fakeData = {
             youtubeUrl: 'https://www.test.com/transcript',
-            title: 'Test Episode',
             transcript: 'This is a sample transcript.',
             published_date: '2024-03-01',
         };
@@ -112,12 +111,10 @@ describe('<AddEpisodeFromYouTubeForm />', () => {
         const submitButton = getByRole('button', { name: /submit/i });
         
         const youtubeUrlInput = getByTestId(/youtube-url-field/i)
-        const titleInput = getByLabelText(/episode title/i);
         const transcriptTextarea = getByLabelText(/transcript/i);
         const transcriptDatePicker = getByLabelText(/choose date/i)
 
         userEvent.type(youtubeUrlInput, fakeData.youtubeUrl);
-        userEvent.type(titleInput, fakeData.title);
         userEvent.type(transcriptTextarea, fakeData.transcript);
         fireEvent.change(transcriptDatePicker, {target: { value: fakeData.published_date}});
 

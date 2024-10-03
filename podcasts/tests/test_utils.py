@@ -21,7 +21,6 @@ MEDIA_ROOT = tempfile.mkdtemp()
 class TestUtils(TestCase):
 
     def setUp(self):
-        self.channel_id = 'test_channe_id'
         self.user = User.objects.create_user(
             username='admin', password='admin')
         self.user2 = User.objects.create_user(
@@ -29,13 +28,11 @@ class TestUtils(TestCase):
         Podcast.objects.create(
             id=1,
             name='test',
-            channel_id='test0987654321',
             avatar=SimpleUploadedFile('test.png', content=b'4321')
         )
         Podcast.objects.create(
             id=2,
             name='test podcast',
-            channel_id='test3490439783',
             avatar=SimpleUploadedFile('test podcast.png', content=b'1234')
         )
 

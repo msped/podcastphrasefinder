@@ -29,12 +29,10 @@ class TestPodcastViews(APITestCase):
             username='Mild High Club', password='admin')
         Podcast.objects.create(
             name='Have a Word Podcast',
-            channel_id='UChl6sFeO_O0drTc1CG1ymFw',
             avatar=SimpleUploadedFile('haw.png', b'1234')
         )
         Podcast.objects.create(
             name='The Mild High Club',
-            channel_id='UCIpglRjjRPp2_qfsak-jSSw',
             avatar=SimpleUploadedFile('mhc.png', b'4321')
         )
         have_a_word_podcast = Podcast.objects.get(name='Have a Word Podcast')
@@ -115,7 +113,7 @@ class TestPodcastViews(APITestCase):
         # I know this test is redundant, but I have yet to come up
         # with a suitable way of testing this with elasticsearch.
         mild_high_club = Podcast.objects.get(
-            channel_id='UCIpglRjjRPp2_qfsak-jSSw')
+            name="The Mild High Club")
         response = self.client.get(
             '/api/podcasts/episode/search',
             {
@@ -144,7 +142,7 @@ class TestPodcastViews(APITestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_get_podcast_information_200(self):
-        channel = Podcast.objects.get(channel_id='UChl6sFeO_O0drTc1CG1ymFw')
+        channel = Podcast.objects.get(name='Have a Word Podcast')
         response = self.client.get(
             f'/api/podcasts/{channel.slug}'
         )

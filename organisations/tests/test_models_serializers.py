@@ -21,7 +21,6 @@ class MembershipSerializerTestCase(APITestCase):
         self.client.login(username='testuser', password='12345')
         self.podcast = Podcast.objects.create(
             name='Test Podcast',
-            channel_id='UChl6sFeO_O0drTc1CG1ymFw',
             avatar=SimpleUploadedFile('test.png', content=b'4321')
         )
 

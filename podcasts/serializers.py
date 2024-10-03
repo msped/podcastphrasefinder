@@ -11,7 +11,6 @@ class PodcastSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'slug',
-            'channel_id',
             'avatar',
         ]
 
