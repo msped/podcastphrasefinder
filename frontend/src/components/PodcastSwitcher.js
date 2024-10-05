@@ -99,7 +99,7 @@ const PodcastSwitcher = () => {
 
                         {filteredPodcasts && <Divider variant='middle' sx={{ paddingY: 1 }}/>}
                         
-                        <Button sx={{ color: '#fff' }} startIcon={<AddIcon />} fullWidth>
+                        <Button sx={{ color: '#fff' }} startIcon={<AddIcon />} fullWidth href='/creator/podcast/new'>
                             Create a Podcast
                         </Button>
 
