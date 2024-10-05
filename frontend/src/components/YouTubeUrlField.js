@@ -5,7 +5,7 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 import LoadingSpinner from './LoadingSpinner';
-import usePostYouTubeUrlHook from '@/hooks/usePostYouTubeUrlHook';
+import usePostYouTubeUrlHook from '@/pages/creator/_hooks/usePostYouTubeUrlHook';
 
 export default function YouTubeUrlField({ 
     handleIsButtonDisabled,

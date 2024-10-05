@@ -7,16 +7,6 @@ from .tasks import add_back_catalogue_task
 from .utils import get_transcript
 
 
-@receiver(post_save, sender=Podcast)
-def add_back_catalogue_of_channel(sender, instance, update_fields=None, **kwargs):
-    if connection.settings_dict['NAME'] != 'testdatabase':
-        if instance.run_auto_add_back_catalogue and not instance.has_add_back_catalogue_ran:
-            add_back_catalogue_task.delay(
-                instance.id, instance.channel_id, instance.video_filter)
-            instance.has_add_back_catalogue_ran = True
-            instance.save(update_fields=['has_add_back_catalogue_ran'])
-
-
 @receiver(post_save, sender=Episode)
 def add_transcript_from_episode_save(sender, instance, **kwargs):
     if not Transcript.objects.filter(episode_id=instance.id).exists():

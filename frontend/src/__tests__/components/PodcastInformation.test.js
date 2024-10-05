@@ -9,7 +9,6 @@ jest.mock('../../hooks/useGetPodcastInformationHook', () => {
         podcast: {
             name: 'Test Podcast',
             slug: 'test-podcast',
-            channel_id: '1234567890',
             avatar: "https://yt3.ggpht.com/sROZx5jI62ZX-7Udpthim3reUrYnjGwBrzoJ_JuvKjLcxnHuceC1IHLWIfoykgi28rmW_EIV=s800-c-k-c0x00ffffff-no-rj",
         },
         isLoading: false,

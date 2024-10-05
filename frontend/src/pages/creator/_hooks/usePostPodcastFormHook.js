@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react'
-import postAddYouTubeFormService from '@/api/postAddYouTubeFormService'
+import postPodcastFormHook from '@/pages/creator/_api/postPodcastFormService';
 
-const usePostAddYouTubeFormHook = (formData) => {
+const usePostPodcastFormHook = (formData) => {
+    const [response, setResponse] = useState([])
     const [status, setStatus] = useState(null)
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState(null)
 
     useEffect(() => {
         const fetchDataFromService = async () => {
-            await postAddYouTubeFormService(formData)
+            await postPodcastFormHook(formData)
             .then(res => {
+                setResponse(res?.data);
                 setStatus(res?.status);
                 setIsLoading(true)
             }).catch((error) => {
@@ -22,7 +24,7 @@ const usePostAddYouTubeFormHook = (formData) => {
         }
     }, [formData])
 
-    return { status, isLoading, error };
+    return { response, status, isLoading, error };
 }
 
-export default usePostAddYouTubeFormHook;
+export default usePostPodcastFormHook;

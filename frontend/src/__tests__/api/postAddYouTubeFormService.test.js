@@ -1,5 +1,5 @@
 import apiClient from "@/api/apiClient";
-import postAddYouTubeFormService from "@/api/postAddYouTubeFormService";
+import postAddYouTubeFormService from "@/pages/creator/_api/postAddYouTubeFormService";
 
 jest.mock("../../api/apiClient", () => ({
     post: jest.fn()

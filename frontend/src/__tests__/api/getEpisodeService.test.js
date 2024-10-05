@@ -14,7 +14,6 @@ describe("getEpisodeService", () => {
             "id": 1,
             "name": "Have a Word",
             "slug": "have-a-word",
-            "channel_id": "UChl6sFeO_O0drTc1CG1ymFw",
             "avatar": "https://bigoldtesturl.com/avatar.jpg"
         },
         "title": "Mark Nelson | Have A Word Podcast #265",

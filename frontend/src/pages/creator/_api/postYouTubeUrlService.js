@@ -1,4 +1,4 @@
-import apiClient from "./apiClient";
+import apiClient from "@/api/apiClient";
 
 const postYouTubeUrlService = (url) => {
     return apiClient

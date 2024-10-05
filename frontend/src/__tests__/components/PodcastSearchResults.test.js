@@ -20,12 +20,10 @@ describe('PodcastsSearchResults', () => {
                 {
                     id: 1,
                     name: 'Test Podcast 1',
-                    channel_id: 'abtT4429vjlsdm'
                 },
                 {
                     id: 2,
                     name: 'Test Podcast 2',
-                    channel_id: 'DFvfneifvn3058'
                 }
             ],
             isLoading: false

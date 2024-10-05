@@ -1,6 +1,6 @@
-import apiClient from "./apiClient";
+import apiClient from "@/api/apiClient";
 
-const postAddYouTubeFormService = (formData) => {
+const postCreatePodcastFormService = (formData) => {
     return apiClient
         .post('creator/youtube/add', formData)
         .then((res) => {
@@ -8,4 +8,4 @@ const postAddYouTubeFormService = (formData) => {
         })
 }
 
-export default postAddYouTubeFormService;
+export default postCreatePodcastFormService;

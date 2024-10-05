@@ -64,7 +64,6 @@ class TestAddYoutubeEpisodeView(APITestCase):
         self.client.force_authenticate(user=self.user)
         self.podcast = Podcast.objects.create(
             name='Test Podcast',
-            channel_id='testtesttest',
             avatar=SimpleUploadedFile('test.png', content=b'4321')
         )
         Membership.objects.create(
@@ -125,7 +124,6 @@ class TestCreatorEpisodesView(APITestCase):
 
         self.podcast = Podcast.objects.create(
             name='Test Podcast',
-            channel_id='testtesttest',
             slug='test-podcast',
             avatar=SimpleUploadedFile('test.png', content=b'4321')
         )
@@ -184,7 +182,6 @@ class TestEpisodeDetailView(APITestCase):
 
         self.podcast = Podcast.objects.create(
             name='Test Podcast',
-            channel_id='testtesttest',
             avatar=SimpleUploadedFile('test.png', content=b'4321')
         )
         self.episode = Episode.objects.create(

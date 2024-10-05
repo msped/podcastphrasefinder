@@ -15,6 +15,8 @@ class PodcastListCreateView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         podcast = serializer.save()
+        Membership.objects.filter(
+            user=self.request.user).update(is_primary=False)
         Membership.objects.create(
             user=self.request.user,
             podcast_id=podcast.id,

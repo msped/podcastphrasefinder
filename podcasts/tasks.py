@@ -81,7 +81,6 @@ def get_new_episodes():
 
     for item in EpisodeReleaseDay.objects.filter(
         day=(date.today().isoweekday() % 7) + 1,
-        podcast__run_get_new_episodes=True
     ):
         podcast = item.podcast
         podcast_episode_qs = Episode.objects.filter(
@@ -112,15 +111,15 @@ def get_new_episodes():
                 video_id = video['id']['videoId']
                 if not podcast_episode_qs.filter(video_id=video_id).exists():
                     video_title = unescape(video['snippet']['title'])
-                    if not podcast.video_filter or \
-                            podcast.video_filter in video_title:
-                        video_data.append({
-                            'video_id': video_id,
-                            'channel_id': podcast.id,
-                            'title': video_title,
-                            'published_date': video['snippet']['publishedAt']
-                        })
-                        logger.info(f"{video_title}")
+                    # if not podcast.video_filter or \
+                    #         podcast.video_filter in video_title:
+                    video_data.append({
+                        'video_id': video_id,
+                        'channel_id': podcast.id,
+                        'title': video_title,
+                        'published_date': video['snippet']['publishedAt']
+                    })
+                    logger.info(f"{video_title}")
                 else:
                     video_break = True
 

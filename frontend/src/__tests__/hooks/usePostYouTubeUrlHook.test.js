@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, waitFor } from '@testing-library/react';
-import postYouTubeUrlService from '@/api/postYouTubeUrlService';
-import usePostYouTubeUrlHook from '@/hooks/usePostYouTubeUrlHook';
+import postYouTubeUrlService from '@/pages/creator/_api/postYouTubeUrlService';
+import usePostYouTubeUrlHook from '@/pages/creator/_hooks/usePostYouTubeUrlHook';
 import '@testing-library/jest-dom';
 
 function TestComponent({ url }) {
@@ -15,7 +15,7 @@ function TestComponent({ url }) {
     );
 }
 
-jest.mock('../../api/postYouTubeUrlService', () => ({
+jest.mock('../../pages/creator/_api/postYouTubeUrlService', () => ({
     __esModule: true,
     default: jest.fn(),
 }));
