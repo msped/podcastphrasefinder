@@ -7,6 +7,7 @@ import {
     Stack,
     Button,
 } from '@mui/material';
+import PodcastSwitcher from '@/components/PodcastSwitcher';
 import AddIcon from '@mui/icons-material/Add';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import Link from 'next/link';
@@ -27,12 +28,14 @@ export default function DashboardLayout({ children }) {
     return (
         <Container maxWidth='xl'>
             <Box sx={{ display: isDesktop ? 'flex' : 'block', py: 2 }}>
+                {!isDesktop && <PodcastSwitcher />}
                 <Stack 
                     direction={ isDesktop ? 'column' : 'row' } 
                     spacing={1}
                     sx={{ py: isDesktop ? 0 : 2 }}
                     data-testid="presentation"
                 >
+                    {isDesktop && <PodcastSwitcher />}
                     <Link href='/creator/dashboard/episodes/add' passHref>
                         <Button
                             sx={{
