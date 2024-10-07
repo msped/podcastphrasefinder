@@ -29,8 +29,6 @@ const PodcastSwitcher = () => {
         setOpen(!open);
     }
 
-    const filteredPodcasts = podcasts && podcasts.length > 0 ? podcasts.filter(item => item.slug !== selectedPodcastOrg?.slug): null;
-
     return (
         <>
             <Button 
@@ -42,7 +40,18 @@ const PodcastSwitcher = () => {
                     borderRadius: '5px',
                 }}
             >
-                {!podcasts || podcasts.length === 0 ? 'Select a podcast' : selectedPodcastOrg?.name}
+                {!podcasts || podcasts.length === 0 || selectedPodcastOrg === null ? 'Select a podcast' : (
+                    <Stack direction='row' spacing={1} alignItems='center'>
+                        <Avatar
+                            alt={selectedPodcastOrg?.name}
+                            src={selectedPodcastOrg?.avatar}
+                            sx={{ marginRight: 1, width: 22, height: 22 }}
+                        />
+                        <Typography fontSize='12pt' noWrap>
+                            {selectedPodcastOrg?.name}
+                        </Typography>
+                    </Stack>
+                )}
             </Button>
             {open && (
                 <ClickAwayListener onClickAway={handleSwitchOpen}>
@@ -57,7 +66,7 @@ const PodcastSwitcher = () => {
                         overflowY: 'auto'
                     }}>
                         <Stack direction='column' spacing={1}>
-                        {filteredPodcasts && filteredPodcasts.map(item => (
+                        {podcasts && podcasts.map(item => (
                             <Box 
                                 key={item.id} 
                                 onClick={() => {
@@ -97,7 +106,7 @@ const PodcastSwitcher = () => {
                         ))}
                         </Stack>
 
-                        {filteredPodcasts && <Divider variant='middle' sx={{ paddingY: 1 }}/>}
+                        {podcasts.length > 0 && <Divider variant='middle' sx={{ paddingY: 1 }}/>}
                         
                         <Button sx={{ color: '#fff' }} startIcon={<AddIcon />} fullWidth href='/creator/podcast/new'>
                             Create a Podcast

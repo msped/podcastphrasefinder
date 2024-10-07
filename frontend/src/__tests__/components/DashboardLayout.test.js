@@ -5,6 +5,8 @@ import '@testing-library/jest-dom';
 import { usePathname } from "next/navigation";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { PodcastContext } from '@/context/PodcastContext';
+import useGetPodcastOrgsHook from '@/hooks/useGetPodcastOrgsHook';
 
 jest.mock('next/navigation', () => ({
     usePathname: jest.fn(),
@@ -16,6 +18,7 @@ jest.mock('@mui/material/styles', () => ({
 }));
 
 jest.mock('@mui/material/useMediaQuery', () => jest.fn());
+jest.mock("../../hooks/useGetPodcastOrgsHook", () => jest.fn())
 
 const mockChildren = <div>Test Content</div>;
 
@@ -37,13 +40,23 @@ describe("DashboardLayout", () => {
 
     it("renders without crashing", () => {
         usePathname.mockReturnValue("localhost:3000/creator/dashboard/episodes");
-        render(<DashboardLayout>{mockChildren}</DashboardLayout>);
+        useGetPodcastOrgsHook.mockReturnValueOnce({})
+        render(
+            <PodcastContext.Provider value={{ selectedPodcastOrg: { name: 'Test Org' } }}> 
+                <DashboardLayout>{mockChildren}</DashboardLayout>
+            </PodcastContext.Provider>
+        );
         expect(screen.getByTestId("presentation")).toBeInTheDocument();
     });
 
     it("highlights the 'New Episode' button when on add episode page", () => {
         usePathname.mockReturnValue("/creator/dashboard/episodes/add");
-        render(<DashboardLayout>{mockChildren}</DashboardLayout>);
+        useGetPodcastOrgsHook.mockReturnValueOnce({})
+        render(
+            <PodcastContext.Provider value={{ selectedPodcastOrg: { name: 'Test Org' } }}> 
+                <DashboardLayout>{mockChildren}</DashboardLayout>
+            </PodcastContext.Provider>
+        );
 
         const newEpisodeButton = screen.getByRole("button", { name: "New Episode" });
         expect(newEpisodeButton).toHaveStyle(`fontWeight: 700`);
@@ -51,7 +64,12 @@ describe("DashboardLayout", () => {
 
     it("doesn't highlight the 'New Episode' button when not on add episode page", () => {
         usePathname.mockReturnValue("/creator/dashboard/not-episodes");
-        render(<DashboardLayout>{mockChildren}</DashboardLayout>);
+        useGetPodcastOrgsHook.mockReturnValueOnce({})
+        render(
+            <PodcastContext.Provider value={{ selectedPodcastOrg: { name: 'Test Org' } }}> 
+                <DashboardLayout>{mockChildren}</DashboardLayout>
+            </PodcastContext.Provider>
+        );
 
         const newEpisodeButton = screen.getByRole("button", { name: "New Episode" });
         expect(newEpisodeButton).toHaveStyle(`fontWeight: 400`);
@@ -59,7 +77,12 @@ describe("DashboardLayout", () => {
 
     it("highlights the 'Episodes' button when on episodes list page", () => {
         usePathname.mockReturnValue("/creator/dashboard/episodes");
-        render(<DashboardLayout>{mockChildren}</DashboardLayout>);
+        useGetPodcastOrgsHook.mockReturnValueOnce({})
+        render(
+            <PodcastContext.Provider value={{ selectedPodcastOrg: { name: 'Test Org' } }}> 
+                <DashboardLayout>{mockChildren}</DashboardLayout>
+            </PodcastContext.Provider>
+        );
 
         const episodesButton = screen.getByRole("button", { name: "Episodes" });
         expect(episodesButton).toHaveStyle(`font-weight: 700`);
@@ -67,7 +90,12 @@ describe("DashboardLayout", () => {
 
     it("should display 'Test Content' as children inside the component", () => {
         usePathname.mockReturnValue("/creator/dashboard/episodes");
-        render(<DashboardLayout>{mockChildren}</DashboardLayout>);
+        useGetPodcastOrgsHook.mockReturnValueOnce({})
+        render(
+            <PodcastContext.Provider value={{ selectedPodcastOrg: { name: 'Test Org' } }}> 
+                <DashboardLayout>{mockChildren}</DashboardLayout>
+            </PodcastContext.Provider>
+        );
 
         expect(screen.getByText("Test Content")).toBeInTheDocument();
     });

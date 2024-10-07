@@ -1,22 +1,43 @@
+import shutil
+import tempfile
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import override_settings
+from io import BytesIO
+from PIL import Image
 from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.test import APITestCase
 from podcasts.models import Podcast
 from ..models import Membership
 
+MEDIA_ROOT = tempfile.mkdtemp()
 
+
+@override_settings(MEDIA_ROOT=MEDIA_ROOT)
 class PodcastListCreateViewTestCase(APITestCase):
     def setUp(self):
         self.user = User.objects.create(
             username='testuser', password='12345')
         self.client.force_authenticate(user=self.user)
 
+    def tearDown(self):
+        shutil.rmtree(MEDIA_ROOT, ignore_errors=True)
+
     def test_create_podcast(self):
+        f = BytesIO()
+        image = Image.new("RGB", (100, 100))
+        image.save(f, 'png')
+        f.seek(0)
+        test_image = SimpleUploadedFile(
+            "test_image.png",
+            content=f.read(),
+        )
         data = {
-            'name': 'New Podcast'
+            'name': 'New Podcast',
+            'avatar': test_image
         }
         response = self.client.post(
-            '/api/orgs/podcasts', data, format='json')
+            '/api/orgs/podcasts', data, format='multipart')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Podcast.objects.count(), 1)
 

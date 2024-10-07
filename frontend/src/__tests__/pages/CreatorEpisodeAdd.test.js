@@ -3,6 +3,8 @@ import "@testing-library/jest-dom";
 import Add from '@/pages/creator/dashboard/episodes/add'; 
 
 jest.mock('../../pages/creator/_forms/AddEpisodeFromYouTubeForm', () => () => <div>AddEpisodeFromYouTubeForm Component</div>);
+jest.mock('../../components/PodcastSwitcher', () => () => <div data-testid="podcast-switcher" />);
+
 
 jest.mock("next/navigation", () => ({
     usePathname: () => "localhost:3000/creator/dashboard/episodes",

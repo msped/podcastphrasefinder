@@ -43,7 +43,8 @@ class UserOrgSelectionView(APIView):
         org = Membership.objects.filter(
             user=request.user, is_primary=True).first()
         if org:
-            serializer = MembershipSerializer(org, many=False)
+            serializer = MembershipSerializer(
+                org, context={'request': request}, many=False)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_204_NO_CONTENT)
 

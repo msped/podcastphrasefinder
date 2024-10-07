@@ -10,7 +10,6 @@ import Link from 'next/link';
 import logo from '../../public/static/images/podcastphrasefinder-no-bg.png'
 import { signIn } from "next-auth/react";
 import AccountMenu from '@/components/AccountMenu';
-import PodcastSwitcher from '@/components/PodcastSwitcher';
 import SignedIn from '@/components/SignedIn';
 import SignedOut from '@/components/SignedOut';
 
@@ -51,11 +50,6 @@ export default function Header() {
                         </Typography>
                     </Link>
 
-                    <SignedIn>
-                        <Box mx={2}>
-                            <PodcastSwitcher />
-                        </Box>
-                    </SignedIn>
 
                     <Box sx={{
                         flexGrow: 1,

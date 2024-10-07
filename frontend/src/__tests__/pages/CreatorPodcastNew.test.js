@@ -4,6 +4,7 @@ import PodcastNew from '@/pages/creator/podcast/new';
 import "@testing-library/jest-dom"
 
 jest.mock('../../pages/creator/_components/withDashboardLayout', () => (Component) => Component);
+jest.mock('../../components/PodcastSwitcher', () => () => <div data-testid="podcast-switcher" />);
 jest.mock('../../pages/creator/_forms/CreatePodcastForm', () => () => <div data-testid="create-podcast-form" />);
 
 describe('PodcastNew', () => {
