@@ -8,6 +8,8 @@ import useGetEpisodeHook from '@/pages/creator/_hooks/useGetEpisodeHook';
 import '@testing-library/jest-dom';
 
 jest.mock('../../pages/creator/_forms/EditEpisodeForm', () => () => <div>EditEpisodeForm Component</div>);
+jest.mock('../../components/PodcastSwitcher', () => () => <div data-testid="podcast-switcher" />);
+
 
 jest.mock('next/router', () => ({
     useRouter: jest.fn(),
