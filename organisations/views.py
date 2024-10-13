@@ -32,6 +32,31 @@ class PodcastListCreateView(generics.ListCreateAPIView):
         return Podcast.objects.filter(id__in=ownership_list)
 
 
+class PodcastDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Podcast.objects.all()
+    serializer_class = PodcastSerializer
+    lookup_field = 'slug'
+    lookup_url_kwarg = 'slug'
+
+    def get_permissions(self):
+        if self.request.method == 'PATCH':
+            permission_classes = [
+                IsOrgAdmin | IsOrgOwner,
+                permissions.IsAuthenticated
+            ]
+        elif self.request.method == 'DELETE':
+            permission_classes = [
+                IsOrgOwner,
+                permissions.IsAuthenticated
+            ]
+        else:
+            permission_classes = [
+                IsOrgAdmin | IsOrgOwner | IsOrgMember,
+                permissions.IsAuthenticated
+            ]
+        return [permission() for permission in permission_classes]
+
+
 # Handles the changing of the selected membership (podcast)
 class UserOrgSelectionView(APIView):
     permission_classes = [
