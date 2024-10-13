@@ -4,10 +4,12 @@ from .views import (
     MembershipListCreateView,
     MembershipDetailView,
     UserOrgSelectionView,
+    PodcastDetailView,
 )
 
 urlpatterns = [
     path('podcasts', PodcastListCreateView.as_view(), name='podcast-list-create'),
+    path('podcasts/<slug:slug>',  PodcastDetailView.as_view(), name='podcast-detail'),
     path('memberships/user', UserOrgSelectionView.as_view(),
          name='user-org-selection'),
     path('memberships', MembershipListCreateView.as_view(), name='membership-list'),
