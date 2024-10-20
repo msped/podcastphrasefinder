@@ -15,7 +15,8 @@ describe("patchPodcastService", () => {
 
         expect(apiClient.patch).toHaveBeenCalledWith(
             `orgs/podcasts/${podcastSlug}`,
-            formData
+            formData,
+            {"headers": {"Content-Type": "multipart/form-data"}}
         );
         expect(response).toEqual(mockResponse);
     });
@@ -29,7 +30,8 @@ describe("patchPodcastService", () => {
         );
         expect(apiClient.patch).toHaveBeenCalledWith(
             `orgs/podcasts/${podcastSlug}`,
-            formData
+            formData,
+            {"headers": {"Content-Type": "multipart/form-data"}}
         );
     });
 });
