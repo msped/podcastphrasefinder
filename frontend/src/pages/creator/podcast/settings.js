@@ -9,6 +9,7 @@ import withDashboardLayout from '../_components/withDashboardLayout';
 import { PodcastContext } from '@/context/PodcastContext';
 
 import PodcastSettings from '../_components/PodcastSettings';
+import UserManagement from '../_components/UserManagement';
 import LoadingSpinner from '@/components/LoadingSpinner';
 
 function Settings() {
@@ -23,7 +24,10 @@ function Settings() {
                         <LoadingSpinner />
                     </Box>
                 ) : (
-                    <PodcastSettings podcast={selectedPodcastOrg} />
+                    <>
+                        <PodcastSettings podcast={selectedPodcastOrg} />
+                        <UserManagement podcast={selectedPodcastOrg}/>
+                    </>
                 )}
                 </CardContent>
             </Card>
