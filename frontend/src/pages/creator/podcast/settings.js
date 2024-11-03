@@ -4,6 +4,7 @@ import {
     Card,
     CardContent,
     Box,
+    Stack,
 } from '@mui/material'
 import withDashboardLayout from '../_components/withDashboardLayout';
 import { PodcastContext } from '@/context/PodcastContext';
@@ -24,10 +25,10 @@ function Settings() {
                         <LoadingSpinner />
                     </Box>
                 ) : (
-                    <>
+                    <Stack direction='column' spacing={3}>
                         <PodcastSettings podcast={selectedPodcastOrg} />
-                        <UserManagement podcast={selectedPodcastOrg}/>
-                    </>
+                        <UserManagement />
+                    </Stack>
                 )}
                 </CardContent>
             </Card>
