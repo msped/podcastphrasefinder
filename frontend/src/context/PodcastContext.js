@@ -14,8 +14,9 @@ const PodcastProvider = ({ children }) => {
         const fetchDataFromService = async () => {
             try {
                 const fetchedOrg = await getOrgSelectionService();
-                if (fetchedOrg) {
-                    setSelectedPodcastOrg(fetchedOrg.podcast);    
+                const primaryOrg = fetchedOrg.find(org => org.is_primary === true)
+                if (primaryOrg) {
+                    setSelectedPodcastOrg(primaryOrg.podcast);    
                 }
                 setIsFetched(true);
             } catch (err) {
