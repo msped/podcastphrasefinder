@@ -1,6 +1,7 @@
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.contrib.auth.models import User
 from .models import Membership
 from .serializers import MembershipSerializer
 from podcasts.models import Podcast
@@ -65,11 +66,10 @@ class UserOrgSelectionView(APIView):
     ]
 
     def get(self, request):
-        org = Membership.objects.filter(
-            user=request.user, is_primary=True).first()
-        if org:
+        orgs = Membership.objects.filter(user=self.request.user)
+        if orgs:
             serializer = MembershipSerializer(
-                org, context={'request': request}, many=False)
+                orgs, context={"request": request}, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -97,7 +97,6 @@ class UserOrgSelectionView(APIView):
 
 class MembershipListCreateView(generics.ListCreateAPIView):
     serializer_class = MembershipSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
     def get_permissions(self):
         if self.request.method == 'POST':
@@ -112,15 +111,33 @@ class MembershipListCreateView(generics.ListCreateAPIView):
             ]
         return [permission() for permission in permission_classes]
 
-    # need to work on this as it currently wont work
-    # def perform_create(self, serializer):
-    #     serializer.save(
-    #         user=self.request.user,
-    #         podcast_id=self.request.data.get('podcast_id')
-    #     )
+    def create(self, request, *args, **kwargs):
+        user = User.objects.get(id=self.request.data.get('user_id'))
+        membership = Membership.objects.get(
+            user=self.request.user, is_primary=True)
+
+        if not user or not membership:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        for permission in self.get_permissions():
+            if not permission.has_object_permission(request, self, membership.podcast):
+                return Response(status=status.HTTP_403_FORBIDDEN)
+
+        serializer = self.serializer_class(data=self.request.data, context={
+            'user': user.id,
+            'podcast': membership.podcast.id
+        })
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get_queryset(self):
-        return Membership.objects.filter(user=self.request.user)
+        podcast = Membership.objects.get(
+            user=self.request.user, is_primary=True).podcast
+        if self.request.method == 'GET':
+            return Membership.objects.filter(podcast=podcast)
+        return Membership.objects.filter(user=self.request.user, is_primary=True)
 
 
 # Allow the update and delete of a membership
@@ -150,6 +167,3 @@ class MembershipDetailView(generics.RetrieveUpdateDestroyAPIView):
             self.permission_classes
 
         return super(MembershipDetailView, self).get_permissions()
-
-    def perform_update(self, serializer):
-        serializer.save(user=self.request.user)
