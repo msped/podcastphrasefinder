@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import getPodcastOrgsService from '@/api/getPodcastOrgsService';
+import getOrgSelectionService from '@/api/getOrgSelectionService';
+
 
 const useGetPodcastOrgsHook = () => {
     const [podcasts, setPodcasts] = useState([])
@@ -7,7 +8,7 @@ const useGetPodcastOrgsHook = () => {
 
     useEffect(() => {
         const fetchDataFromService = async () => {
-            await getPodcastOrgsService()
+            await getOrgSelectionService()
             .then(setPodcasts)
             setIsLoading(false)
         }

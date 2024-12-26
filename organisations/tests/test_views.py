@@ -53,12 +53,107 @@ class PodcastListCreateViewTestCase(APITestCase):
         self.assertEqual(len(response.data), 1)
 
 
+@override_settings(MEDIA_ROOT=MEDIA_ROOT)
+class PodcastDetailViewTestCase(APITestCase):
+    def setUp(self):
+        self.user_owner = User.objects.create(
+            username='testuser1', password='password')
+        self.user_admin = User.objects.create(
+            username='testuser2', password='password')
+        self.user_member = User.objects.create(
+            username='testuser3', password='password')
+        self.podcast = Podcast.objects.create(
+            name='Another Podcast',
+            slug='another-podcast',
+        )
+        self.membership_owner = Membership.objects.create(
+            user=self.user_owner, podcast=self.podcast, role='Owner')
+        self.membership_admin = Membership.objects.create(
+            user=self.user_admin, podcast=self.podcast, role='Admin')
+        self.membership_member = Membership.objects.create(
+            user=self.user_member, podcast=self.podcast, role='Member')
+
+    def tearDown(self):
+        shutil.rmtree(MEDIA_ROOT, ignore_errors=True)
+
+    def test_retrieve_podcast_owner(self):
+        self.client.force_authenticate(user=self.user_owner)
+        response = self.client.get(
+            f'/api/orgs/podcasts/{self.podcast.slug}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_retrieve_podcast_admin(self):
+        self.client.force_authenticate(user=self.user_admin)
+        response = self.client.get(
+            f'/api/orgs/podcasts/{self.podcast.slug}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_retrieve_podcast_member(self):
+        self.client.force_authenticate(user=self.user_member)
+        response = self.client.get(
+            f'/api/orgs/podcasts/{self.podcast.slug}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_update_podcast_owner(self):
+        self.client.force_authenticate(user=self.user_owner)
+        updated_data = {'name': 'Updated Podcast Name'}
+        response = self.client.patch(
+            f'/api/orgs/podcasts/{self.podcast.slug}', updated_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.podcast.refresh_from_db()
+        self.assertEqual(self.podcast.name, 'Updated Podcast Name')
+
+    def test_update_podcast_admin(self):
+        self.client.force_authenticate(user=self.user_admin)
+        updated_data = {'name': 'Updated Podcast Name'}
+        response = self.client.patch(
+            f'/api/orgs/podcasts/{self.podcast.slug}', updated_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.podcast.refresh_from_db()
+        self.assertEqual(self.podcast.name, 'Updated Podcast Name')
+
+    def test_update_podcast_member(self):
+        self.client.force_authenticate(user=self.user_member)
+        updated_data = {'name': 'Updated Podcast Name'}
+        response = self.client.patch(
+            f'/api/orgs/podcasts/{self.podcast.slug}', updated_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.podcast.refresh_from_db()
+        self.assertNotEqual(self.podcast.name, 'Updated Podcast Name')
+
+    def test_delete_podcast_owner(self):
+        self.client.force_authenticate(user=self.user_owner)
+        response = self.client.delete(
+            f'/api/orgs/podcasts/{self.podcast.slug}')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Podcast.objects.filter(
+            id=self.podcast.id).exists())
+
+    def test_delete_podcast_admin(self):
+        self.client.force_authenticate(user=self.user_admin)
+        response = self.client.delete(
+            f'/api/orgs/podcasts/{self.podcast.slug}')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertTrue(Podcast.objects.filter(
+            id=self.podcast.id).exists())
+
+    def test_delete_podcast_member(self):
+        self.client.force_authenticate(user=self.user_member)
+        response = self.client.delete(
+            f'/api/orgs/podcasts/{self.podcast.slug}')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertTrue(Podcast.objects.filter(
+            id=self.podcast.id).exists())
+
+
 class UserOrgSelectionViewTestCase(APITestCase):
     def setUp(self):
         self.user1 = User.objects.create_user(
             username='user1', password='password')
         self.user2 = User.objects.create_user(
             username='user2', password='password')
+        self.user3 = User.objects.create_user(
+            username='user3', password='password')
         self.podcast1 = Podcast.objects.create(
             name='podcast1', slug='podcast1')
         self.podcast2 = Podcast.objects.create(
@@ -74,10 +169,10 @@ class UserOrgSelectionViewTestCase(APITestCase):
         self.client.force_authenticate(user=self.user1)
         response = self.client.get('/api/orgs/memberships/user')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['podcast']['slug'], 'podcast1')
+        self.assertEqual(response.data[0]['podcast']['slug'], 'podcast1')
 
     def test_get_no_selected_org(self):
-        self.client.force_authenticate(user=self.user2)
+        self.client.force_authenticate(user=self.user3)
         response = self.client.get('/api/orgs/memberships/user')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
@@ -120,43 +215,35 @@ class MembershipListCreateViewTestCase(APITestCase):
             slug='test-podcast',
         )
         Membership.objects.create(
-            user=self.user_owner, podcast=self.podcast, role='Owner')
+            user=self.user_owner, podcast=self.podcast, role='Owner', is_primary=True)
         self.test_user = User.objects.create(
-            username='testuser1', password='pass')
+            email='testuser1@test.com', username='testuser1', password='pass')
         self.test_user2 = User.objects.create(
-            username='testuser2', password='pass')
+            email='testuser2@test.com', username='testuser2', password='pass')
         self.test_user3 = User.objects.create(
-            username='testuser3', password='pass')
+            email='testuser3@test.com', username='testuser3', password='pass')
         self.user_admin = User.objects.create(
-            username='testuser4', password='pass')
+            email='testuseradmin@test.com', username='testuser4', password='pass')
         Membership.objects.create(
-            user=self.user_admin, podcast=self.podcast, role='Admin')
+            user=self.user_admin, podcast=self.podcast, role='Admin', is_primary=True)
         self.user_member = User.objects.create(
             username='testuser5', password='pass')
         Membership.objects.create(
-            user=self.user_member, podcast=self.podcast, role='Member')
-
-    def create_membership_is_owner(self):
-        self.client.force_authenticate(user=self.user_owner)
-        response = self.client.post(
-            '/api/orgs/memberships', {
-                'user_id': self.test_user.id,
-                'podcast_id': self.podcast.id,
-                'role': 'Member'
-            }, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+            user=self.user_member, podcast=self.podcast, role='Member', is_primary=True)
 
     def list_memberships(self):
         self.client.force_authenticate(user=self.user_admin)
         response = self.client.get('/api/orgs/memberships')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data), 4)
 
     def create_membership_is_admin(self):
         self.client.force_authenticate(user=self.user_admin)
         response = self.client.post(
             '/api/orgs/memberships', {
-                'user_id': self.test_user2.id,
+                'user': {
+                    'email': self.test_user2.email
+                },
                 'podcast_id': self.podcast.id,
                 'role': 'Member'
             }, format='json')
@@ -166,16 +253,17 @@ class MembershipListCreateViewTestCase(APITestCase):
         self.client.force_authenticate(user=self.user_member)
         response = self.client.post(
             '/api/orgs/memberships', {
-                'user_id': self.test_user3.id,
+                'user': {
+                    'email': self.test_user3.email
+                },
                 'podcast_id': self.podcast.id,
                 'role': 'Member'
             }, format='json')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_in_order(self):
-        # self.create_membership_is_owner()
-        # self.create_membership_is_admin()
-        # self.create_membership_is_member()
+        self.create_membership_is_admin()
+        self.create_membership_is_member()
         self.list_memberships()
 
 

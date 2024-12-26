@@ -13,6 +13,7 @@ import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 import AddIcon from '@mui/icons-material/Add';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import SettingsIcon from '@mui/icons-material/Settings';
 import useGetPodcastOrgsHook from '@/hooks/useGetPodcastOrgsHook';
 import { PodcastContext } from '@/context/PodcastContext';
 
@@ -110,6 +111,10 @@ const PodcastSwitcher = () => {
                         
                         <Button sx={{ color: '#fff' }} startIcon={<AddIcon />} fullWidth href='/creator/podcast/new'>
                             Create a Podcast
+                        </Button>
+
+                        <Button sx={{ color: '#fff' }} startIcon={<SettingsIcon />} fullWidth href='/creator/podcast/settings'>
+                            Podcast Settings
                         </Button>
 
                     </Box>
