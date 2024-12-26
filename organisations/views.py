@@ -1,7 +1,6 @@
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.contrib.auth.models import User
 from .models import Membership
 from .serializers import MembershipSerializer
 from podcasts.models import Podcast
@@ -33,31 +32,6 @@ class PodcastListCreateView(generics.ListCreateAPIView):
         return Podcast.objects.filter(id__in=ownership_list)
 
 
-class PodcastDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Podcast.objects.all()
-    serializer_class = PodcastSerializer
-    lookup_field = 'slug'
-    lookup_url_kwarg = 'slug'
-
-    def get_permissions(self):
-        if self.request.method == 'PATCH':
-            permission_classes = [
-                IsOrgAdmin | IsOrgOwner,
-                permissions.IsAuthenticated
-            ]
-        elif self.request.method == 'DELETE':
-            permission_classes = [
-                IsOrgOwner,
-                permissions.IsAuthenticated
-            ]
-        else:
-            permission_classes = [
-                IsOrgAdmin | IsOrgOwner | IsOrgMember,
-                permissions.IsAuthenticated
-            ]
-        return [permission() for permission in permission_classes]
-
-
 # Handles the changing of the selected membership (podcast)
 class UserOrgSelectionView(APIView):
     permission_classes = [
@@ -66,10 +40,11 @@ class UserOrgSelectionView(APIView):
     ]
 
     def get(self, request):
-        orgs = Membership.objects.filter(user=self.request.user)
-        if orgs:
+        org = Membership.objects.filter(
+            user=request.user, is_primary=True).first()
+        if org:
             serializer = MembershipSerializer(
-                orgs, context={"request": request}, many=True)
+                org, context={'request': request}, many=False)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -97,6 +72,7 @@ class UserOrgSelectionView(APIView):
 
 class MembershipListCreateView(generics.ListCreateAPIView):
     serializer_class = MembershipSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_permissions(self):
         if self.request.method == 'POST':
@@ -111,36 +87,15 @@ class MembershipListCreateView(generics.ListCreateAPIView):
             ]
         return [permission() for permission in permission_classes]
 
-    def create(self, request, *args, **kwargs):
-        user_request_obj = self.request.data.get('user')
-        if not user_request_obj:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-        user = User.objects.get(email=user_request_obj['email'])
-        membership = Membership.objects.get(
-            user=self.request.user, is_primary=True)
-
-        if not membership:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
-        for permission in self.get_permissions():
-            if not permission.has_object_permission(request, self, membership.podcast):
-                return Response(status=status.HTTP_403_FORBIDDEN)
-
-        serializer = self.serializer_class(data=self.request.data, context={
-            'user': user.id,
-            'podcast': membership.podcast.id
-        })
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # need to work on this as it currently wont work
+    # def perform_create(self, serializer):
+    #     serializer.save(
+    #         user=self.request.user,
+    #         podcast_id=self.request.data.get('podcast_id')
+    #     )
 
     def get_queryset(self):
-        podcast = Membership.objects.get(
-            user=self.request.user, is_primary=True).podcast
-        if self.request.method == 'GET':
-            return Membership.objects.filter(podcast=podcast)
-        return Membership.objects.filter(user=self.request.user, is_primary=True)
+        return Membership.objects.filter(user=self.request.user)
 
 
 # Allow the update and delete of a membership
@@ -170,3 +125,6 @@ class MembershipDetailView(generics.RetrieveUpdateDestroyAPIView):
             self.permission_classes
 
         return super(MembershipDetailView, self).get_permissions()
+
+    def perform_update(self, serializer):
+        serializer.save(user=self.request.user)

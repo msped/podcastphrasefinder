@@ -8,7 +8,6 @@ import { CacheProvider } from '@emotion/react';
 import { PodcastProvider } from '@/context/PodcastContext';
 import createEmotionCache from '@/createEmotionCache';
 import theme from '@/theme';
-import { AppCacheProvider } from '@mui/material-nextjs/v13-pagesRouter';
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -23,11 +22,11 @@ export default function Providers({ children, props }) {
         <SessionProvider session={session}>
             <PodcastProvider selectedPodcastOrg={selectedPodcastOrg}>
                 <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGb}>
-                    <AppCacheProvider {...props}>
+                    <CacheProvider value={emotionCache}>
                         <ThemeProvider theme={theme}>
                             {children}
                         </ThemeProvider>
-                    </AppCacheProvider>
+                    </CacheProvider>
                 </LocalizationProvider>
             </PodcastProvider>
         </SessionProvider>

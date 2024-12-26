@@ -23,10 +23,6 @@ class MembershipSerializerTestCase(APITestCase):
             name='Test Podcast',
             avatar=SimpleUploadedFile('test.png', content=b'4321')
         )
-        self.podcast2 = Podcast.objects.create(
-            name='Test Podcast 2',
-            avatar=SimpleUploadedFile('test.png', content=b'4321')
-        )
 
         # Create some memberships.
         self.member_role = ROLE_CHOICES[0][0]
@@ -62,19 +58,3 @@ class MembershipSerializerTestCase(APITestCase):
         self.assertEqual(serializer.data['podcast']['id'], self.podcast.id)
         self.assertEqual(serializer.data['role'], self.member_role)
         self.assertFalse(serializer.data['is_primary'])
-
-    def test_create_membership(self):
-        data = {
-            'role': 'Member',
-        }
-        serializer = MembershipSerializer(data=data, context={
-            'user': self.user.id,
-            'podcast': self.podcast2.id
-        })
-        self.assertTrue(serializer.is_valid())
-        serializer.save()
-        self.assertTrue(Membership.objects.filter(
-            user_id=self.user.id,
-            podcast_id=self.podcast2.id,
-            role='Member'
-        ).exists())

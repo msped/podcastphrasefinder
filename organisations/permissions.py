@@ -1,10 +1,7 @@
 from rest_framework import permissions
-from podcasts.models import Podcast
 
 
 def _get_podcast_or_channel(obj):
-    if isinstance(obj, Podcast):
-        return obj
     return getattr(
         obj, 'podcast',
         getattr(obj, 'channel',
@@ -27,6 +24,7 @@ class IsOrgAdmin(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
+
         podcast_or_channel = _get_podcast_or_channel(obj)
         if podcast_or_channel is None:
             return False

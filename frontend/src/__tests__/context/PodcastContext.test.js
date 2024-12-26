@@ -30,12 +30,7 @@ describe('PodcastProvider', () => {
     });
 
     test('fetches and sets selectedPodcastOrg on initial load', async () => {
-        const mockResponse = [
-            { podcast: {slug: 'test-podcast'}, is_primary: true},
-            { podcast: {slug: 'test-podcast-2'}, is_primary: false},
-            { podcast: {slug: 'test-podcast-3'}, is_primary: false},
-            { podcast: {slug: 'test-podcast-4'}, is_primary: false},
-        ];
+        const mockResponse = { podcast: { slug: 'test-podcast' } };
         getOrgSelectionService.mockResolvedValue(mockResponse);
 
         let contextValue;
@@ -57,10 +52,7 @@ describe('PodcastProvider', () => {
     });
 
     test('handles organization change correctly', async () => {
-        const mockInitialResponse = [
-            { podcast: {slug: 'initial-podcast'}, is_primary: true },
-            { podcast: {slug: 'test-podcast-2'}, is_primary: false},
-            ];
+        const mockInitialResponse = { podcast: { slug: 'initial-podcast' } };
         const mockChangeResponse = { podcast: { slug: 'changed-podcast' } };
         
         getOrgSelectionService.mockResolvedValue(mockInitialResponse);

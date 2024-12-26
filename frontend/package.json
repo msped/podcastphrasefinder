@@ -7,17 +7,14 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest --watchAll",
-    "preview": "jest-preview"
+    "test": "jest --watchAll"
   },
   "dependencies": {
-    "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.11.0",
     "@emotion/server": "^11.11.0",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.15.6",
     "@mui/material": "^5.13.0",
-    "@mui/material-nextjs": "^6.2.1",
     "@mui/x-data-grid": "^7.11.1",
     "@mui/x-date-pickers": "^6.19.2",
     "@testing-library/jest-dom": "^5.16.5",
@@ -38,7 +35,6 @@
   },
   "devDependencies": {
     "@testing-library/user-event": "^14.5.2",
-    "jest-preview": "^0.3.1",
     "next-router-mock": "^0.9.3"
   }
 }
