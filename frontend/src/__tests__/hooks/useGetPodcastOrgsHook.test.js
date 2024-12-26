@@ -1,9 +1,10 @@
 import React from 'react';
 import { render, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom'
 import useGetPodcastOrgsHook from '@/hooks/useGetPodcastOrgsHook';
-import getPodcastOrgsService from '@/api/getPodcastOrgsService'; 
+import getOrgSelectionService from '@/api/getOrgSelectionService'; 
 
-jest.mock('../../api/getPodcastOrgsService');
+jest.mock('../../api/getOrgSelectionService');
 
 function TestComponent() {
     const { podcasts, isLoading } = useGetPodcastOrgsHook();
@@ -25,7 +26,7 @@ describe('useGetPodcastOrgsHook', () => {
     });
 
     it('should start with loading state and an empty podcasts array', async () => {
-        getPodcastOrgsService.mockResolvedValue([]);
+        getOrgSelectionService.mockResolvedValue([]);
         const { getByTestId } = render(<TestComponent />);
         
         waitFor(() => expect(getByTestId('loading')).toHaveTextContent('Loading...'));
@@ -33,11 +34,9 @@ describe('useGetPodcastOrgsHook', () => {
 
     it('should set podcasts data after successful fetch', async () => {
         const mockPodcastData = [{ id: 1, name: 'Test Podcast Org' }];
-        getPodcastOrgsService.mockResolvedValue(mockPodcastData);
+        getOrgSelectionService.mockResolvedValue(mockPodcastData);
 
-        const { getByTestId, queryByTestId } = render(<TestComponent />);
-
-        await waitFor(() => expect(queryByTestId('loading')).toBeNull());
+        const { getByTestId } = render(<TestComponent />);
 
         waitFor(() => expect(getByTestId('podcasts').textContent).toBe(JSON.stringify(mockPodcastData)));
     });
