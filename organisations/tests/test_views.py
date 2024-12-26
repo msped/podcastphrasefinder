@@ -217,13 +217,13 @@ class MembershipListCreateViewTestCase(APITestCase):
         Membership.objects.create(
             user=self.user_owner, podcast=self.podcast, role='Owner', is_primary=True)
         self.test_user = User.objects.create(
-            username='testuser1', password='pass')
+            email='testuser1@test.com', username='testuser1', password='pass')
         self.test_user2 = User.objects.create(
-            username='testuser2', password='pass')
+            email='testuser2@test.com', username='testuser2', password='pass')
         self.test_user3 = User.objects.create(
-            username='testuser3', password='pass')
+            email='testuser3@test.com', username='testuser3', password='pass')
         self.user_admin = User.objects.create(
-            username='testuser4', password='pass')
+            email='testuseradmin@test.com', username='testuser4', password='pass')
         Membership.objects.create(
             user=self.user_admin, podcast=self.podcast, role='Admin', is_primary=True)
         self.user_member = User.objects.create(
@@ -241,7 +241,9 @@ class MembershipListCreateViewTestCase(APITestCase):
         self.client.force_authenticate(user=self.user_admin)
         response = self.client.post(
             '/api/orgs/memberships', {
-                'user_id': self.test_user2.id,
+                'user': {
+                    'email': self.test_user2.email
+                },
                 'podcast_id': self.podcast.id,
                 'role': 'Member'
             }, format='json')
@@ -251,7 +253,9 @@ class MembershipListCreateViewTestCase(APITestCase):
         self.client.force_authenticate(user=self.user_member)
         response = self.client.post(
             '/api/orgs/memberships', {
-                'user_id': self.test_user3.id,
+                'user': {
+                    'email': self.test_user3.email
+                },
                 'podcast_id': self.podcast.id,
                 'role': 'Member'
             }, format='json')

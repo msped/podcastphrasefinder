@@ -112,11 +112,14 @@ class MembershipListCreateView(generics.ListCreateAPIView):
         return [permission() for permission in permission_classes]
 
     def create(self, request, *args, **kwargs):
-        user = User.objects.get(id=self.request.data.get('user_id'))
+        user_request_obj = self.request.data.get('user')
+        if not user_request_obj:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        user = User.objects.get(email=user_request_obj['email'])
         membership = Membership.objects.get(
             user=self.request.user, is_primary=True)
 
-        if not user or not membership:
+        if not membership:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         for permission in self.get_permissions():
