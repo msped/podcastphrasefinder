@@ -5,6 +5,7 @@ import * as React from 'react';
 import { Toaster } from 'react-hot-toast';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
+import TransferOwnership from '@/pages/creator/_components/TransferOwnership';
 
 jest.mock('../../pages/creator/_hooks/membershipHooks', () => ({
     useGetMembershipsHook: jest.fn(),
@@ -12,6 +13,11 @@ jest.mock('../../pages/creator/_hooks/membershipHooks', () => ({
     usePatchMembershipHook: jest.fn(),
     usePostMembershipHook: jest.fn(),
 }));
+
+jest.mock('../../pages/creator/_components/TransferOwnership', () => {
+    const mockComponent = () => <div>TransferOwnership Component</div>
+    return mockComponent;
+})
 
 let mockMemberships = [
     { id: 1, user: { full_name: 'John Doe', email: 'john.doe@example.com' }, role: 'Member' },
