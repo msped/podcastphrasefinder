@@ -23,3 +23,9 @@ export const deleteMembershipsService = async (memberId) => {
         .delete(`/orgs/memberships/${memberId}`);
     return res;
 }
+
+export const TransferMembershipService = async (formData) => {
+    const res = await apiClient
+        .post('orgs/podcasts/transfer/ownership', {'requested_owner': formData});
+    return res;
+}
