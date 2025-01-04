@@ -16,6 +16,6 @@ urlpatterns = [
     path('memberships', MembershipListCreateView.as_view(), name='membership-list'),
     path('memberships/<int:id>',
          MembershipDetailView.as_view(), name='membership-detail'),
-    path('podcasts/transfer', TransferOwnershipView.as_view(),
+    path('podcasts/transfer/ownership', TransferOwnershipView.as_view(),
          name='transfer-ownership')
 ]
