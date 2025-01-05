@@ -3,7 +3,8 @@ import {
     getMembershipsService,
     postMembershipsService,
     patchMembershipsService,
-    deleteMembershipsService
+    deleteMembershipsService,
+    TransferMembershipService
 } from "@/pages/creator/_api/membershipServices";
 
 jest.mock('../../api/apiClient');
@@ -109,6 +110,36 @@ describe("membershipServices", () => {
                 mockError
             );
             expect(apiClient.delete).toHaveBeenCalledWith(`/orgs/memberships/${memberId}`);
+        });
+    });
+
+    describe(("TransferOwnershipService"), () => {
+        afterEach(() => {
+            jest.clearAllMocks();
+        });
+    
+        it('should make a POST request to the correct URL with the correct data', async () => {
+            const formData = 'newOwner@example.com';
+            const expectedResponse = { data: 'success' };
+            
+            apiClient.post.mockResolvedValue(expectedResponse);
+    
+            const response = await TransferMembershipService(formData);
+
+            expect(apiClient.post).toHaveBeenCalledWith(
+                'orgs/podcasts/transfer/ownership',
+                { 'requested_owner': formData }
+            );
+            expect(response).toEqual(expectedResponse);
+        });
+    
+        it('should throw an error when the request fails', async () => {
+            const formData = 'newOwner@example.com';
+            const errorMessage = 'Request failed';
+    
+            apiClient.post.mockRejectedValue(new Error(errorMessage));
+
+            await expect(TransferMembershipService(formData)).rejects.toThrow(errorMessage);
         });
     });
 
