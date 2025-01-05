@@ -4,7 +4,8 @@ import {
     useGetMembershipsHook,
     usePostMembershipHook,
     usePatchMembershipHook,
-    useDeleteMembershipHook
+    useDeleteMembershipHook,
+    useTransferMembershipHook,
 } from '@/pages/creator/_hooks/membershipHooks'; 
 
 
@@ -13,6 +14,7 @@ jest.mock('../../pages/creator/_api/membershipServices', () => ({
     patchMembershipsService: jest.fn(),
     postMembershipsService: jest.fn(),
     deleteMembershipsService: jest.fn(),
+    TransferMembershipService: jest.fn(),
 }));
 
 describe('Membership Hooks', () => {
@@ -20,7 +22,8 @@ describe('Membership Hooks', () => {
         getMembershipsService, 
         patchMembershipsService, 
         postMembershipsService, 
-        deleteMembershipsService 
+        deleteMembershipsService, 
+        TransferMembershipService
     } = require('../../pages/creator/_api/membershipServices');
 
     afterEach(() => {
@@ -124,6 +127,47 @@ describe('Membership Hooks', () => {
 
             await waitFor(() => {
                 expect(getByTestId('hook-result').textContent).toContain(JSON.stringify({ status: null, error: mockError }));
+            });
+        });
+    });
+
+    describe('TestComponent with useTransferMembershipHook', () => {
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+    
+        it('should display response and status on success', async () => {
+            const formData = 'newOwner@example.com';
+            const mockResponse = { data: 'success', status: 200 };
+            
+            TransferMembershipService.mockResolvedValue(mockResponse);
+    
+            const { getByTestId } = render(<TestComponent hook={useTransferMembershipHook} args={formData} />);
+            
+            await waitFor(() => {
+                expect(getByTestId('hook-result').textContent).toContain(
+                    JSON.stringify({ response: 'success', status: 200, error: null })
+                );
+            });
+        });
+    
+        it('should display error on failure', async () => {
+            const formData = 'newOwner@example.com';
+            const errorMessage = 'Something went wrong';
+            const mockError = {
+                response: {
+                    data: errorMessage,
+                }
+            };
+    
+            TransferMembershipService.mockRejectedValue(mockError);
+
+            const { getByTestId } = render(<TestComponent hook={useTransferMembershipHook} args={formData} />);
+    
+            await waitFor(() => {
+                expect(getByTestId('hook-result').textContent).toContain(
+                    JSON.stringify({ response: [], status: null, error: 'Something went wrong' })
+                );
             });
         });
     });
