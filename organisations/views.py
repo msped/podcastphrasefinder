@@ -2,6 +2,7 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 from .models import Membership
 from .serializers import MembershipSerializer
 from podcasts.models import Podcast
@@ -170,3 +171,57 @@ class MembershipDetailView(generics.RetrieveUpdateDestroyAPIView):
             self.permission_classes
 
         return super(MembershipDetailView, self).get_permissions()
+
+# Transfer the ownership of podcast to a member
+
+
+class TransferOwnershipView(APIView):
+    permission_classes = [IsOrgOwner, permissions.IsAuthenticated]
+
+    def post(self, request, slug):
+        if not slug or not Podcast.objects.filter(slug=slug).exists():
+            return Response({'error': 'Podcast does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            current_owner_membership = Membership.objects.get(
+                user=request.user, podcast__slug=slug, role='Owner')
+        except Membership.DoesNotExist:
+            return Response({'error': 'You do not have permission to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
+
+        requested_owner_email = request.data.get('requested_owner')
+        if not requested_owner_email:
+            return Response({'error': 'A member must be selected.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            requested_owner = User.objects.get(email=requested_owner_email)
+        except User.DoesNotExist:
+            return Response({'error': 'Requested user does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            requested_owner_membership = Membership.objects.get(
+                user=requested_owner, podcast=current_owner_membership.podcast
+            )
+        except Membership.DoesNotExist:
+            return Response({'error': 'Requested user is not a member of this podcast.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        current_owner_serializer = MembershipSerializer(
+            instance=current_owner_membership, data={"role": "Member"}, partial=True
+        )
+        requested_owner_serializer = MembershipSerializer(
+            instance=requested_owner_membership, data={"role": "Owner"}, partial=True
+        )
+
+        if current_owner_serializer.is_valid() and requested_owner_serializer.is_valid():
+            current_owner_serializer.save()
+            requested_owner_serializer.save()
+            return Response(
+                {
+                    'new_owner': requested_owner_serializer.data,
+                    'old_owner': current_owner_serializer.data
+                },
+                status=status.HTTP_200_OK
+            )
+        else:
+            errors = current_owner_serializer.errors
+            errors.update(requested_owner_serializer.errors)
+            return Response(errors, status=status.HTTP_400_BAD_REQUEST)
