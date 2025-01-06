@@ -99,7 +99,7 @@ export const useDeleteMembershipHook = (memberId) => {
     return { status, error }
 }
 
-export const useTransferMembershipHook = (formData) => {
+export const useTransferMembershipHook = (slug, formData) => {
     const [response, setResponse] = useState([]);
     const [status, setStatus] = useState(null);
     const [error, setError] = useState(null)
@@ -107,7 +107,7 @@ export const useTransferMembershipHook = (formData) => {
     useEffect(() => {
         const transferOwnership = async () => {
             try {
-                const response = await TransferMembershipService(formData);
+                const response = await TransferMembershipService(slug, formData);
                 setResponse(response.data)
                 setStatus(response.status);
                 setError(null);
@@ -119,7 +119,7 @@ export const useTransferMembershipHook = (formData) => {
         if (formData) {
             transferOwnership();
         }
-    }, [formData])
+    }, [slug, formData])
     
     return { response, status, error }
 }

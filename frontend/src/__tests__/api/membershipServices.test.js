@@ -114,6 +114,8 @@ describe("membershipServices", () => {
     });
 
     describe(("TransferOwnershipService"), () => {
+        const podcastSlug = 'podcast-slug';
+
         afterEach(() => {
             jest.clearAllMocks();
         });
@@ -124,10 +126,10 @@ describe("membershipServices", () => {
             
             apiClient.post.mockResolvedValue(expectedResponse);
     
-            const response = await TransferMembershipService(formData);
+            const response = await TransferMembershipService(podcastSlug, formData);
 
             expect(apiClient.post).toHaveBeenCalledWith(
-                'orgs/podcasts/transfer/ownership',
+                `orgs/podcasts/${podcastSlug}/transfer`,
                 { 'requested_owner': formData }
             );
             expect(response).toEqual(expectedResponse);
@@ -139,7 +141,7 @@ describe("membershipServices", () => {
     
             apiClient.post.mockRejectedValue(new Error(errorMessage));
 
-            await expect(TransferMembershipService(formData)).rejects.toThrow(errorMessage);
+            await expect(TransferMembershipService(podcastSlug, formData)).rejects.toThrow(errorMessage);
         });
     });
 
