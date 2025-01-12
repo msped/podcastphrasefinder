@@ -371,3 +371,114 @@ class MembershipDetailViewTestCase(APITestCase):
         member = Membership.objects.all().first()
         response = self.client.delete(f'/api/orgs/memberships/{member.id}')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class TransferOwnershipViewTestCase(APITestCase):
+
+    def setUp(self):
+        self.user_owner = User.objects.create(
+            username='testuser1', email='testuser1@test.com', password='password')
+        self.user_member = User.objects.create(
+            username='testuser2', email='testuser2@test.com', password='password')
+        self.user_admin = User.objects.create(
+            username='testuser3', email='testuser3@test.com', password='password')
+        self.non_member = User.objects.create(
+            username='testuser4', email='testuser4@test.com', password='password')
+        self.podcast = Podcast.objects.create(
+            name='Another Podcast',
+            slug='another-podcast',
+        )
+        Membership.objects.create(
+            user=self.user_owner, podcast=self.podcast, role='Owner', is_primary=True)
+        Membership.objects.create(
+            user=self.user_member, podcast=self.podcast, role='Member', is_primary=True)
+        Membership.objects.create(
+            user=self.user_admin, podcast=self.podcast, role='Admin', is_primary=True)
+
+    def test_transfer_ownership_as_owner(self):
+        self.client.force_authenticate(user=self.user_owner)
+        response = self.client.post(
+            f'/api/orgs/podcasts/{self.podcast.slug}/transfer',
+            {
+                'requested_owner': self.user_member.email
+            },
+            format='json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['new_owner']
+                         ['user']['email'], self.user_member.email)
+        self.assertEqual(response.data['new_owner']['role'], 'Owner')
+
+        self.assertEqual(response.data['old_owner']
+                         ['user']['email'], self.user_owner.email)
+        self.assertEqual(response.data['old_owner']['role'], 'Member')
+
+    def test_transfer_ownership_as_member(self):
+        self.client.force_authenticate(user=self.user_member)
+        response = self.client.post(
+            f'/api/orgs/podcasts/{self.podcast.slug}/transfer',
+            {
+                'requested_owner': self.user_admin.email
+            },
+            format='json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_transfer_ownership_as_admin(self):
+        self.client.force_authenticate(user=self.user_admin)
+        response = self.client.post(
+            f'/api/orgs/podcasts/{self.podcast.slug}/transfer',
+            {
+                'requested_owner': self.user_member.email
+            },
+            format='json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_transfer_ownership_to_non_member(self):
+        self.client.force_authenticate(user=self.user_owner)
+        response = self.client.post(
+            f'/api/orgs/podcasts/{self.podcast.slug}/transfer',
+            {
+                'requested_owner': self.non_member.email
+            },
+            format='json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.data['error'], 'Requested user is not a member of this podcast.')
+
+    def test_transfer_ownership_no_requested_owner(self):
+        self.client.force_authenticate(user=self.user_owner)
+        response = self.client.post(
+            f'/api/orgs/podcasts/{self.podcast.slug}/transfer',
+            {},
+            format='json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data['error'], 'A member must be selected.')
+
+    def test_transfer_ownership_user_doesnt_exist(self):
+        self.client.force_authenticate(user=self.user_owner)
+        response = self.client.post(
+            f'/api/orgs/podcasts/{self.podcast.slug}/transfer',
+            {
+                'requested_owner': 'test@test.com'
+            },
+            format='json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.data['error'],
+                         'Requested user does not exist.')
+
+    def test_transfer_ownership_no_podcast_slug(self):
+        self.client.force_authenticate(user=self.user_owner)
+        response = self.client.post(
+            f'/api/orgs/podcasts/ddddfv/transfer',
+            {
+                'requested_owner': 'test@test.com'
+            },
+            format='json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.data['error'], 'Podcast does not exist.')

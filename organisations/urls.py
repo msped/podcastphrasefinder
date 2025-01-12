@@ -5,6 +5,7 @@ from .views import (
     MembershipDetailView,
     UserOrgSelectionView,
     PodcastDetailView,
+    TransferOwnershipView
 )
 
 urlpatterns = [
@@ -15,4 +16,6 @@ urlpatterns = [
     path('memberships', MembershipListCreateView.as_view(), name='membership-list'),
     path('memberships/<int:id>',
          MembershipDetailView.as_view(), name='membership-detail'),
+    path('podcasts/<slug:slug>/transfer', TransferOwnershipView.as_view(),
+         name='transfer-ownership')
 ]

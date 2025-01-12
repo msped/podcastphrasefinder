@@ -4,7 +4,8 @@ import {
     useGetMembershipsHook,
     usePostMembershipHook,
     usePatchMembershipHook,
-    useDeleteMembershipHook
+    useDeleteMembershipHook,
+    useTransferMembershipHook,
 } from '@/pages/creator/_hooks/membershipHooks'; 
 
 
@@ -13,6 +14,7 @@ jest.mock('../../pages/creator/_api/membershipServices', () => ({
     patchMembershipsService: jest.fn(),
     postMembershipsService: jest.fn(),
     deleteMembershipsService: jest.fn(),
+    TransferMembershipService: jest.fn(),
 }));
 
 describe('Membership Hooks', () => {
@@ -20,7 +22,8 @@ describe('Membership Hooks', () => {
         getMembershipsService, 
         patchMembershipsService, 
         postMembershipsService, 
-        deleteMembershipsService 
+        deleteMembershipsService, 
+        TransferMembershipService
     } = require('../../pages/creator/_api/membershipServices');
 
     afterEach(() => {
@@ -56,7 +59,7 @@ describe('Membership Hooks', () => {
             const mockResponse = { data: { id: 2, name: 'Platinum' }, status: 201 };
             postMembershipsService.mockResolvedValueOnce(mockResponse);
 
-            const { getByTestId } = render(<TestComponent hook={usePostMembershipHook} args={[formData]} />);
+            const { getByTestId } = render(<TestComponent hook={usePostMembershipHook} args={['podcast-slug', formData]} />);
 
             await waitFor(() => {
                 expect(getByTestId('hook-result').textContent).toContain(JSON.stringify({ response: mockResponse.data, status: mockResponse.status, error: null }));
@@ -68,7 +71,7 @@ describe('Membership Hooks', () => {
             const mockError = new Error('Network error');
             postMembershipsService.mockRejectedValueOnce({ response: { data: mockError } });
 
-            const { getByTestId } = render(<TestComponent hook={usePostMembershipHook} args={[formData]} />);
+            const { getByTestId } = render(<TestComponent hook={usePostMembershipHook} args={['podcast-slug', formData]} />);
 
             await waitFor(() => {
                 expect(getByTestId('hook-result').textContent).toContain(JSON.stringify({ response: [], status: null, error: mockError }));
@@ -82,7 +85,7 @@ describe('Membership Hooks', () => {
             const mockResponse = { data: { id: 3, name: 'Diamond Updated' }, status: 200 };
             patchMembershipsService.mockResolvedValueOnce(mockResponse);
 
-            const { getByTestId } = render(<TestComponent hook={usePatchMembershipHook} args={[formData]} />);
+            const { getByTestId } = render(<TestComponent hook={usePatchMembershipHook} args={['podcast-slug', formData]} />);
 
             await waitFor(() => {
                 expect(getByTestId('hook-result').textContent).toContain(JSON.stringify({ response: mockResponse.data, status: mockResponse.status, error: null }));
@@ -94,7 +97,7 @@ describe('Membership Hooks', () => {
             const mockError = new Error('Server error');
             patchMembershipsService.mockRejectedValueOnce(mockError);
 
-            const { getByTestId } = render(<TestComponent hook={usePatchMembershipHook} args={[formData]} />);
+            const { getByTestId } = render(<TestComponent hook={usePatchMembershipHook} args={['podcast-slug', formData]} />);
 
             await waitFor(() => {
                 expect(getByTestId('hook-result').textContent).toContain(JSON.stringify({ response: [], status: null, error: mockError }));
@@ -108,7 +111,7 @@ describe('Membership Hooks', () => {
             const mockResponse = { status: 204 };
             deleteMembershipsService.mockResolvedValueOnce(mockResponse);
 
-            const { getByTestId } = render(<TestComponent hook={useDeleteMembershipHook} args={[memberId]} />);
+            const { getByTestId } = render(<TestComponent hook={useDeleteMembershipHook} args={['podcast-slug', memberId]} />);
 
             await waitFor(() => {
                 expect(getByTestId('hook-result').textContent).toContain(JSON.stringify({ status: mockResponse.status, error: null }));
@@ -120,10 +123,51 @@ describe('Membership Hooks', () => {
             const mockError = new Error('Not Found');
             deleteMembershipsService.mockRejectedValueOnce({ response: { data: mockError } });
 
-            const { getByTestId } = render(<TestComponent hook={useDeleteMembershipHook} args={[memberId]} />);
+            const { getByTestId } = render(<TestComponent hook={useDeleteMembershipHook} args={['podcast-slug', memberId]} />);
 
             await waitFor(() => {
                 expect(getByTestId('hook-result').textContent).toContain(JSON.stringify({ status: null, error: mockError }));
+            });
+        });
+    });
+
+    describe('TestComponent with useTransferMembershipHook', () => {
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+    
+        it('should display response and status on success', async () => {
+            const formData = 'newOwner@example.com';
+            const mockResponse = { data: 'success', status: 200 };
+            
+            TransferMembershipService.mockResolvedValue(mockResponse);
+    
+            const { getByTestId } = render(<TestComponent hook={useTransferMembershipHook} args={['podcast-slug', formData]} />);
+            
+            await waitFor(() => {
+                expect(getByTestId('hook-result').textContent).toContain(
+                    JSON.stringify({ response: 'success', status: 200, error: null })
+                );
+            });
+        });
+    
+        it('should display error on failure', async () => {
+            const formData = 'newOwner@example.com';
+            const errorMessage = 'Something went wrong';
+            const mockError = {
+                response: {
+                    data: errorMessage,
+                }
+            };
+    
+            TransferMembershipService.mockRejectedValue(mockError);
+
+            const { getByTestId } = render(<TestComponent hook={useTransferMembershipHook} args={['podcast-slug', formData]} />);
+    
+            await waitFor(() => {
+                expect(getByTestId('hook-result').textContent).toContain(
+                    JSON.stringify({ response: [], status: null, error: 'Something went wrong' })
+                );
             });
         });
     });

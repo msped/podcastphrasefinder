@@ -20,7 +20,8 @@ import {
     Box,
     Typography,
     IconButton,
-    FormHelperText
+    FormHelperText,
+    Stack
 } from '@mui/material';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import EditIcon from '@mui/icons-material/Edit';
@@ -32,6 +33,7 @@ import {
     usePatchMembershipHook,
     usePostMembershipHook,
 } from '../_hooks/membershipHooks';
+import TransferOwnership from '../_components/TransferOwnership';
 
 import toast from 'react-hot-toast';
 
@@ -180,66 +182,69 @@ export default function UserManagement() {
 
     return (
         <Box>
-            <Box display='flex'>
-                <Typography
-                    fontWeight={500}
-                    variant='h6'
-                    sx={{ flexGrow: 1, paddingLeft: 1 }}
-                >
-                    User Permissions
-                </Typography>
-                <Box sx={{ flexGrow: 1 }}></Box>
-                <Button
-                    variant="contained"
-                    startIcon={<AddIcon />}
-                    size="small"
-                    onClick={() => handleOpenDialog('add')}
-                >
-                    Add User
-                </Button>
-            </Box>
-            { isLoading ? <LoadingSpinner /> : (
-            <TableContainer component={Paper}>
-                <Table size='small'>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Name</TableCell>
-                            <TableCell>Email</TableCell>
-                            <TableCell>Role</TableCell>
-                            <TableCell>Actions</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {memberships ?  
-                        memberships.map((item) => (
-                        <TableRow key={item.id}>
-                            <TableCell>{item.user.full_name}</TableCell>
-                            <TableCell>{item.user.email}</TableCell>
-                            <TableCell>{item.role}</TableCell>
-                            <TableCell>
-                                <IconButton
-                                    onClick={() => handleOpenDialog('edit', item)}
-                                    aria-label="edit"
-                                >
-                                    <EditIcon />
-                                </IconButton>
-                                <IconButton onClick={() => handleDeleteMember(item.id)} aria-label="delete">
-                                    <DeleteIcon />
-                                </IconButton>
-                            </TableCell>
-                        </TableRow>
-                        )): (
+            <Stack direction='column' spacing={3}>
+                <Box display='flex'>
+                    <Typography
+                        fontWeight={500}
+                        variant='h6'
+                        sx={{ flexGrow: 1, paddingLeft: 1 }}
+                    >
+                        User Permissions
+                    </Typography>
+                    <Box sx={{ flexGrow: 1 }}></Box>
+                    <Button
+                        variant="contained"
+                        startIcon={<AddIcon />}
+                        size="small"
+                        onClick={() => handleOpenDialog('add')}
+                    >
+                        Add User
+                    </Button>
+                </Box>
+                { isLoading ? <LoadingSpinner /> : (
+                <TableContainer component={Paper}>
+                    <Table size='small'>
+                        <TableHead>
                             <TableRow>
-                                <TableCell colSpan={4} align="center">
-                                    No users found.
-                                </TableCell>
+                                <TableCell>Name</TableCell>
+                                <TableCell>Email</TableCell>
+                                <TableCell>Role</TableCell>
+                                <TableCell>Actions</TableCell>
                             </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            )}
+                        </TableHead>
+                        <TableBody>
+                            {memberships ?  
+                            memberships.map((item) => (
+                            <TableRow key={item.id}>
+                                <TableCell>{item.user.full_name}</TableCell>
+                                <TableCell>{item.user.email}</TableCell>
+                                <TableCell>{item.role}</TableCell>
+                                {item.role === 'Owner' ? <TableCell></TableCell> : <TableCell>
+                                    <IconButton
+                                        onClick={() => handleOpenDialog('edit', item)}
+                                        aria-label="edit"
+                                    >
+                                        <EditIcon />
+                                    </IconButton>
+                                    <IconButton onClick={() => handleDeleteMember(item.id)} aria-label="delete">
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </TableCell>}
+                            </TableRow>
+                            )): (
+                                <TableRow>
+                                    <TableCell colSpan={4} align="center">
+                                        No users found.
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                )}
 
+                <TransferOwnership members={memberships} setMemberships={setMemberships} />
+            </Stack>
             <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth='sm' fullWidth>
                 <DialogTitle>
                     {dialogMode === 'add' ? 'Add User' : 'Edit User'}

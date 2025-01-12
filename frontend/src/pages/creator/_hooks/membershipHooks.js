@@ -3,7 +3,8 @@ import {
     getMembershipsService,
     patchMembershipsService,
     postMembershipsService,
-    deleteMembershipsService
+    deleteMembershipsService,
+    TransferMembershipService,
 } from "../_api/membershipServices";
 
 export const useGetMembershipsHook = () => {
@@ -96,4 +97,29 @@ export const useDeleteMembershipHook = (memberId) => {
     }, [memberId])
     
     return { status, error }
-}   
+}
+
+export const useTransferMembershipHook = (slug, formData) => {
+    const [response, setResponse] = useState([]);
+    const [status, setStatus] = useState(null);
+    const [error, setError] = useState(null)
+
+    useEffect(() => {
+        const transferOwnership = async () => {
+            try {
+                const response = await TransferMembershipService(slug, formData);
+                setResponse(response.data)
+                setStatus(response.status);
+                setError(null);
+            } catch (err) {
+                setError(err.response.data);
+                setStatus(null);
+            }
+        }
+        if (formData) {
+            transferOwnership();
+        }
+    }, [slug, formData])
+    
+    return { response, status, error }
+}
