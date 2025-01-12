@@ -11,6 +11,7 @@ import { PodcastContext } from '@/context/PodcastContext';
 
 import PodcastSettings from '../_components/PodcastSettings';
 import UserManagement from '../_components/UserManagement';
+import DeletePodcast from '../_components/DeletePodcast';
 import LoadingSpinner from '@/components/LoadingSpinner';
 
 function Settings() {
@@ -28,6 +29,7 @@ function Settings() {
                     <Stack direction='column' spacing={3}>
                         <PodcastSettings podcast={selectedPodcastOrg} />
                         <UserManagement />
+                        <DeletePodcast podcast={selectedPodcastOrg} />
                     </Stack>
                 )}
                 </CardContent>
