@@ -71,7 +71,7 @@ export default function CreatePodcastForm() {
         if (status >= 200 && status < 300) {
             toast.success('Podcast created!');
             setTimeout(() => {
-                router.push(`/creator/dashboard/episdoes`);
+                router.push(`/creator/dashboard/episodes`);
             }, 1250)
         } else if (error) {
             for (const [key, value] of Object.entries(error.response.data)) {

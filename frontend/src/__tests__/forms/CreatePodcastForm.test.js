@@ -65,7 +65,7 @@ describe('CreatePodcastForm', () => {
 
         await waitFor(() => {
             expect(mockRouter).toMatchObject({
-                pathname: "/creator/podcasts/test-podcast",
+                pathname: "/creator/dashboard/episodes",
             })
         });
     });
