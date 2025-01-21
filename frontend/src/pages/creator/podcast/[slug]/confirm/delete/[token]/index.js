@@ -28,6 +28,9 @@ function DeletePodcastConfirmationPage() {
         } else if (status === 400) {
             toast.error(error);
             router.push('/creator/podcast/settings');
+        } else if (status === 403 || status === 401) {
+            toast.error('You do not have permission to complete this action.');
+            router.push('/creator/dashboard/episodes');
         } else if (status === 404) {
             toast.error('Podcast does not exist.')
             router.push('/creator/dashboard/episodes');
