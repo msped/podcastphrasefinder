@@ -14,9 +14,6 @@ def _get_podcast_or_channel(obj):
 
 class IsOrgOwner(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-
         podcast_or_channel = _get_podcast_or_channel(obj)
         if podcast_or_channel is None:
             return False
@@ -25,8 +22,6 @@ class IsOrgOwner(permissions.BasePermission):
 
 class IsOrgAdmin(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:
-            return True
         podcast_or_channel = _get_podcast_or_channel(obj)
         if podcast_or_channel is None:
             return False
@@ -35,8 +30,6 @@ class IsOrgAdmin(permissions.BasePermission):
 
 class IsOrgMember(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:
-            return True
         podcast_or_channel = _get_podcast_or_channel(obj)
         if podcast_or_channel is None:
             return False

@@ -107,7 +107,7 @@ const PodcastSwitcher = () => {
                         ))}
                         </Stack>
 
-                        {podcasts.length > 0 && <Divider variant='middle' sx={{ paddingY: 1 }}/>}
+                        {podcasts && podcasts.length > 0 && <Divider variant='middle' sx={{ paddingY: 1 }}/>}
                         
                         <Button sx={{ color: '#fff' }} startIcon={<AddIcon />} fullWidth href='/creator/podcast/new'>
                             Create a Podcast
