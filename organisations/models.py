@@ -14,3 +14,6 @@ class Membership(models.Model):
     podcast = models.ForeignKey(Podcast, on_delete=models.CASCADE)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
     is_primary = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ('user', 'podcast')

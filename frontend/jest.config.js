@@ -1,4 +1,7 @@
 const nextJest = require('next/jest')
+
+const { configureNextJestPreview } = require('jest-preview');
+
 const createJestConfig = nextJest({
     dir: "./"
 })
@@ -12,4 +15,4 @@ const customJestConfig = {
     ]
 }
 
-module.exports = createJestConfig(customJestConfig)
+module.exports = configureNextJestPreview(createJestConfig(customJestConfig))

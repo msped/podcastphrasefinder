@@ -1,11 +1,16 @@
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from django.conf import settings
+import itsdangerous
 from .models import Membership
 from .serializers import MembershipSerializer
 from podcasts.models import Podcast
 from podcasts.serializers import PodcastSerializer
 from .permissions import IsOrgOwner, IsOrgAdmin, IsOrgMember
+from .utils import generate_time_based_token
 
 
 # List all Podcasts where the user is the owner or create a podcast
@@ -56,6 +61,27 @@ class PodcastDetailView(generics.RetrieveUpdateDestroyAPIView):
             ]
         return [permission() for permission in permission_classes]
 
+    def destroy(self, request, slug):
+        podcast = self.get_object()
+
+        podcast_owner = podcast.membership_set.get(role='Owner').user
+
+        token = generate_time_based_token({
+            'podcast_id': podcast.id,
+        })
+
+        confirmation_link = f"{request.scheme}://{request.get_host()}/creator/podcast/{podcast.slug}/confirm/delete/{token}"
+
+        subject = f'Action Required: {podcast.name} - Confirm Podcast Deletion'
+        message = f'Are you sure you want to delete the podcast "{podcast.name}"? This action cannot be undone.\n\nTo confirm, please click on the following link, it will expire in 10 minutes:\n: {confirmation_link}\n\nIf you didnt request this, please ignore this email.'
+        from_email = settings.DEFAULT_FROM_EMAIL
+        recipient_list = [podcast_owner.email]
+
+        send_mail(subject, message, from_email,
+                  recipient_list, fail_silently=False)
+
+        return Response(status=status.HTTP_200_OK)
+
 
 # Handles the changing of the selected membership (podcast)
 class UserOrgSelectionView(APIView):
@@ -65,11 +91,10 @@ class UserOrgSelectionView(APIView):
     ]
 
     def get(self, request):
-        org = Membership.objects.filter(
-            user=request.user, is_primary=True).first()
-        if org:
+        orgs = Membership.objects.filter(user=self.request.user)
+        if orgs:
             serializer = MembershipSerializer(
-                org, context={'request': request}, many=False)
+                orgs, context={"request": request}, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -97,7 +122,6 @@ class UserOrgSelectionView(APIView):
 
 class MembershipListCreateView(generics.ListCreateAPIView):
     serializer_class = MembershipSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
     def get_permissions(self):
         if self.request.method == 'POST':
@@ -112,15 +136,36 @@ class MembershipListCreateView(generics.ListCreateAPIView):
             ]
         return [permission() for permission in permission_classes]
 
-    # need to work on this as it currently wont work
-    # def perform_create(self, serializer):
-    #     serializer.save(
-    #         user=self.request.user,
-    #         podcast_id=self.request.data.get('podcast_id')
-    #     )
+    def create(self, request, *args, **kwargs):
+        user_request_obj = self.request.data.get('user')
+        if not user_request_obj:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        user = User.objects.get(email=user_request_obj['email'])
+        membership = Membership.objects.get(
+            user=self.request.user, is_primary=True)
+
+        if not membership:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        for permission in self.get_permissions():
+            if not permission.has_object_permission(request, self, membership.podcast):
+                return Response(status=status.HTTP_403_FORBIDDEN)
+
+        serializer = self.serializer_class(data=self.request.data, context={
+            'user': user.id,
+            'podcast': membership.podcast.id
+        })
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get_queryset(self):
-        return Membership.objects.filter(user=self.request.user)
+        podcast = Membership.objects.get(
+            user=self.request.user, is_primary=True).podcast
+        if self.request.method == 'GET':
+            return Membership.objects.filter(podcast=podcast)
+        return Membership.objects.filter(user=self.request.user, is_primary=True)
 
 
 # Allow the update and delete of a membership
@@ -151,5 +196,83 @@ class MembershipDetailView(generics.RetrieveUpdateDestroyAPIView):
 
         return super(MembershipDetailView, self).get_permissions()
 
-    def perform_update(self, serializer):
-        serializer.save(user=self.request.user)
+# Transfer the ownership of podcast to a member
+
+
+class TransferOwnershipView(APIView):
+    permission_classes = [IsOrgOwner, permissions.IsAuthenticated]
+
+    def post(self, request, slug):
+        if not slug or not Podcast.objects.filter(slug=slug).exists():
+            return Response({'error': 'Podcast does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            current_owner_membership = Membership.objects.get(
+                user=request.user, podcast__slug=slug, role='Owner')
+        except Membership.DoesNotExist:
+            return Response({'error': 'You do not have permission to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
+
+        requested_owner_email = request.data.get('requested_owner')
+        if not requested_owner_email:
+            return Response({'error': 'A member must be selected.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            requested_owner = User.objects.get(email=requested_owner_email)
+        except User.DoesNotExist:
+            return Response({'error': 'Requested user does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            requested_owner_membership = Membership.objects.get(
+                user=requested_owner, podcast=current_owner_membership.podcast
+            )
+        except Membership.DoesNotExist:
+            return Response({'error': 'Requested user is not a member of this podcast.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        current_owner_serializer = MembershipSerializer(
+            instance=current_owner_membership, data={"role": "Member"}, partial=True
+        )
+        requested_owner_serializer = MembershipSerializer(
+            instance=requested_owner_membership, data={"role": "Owner"}, partial=True
+        )
+
+        if current_owner_serializer.is_valid() and requested_owner_serializer.is_valid():
+            current_owner_serializer.save()
+            requested_owner_serializer.save()
+            return Response(
+                {
+                    'new_owner': requested_owner_serializer.data,
+                    'old_owner': current_owner_serializer.data
+                },
+                status=status.HTTP_200_OK
+            )
+        else:
+            errors = current_owner_serializer.errors
+            errors.update(requested_owner_serializer.errors)
+            return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ConfirmDeletePodcastView(generics.RetrieveAPIView):
+    permission_classes = [IsOrgOwner, permissions.IsAuthenticated]
+    serializer_class = PodcastSerializer
+    lookup_field = 'slug'
+    lookup_url_kwarg = 'slug'
+    queryset = Podcast.objects.all()
+
+    def get(self, request, slug, token):
+        podcast = self.get_object()
+
+        serializer = itsdangerous.URLSafeTimedSerializer(settings.SECRET_KEY)
+
+        try:
+            # Has the token expired?
+            data = serializer.loads(token, max_age=600)
+        except itsdangerous.SignatureExpired:
+            return Response({'error': 'Confirmation link has expired.'}, status=status.HTTP_400_BAD_REQUEST)
+        except itsdangerous.BadSignature:  # Tampered token
+            return Response({'error': 'Invalid confirmation link.'}, status=status.HTTP_403_FORBIDDEN)
+
+        if data['podcast_id'] != podcast.id:
+            return Response({'error': 'Invalid confirmation link.'}, status=status.HTTP_403_FORBIDDEN)
+
+        podcast.delete()
+        return Response(status=status.HTTP_200_OK)

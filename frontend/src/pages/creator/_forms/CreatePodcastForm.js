@@ -71,7 +71,7 @@ export default function CreatePodcastForm() {
         if (status >= 200 && status < 300) {
             toast.success('Podcast created!');
             setTimeout(() => {
-                router.push(`/creator/podcasts/${response.slug}`);
+                router.push(`/creator/dashboard/episodes`);
             }, 1250)
         } else if (error) {
             for (const [key, value] of Object.entries(error.response.data)) {
@@ -121,7 +121,6 @@ export default function CreatePodcastForm() {
                                 <FileUploadOutlinedIcon />
                                 <VisuallyHiddenInput
                                     type="file"
-                                    required
                                     name="avatar"
                                     onChange={handleAvatarChange}
                                 />
