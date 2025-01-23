@@ -2,12 +2,15 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404
+from django.core.mail import send_mail
+from django.conf import settings
+import itsdangerous
 from .models import Membership
 from .serializers import MembershipSerializer
 from podcasts.models import Podcast
 from podcasts.serializers import PodcastSerializer
 from .permissions import IsOrgOwner, IsOrgAdmin, IsOrgMember
+from .utils import generate_time_based_token
 
 
 # List all Podcasts where the user is the owner or create a podcast
@@ -57,6 +60,27 @@ class PodcastDetailView(generics.RetrieveUpdateDestroyAPIView):
                 permissions.IsAuthenticated
             ]
         return [permission() for permission in permission_classes]
+
+    def destroy(self, request, slug):
+        podcast = self.get_object()
+
+        podcast_owner = podcast.membership_set.get(role='Owner').user
+
+        token = generate_time_based_token({
+            'podcast_id': podcast.id,
+        })
+
+        confirmation_link = f"{request.scheme}://{request.get_host()}/creator/podcast/{podcast.slug}/confirm/delete/{token}"
+
+        subject = f'Action Required: {podcast.name} - Confirm Podcast Deletion'
+        message = f'Are you sure you want to delete the podcast "{podcast.name}"? This action cannot be undone.\n\nTo confirm, please click on the following link, it will expire in 10 minutes:\n: {confirmation_link}\n\nIf you didnt request this, please ignore this email.'
+        from_email = settings.DEFAULT_FROM_EMAIL
+        recipient_list = [podcast_owner.email]
+
+        send_mail(subject, message, from_email,
+                  recipient_list, fail_silently=False)
+
+        return Response(status=status.HTTP_200_OK)
 
 
 # Handles the changing of the selected membership (podcast)
@@ -225,3 +249,30 @@ class TransferOwnershipView(APIView):
             errors = current_owner_serializer.errors
             errors.update(requested_owner_serializer.errors)
             return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ConfirmDeletePodcastView(generics.RetrieveAPIView):
+    permission_classes = [IsOrgOwner, permissions.IsAuthenticated]
+    serializer_class = PodcastSerializer
+    lookup_field = 'slug'
+    lookup_url_kwarg = 'slug'
+    queryset = Podcast.objects.all()
+
+    def get(self, request, slug, token):
+        podcast = self.get_object()
+
+        serializer = itsdangerous.URLSafeTimedSerializer(settings.SECRET_KEY)
+
+        try:
+            # Has the token expired?
+            data = serializer.loads(token, max_age=600)
+        except itsdangerous.SignatureExpired:
+            return Response({'error': 'Confirmation link has expired.'}, status=status.HTTP_400_BAD_REQUEST)
+        except itsdangerous.BadSignature:  # Tampered token
+            return Response({'error': 'Invalid confirmation link.'}, status=status.HTTP_403_FORBIDDEN)
+
+        if data['podcast_id'] != podcast.id:
+            return Response({'error': 'Invalid confirmation link.'}, status=status.HTTP_403_FORBIDDEN)
+
+        podcast.delete()
+        return Response(status=status.HTTP_200_OK)
