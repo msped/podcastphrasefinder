@@ -138,7 +138,7 @@ describe('Membership Hooks', () => {
     
         it('should display response and status on success', async () => {
             const formData = 'newOwner@example.com';
-            const mockResponse = { data: 'success', status: 200 };
+            const mockResponse = { status: 200 };
             
             TransferMembershipService.mockResolvedValue(mockResponse);
     
@@ -146,7 +146,7 @@ describe('Membership Hooks', () => {
             
             await waitFor(() => {
                 expect(getByTestId('hook-result').textContent).toContain(
-                    JSON.stringify({ response: 'success', status: 200, error: null })
+                    JSON.stringify({ status: 200, error: null, isLoading: false })
                 );
             });
         });
@@ -166,7 +166,7 @@ describe('Membership Hooks', () => {
     
             await waitFor(() => {
                 expect(getByTestId('hook-result').textContent).toContain(
-                    JSON.stringify({ response: [], status: null, error: 'Something went wrong' })
+                    JSON.stringify({ response: [], status: null, error: 'Something went wrong', isLoading: false })
                 );
             });
         });
