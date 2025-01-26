@@ -4,7 +4,8 @@ import {
     postMembershipsService,
     patchMembershipsService,
     deleteMembershipsService,
-    TransferMembershipService
+    TransferMembershipService,
+    getConfirmTransferPodcastOwnershipService
 } from "@/pages/creator/_api/membershipServices";
 
 jest.mock('../../api/apiClient');
@@ -142,6 +143,30 @@ describe("membershipServices", () => {
             apiClient.post.mockRejectedValue(new Error(errorMessage));
 
             await expect(TransferMembershipService(podcastSlug, formData)).rejects.toThrow(errorMessage);
+        });
+    });
+
+    describe("getConfirmTransferPodcastOwnershipService", () => {
+        const podcastSlug = 'podcast-slug';
+        const token = 'some-token';
+
+        it('should make a GET request to the correct URL', async () => {
+            const expectedResponse = { data: 'success' };
+            apiClient.get.mockResolvedValue(expectedResponse);
+
+            const response = await getConfirmTransferPodcastOwnershipService(podcastSlug, token);
+
+            expect(apiClient.get).toHaveBeenCalledWith(
+                `orgs/podcasts/${podcastSlug}/confirm/transfer/${token}`
+            );
+            expect(response).toEqual(expectedResponse);
+        });
+
+        it('should throw an error when the request fails', async () => {
+            const errorMessage = 'Request failed';
+            apiClient.get.mockRejectedValue(new Error(errorMessage));
+
+            await expect(getConfirmTransferPodcastOwnershipService(podcastSlug, token)).rejects.toThrow(errorMessage);
         });
     });
 
