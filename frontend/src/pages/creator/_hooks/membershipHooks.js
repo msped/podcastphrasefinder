@@ -5,6 +5,7 @@ import {
     postMembershipsService,
     deleteMembershipsService,
     TransferMembershipService,
+    getConfirmTransferPodcastOwnershipService
 } from "../_api/membershipServices";
 
 export const useGetMembershipsHook = () => {
@@ -103,6 +104,7 @@ export const useTransferMembershipHook = (slug, formData) => {
     const [response, setResponse] = useState([]);
     const [status, setStatus] = useState(null);
     const [error, setError] = useState(null)
+    const [isLoading, setIsLoading] = useState(false)
 
     useEffect(() => {
         const transferOwnership = async () => {
@@ -114,12 +116,46 @@ export const useTransferMembershipHook = (slug, formData) => {
             } catch (err) {
                 setError(err.response.data);
                 setStatus(null);
+            } finally {
+                setIsLoading(false)
             }
         }
-        if (formData) {
+        if (formData !== null) {
+            setIsLoading(true);
             transferOwnership();
         }
     }, [slug, formData])
     
-    return { response, status, error }
+    return { response, status, error, isLoading }
 }
+
+export const useGetConfirmTransferPodcastOwnershipHook = () => {
+    const [slug, setSlug] = useState(null);
+    const [token, setToken] = useState(null);
+    const [status, setStatus] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchDataFromService = async () => {
+            setIsLoading(true);
+            await getConfirmTransferPodcastOwnershipService(slug, token)
+            .then(res => {
+                setStatus(res.status);
+                setError(null);
+            })
+            .catch(err => {
+                setError(err.response.data);
+                setStatus(err.response.status);
+            })
+            .finally(setIsLoading(false))
+            
+        };
+
+        if (slug && token) {
+            fetchDataFromService();
+        }
+    }, [slug, token]);
+
+    return { status, error, isLoading, setSlug, setToken };
+};
