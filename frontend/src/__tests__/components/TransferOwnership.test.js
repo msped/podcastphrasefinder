@@ -98,7 +98,6 @@ describe('TransferOwnership Component', () => {
 
     it('displays toast messages for successful responses', async () => {
         useTransferMembershipHook.mockReturnValue({
-            response: { new_owner: { id: 2, full_name: 'Jane Smith' }, old_owner: { id: 1 } },
             status: 200,
             error: null
         });
@@ -111,8 +110,7 @@ describe('TransferOwnership Component', () => {
         fireEvent.click(screen.getByRole('button', { name: /Transfer/i }));
 
         await waitFor(() => {
-            expect(toast.success).toHaveBeenCalledWith(`Ownership has been transfered to Jane Smith.`);
-            expect(mockSetMemberships).toHaveBeenCalled();
+            expect(toast.success).toHaveBeenCalledWith(`A confirmation email has been sent, please check your inbox.`);
         });
     })
 
