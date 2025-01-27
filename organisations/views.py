@@ -228,27 +228,29 @@ class TransferOwnershipView(APIView):
         except Membership.DoesNotExist:
             return Response({'error': 'Requested user is not a member of this podcast.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        current_owner_serializer = MembershipSerializer(
-            instance=current_owner_membership, data={"role": "Member"}, partial=True
-        )
-        requested_owner_serializer = MembershipSerializer(
-            instance=requested_owner_membership, data={"role": "Owner"}, partial=True
-        )
+        if current_owner_membership and requested_owner_membership:
+            token = generate_time_based_token({
+                'podcast_id': current_owner_membership.podcast.id,
+                'requested_owner_id': requested_owner.id,
+                'current_owner_id': current_owner_membership.user.id
+            })
 
-        if current_owner_serializer.is_valid() and requested_owner_serializer.is_valid():
-            current_owner_serializer.save()
-            requested_owner_serializer.save()
-            return Response(
-                {
-                    'new_owner': requested_owner_serializer.data,
-                    'old_owner': current_owner_serializer.data
-                },
-                status=status.HTTP_200_OK
-            )
-        else:
-            errors = current_owner_serializer.errors
-            errors.update(requested_owner_serializer.errors)
-            return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+            podcast = current_owner_membership.podcast
+
+            confirmation_link = f"{request.scheme}://{request.get_host()}/creator/podcast/{podcast.slug}/confirm/transfer/{token}"
+
+            subject = f'Transfer Request: {podcast.name}'
+            message = f'Are you sure you want to transfer ownership of the podcast \
+            "{podcast.name}" to {requested_owner_membership.user.first_name} {requested_owner_membership.user.last_name} \
+            ({requested_owner.email})? This action cannot be undone.\n\nTo confirm, please click on the following \
+            link, it will expire in 10 minutes: \n: {confirmation_link}\n\nIf you didnt request this, please ignore this email.'
+            from_email = settings.DEFAULT_FROM_EMAIL
+            recipient_list = [current_owner_membership.user.email]
+
+            send_mail(subject, message, from_email,
+                      recipient_list, fail_silently=False)
+
+            return Response(status=status.HTTP_200_OK)
 
 
 class ConfirmDeletePodcastView(generics.RetrieveAPIView):
@@ -276,3 +278,48 @@ class ConfirmDeletePodcastView(generics.RetrieveAPIView):
 
         podcast.delete()
         return Response(status=status.HTTP_200_OK)
+
+
+class ConfirmTransferPodcastView(generics.RetrieveAPIView):
+    permission_classes = [IsOrgOwner, permissions.IsAuthenticated]
+    serializer_class = PodcastSerializer
+    lookup_field = 'slug'
+    lookup_url_kwarg = 'slug'
+    queryset = Podcast.objects.all()
+
+    def get(self, request, slug, token):
+        podcast = self.get_object()
+
+        serializer = itsdangerous.URLSafeTimedSerializer(settings.SECRET_KEY)
+
+        try:
+            # Has the token expired?
+            data = serializer.loads(token, max_age=600)
+        except itsdangerous.SignatureExpired:
+            return Response({'error': 'Confirmation link has expired.'}, status=status.HTTP_400_BAD_REQUEST)
+        except itsdangerous.BadSignature:  # Tampered token
+            return Response({'error': 'Invalid confirmation link.'}, status=status.HTTP_403_FORBIDDEN)
+
+        if data['podcast_id'] != podcast.id or 'requested_owner_id' not in data or 'current_owner_id' not in data:
+            return Response({'error': 'Invalid confirmation link.'}, status=status.HTTP_403_FORBIDDEN)
+
+        current_owner_membership = Membership.objects.get(
+            user__id=data['current_owner_id'], podcast=podcast)
+        requested_owner_membership = Membership.objects.get(
+            user__id=data['requested_owner_id'], podcast=podcast)
+
+        current_owner_serializer = MembershipSerializer(
+            instance=current_owner_membership, data={"role": "Member"}, partial=True
+        )
+        requested_owner_serializer = MembershipSerializer(
+            instance=requested_owner_membership, data={"role": "Owner"}, partial=True
+        )
+        if current_owner_serializer.is_valid() and requested_owner_serializer.is_valid():
+            current_owner_serializer.save()
+            requested_owner_serializer.save()
+
+            return Response(status=status.HTTP_200_OK)
+        else:
+            errors = current_owner_serializer.errors
+            errors.update(requested_owner_serializer.errors)
+            return Response(errors, status=status.HTTP_400_BAD_REQUEST)

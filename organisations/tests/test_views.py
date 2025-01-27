@@ -408,13 +408,6 @@ class TransferOwnershipViewTestCase(APITestCase):
             format='json'
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['new_owner']
-                         ['user']['email'], self.user_member.email)
-        self.assertEqual(response.data['new_owner']['role'], 'Owner')
-
-        self.assertEqual(response.data['old_owner']
-                         ['user']['email'], self.user_owner.email)
-        self.assertEqual(response.data['old_owner']['role'], 'Member')
 
     def test_transfer_ownership_as_member(self):
         self.client.force_authenticate(user=self.user_member)
@@ -591,6 +584,158 @@ class ConfirmPodcastDeletionViewTestCase(APITestCase):
         self.client.force_authenticate(user=self.user_owner)
         token = generate_time_based_token({
             'podcast_id': 999,
+        })
+        confirmation_url = self.build_confirmation_url(
+            self.podcast.slug, token)
+        response = self.client.get(confirmation_url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class ConfirmOwnershipTransferViewTestCase(APITestCase):
+    def setUp(self):
+        self.user_owner = User.objects.create(
+            username='testuser1', email='testuser1@test.com', password='password')
+        self.user_member = User.objects.create(
+            username='testuser2', email='testuser2@test.com', password='password')
+        self.user_admin = User.objects.create(
+            username='testuser3', email='testuser3@test.com', password='password')
+        self.non_member = User.objects.create(
+            username='testuser4', email='testuser4@test.com', password='password')
+        self.podcast = Podcast.objects.create(
+            name='Another Podcast',
+            slug='another-podcast',
+        )
+        Membership.objects.create(
+            user=self.user_owner, podcast=self.podcast, role='Owner', is_primary=True)
+        Membership.objects.create(
+            user=self.user_member, podcast=self.podcast, role='Member', is_primary=True)
+        Membership.objects.create(
+            user=self.user_admin, podcast=self.podcast, role='Admin', is_primary=True)
+
+    def tearDown(self):
+        shutil.rmtree(MEDIA_ROOT, ignore_errors=True)
+
+    def build_confirmation_url(self, slug, token):
+        confirmation_url = f'/api/orgs/podcasts/{slug}/confirm/transfer/{token}'
+        return confirmation_url
+
+    def test_get_confirmation_link_as_not_authenticated(self):
+        token = generate_time_based_token({
+            'podcast_id': self.podcast.id,
+            'requested_owner_id': self.user_member.id,
+            'current_owner_id': self.user_owner.id
+        })
+        confirmation_url = self.build_confirmation_url(
+            self.podcast.slug, token)
+        response = self.client.get(confirmation_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_get_confirmation_link_as_owner_404(self):
+        self.client.force_authenticate(user=self.user_owner)
+        token = generate_time_based_token({
+            'podcast_id': self.podcast.id,
+            'requested_owner_id': self.user_member.id,
+            'current_owner_id': self.user_owner.id
+        })
+        confirmation_url = self.build_confirmation_url(
+            '404-error-podcast', token)
+        response = self.client.get(confirmation_url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_get_confirmation_link_as_owner(self):
+        self.client.force_authenticate(user=self.user_owner)
+        token = generate_time_based_token({
+            'podcast_id': self.podcast.id,
+            'requested_owner_id': self.user_member.id,
+            'current_owner_id': self.user_owner.id
+        })
+        confirmation_url = self.build_confirmation_url(
+            self.podcast.slug, token)
+        response = self.client.get(confirmation_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(Membership.objects.filter(
+            podcast__slug=self.podcast.slug,
+            user__id=self.user_member.id,
+            role='Owner'
+        ).exists())
+
+    def test_get_confirmation_link_as_admin(self):
+        self.client.force_authenticate(user=self.user_admin)
+        token = generate_time_based_token({
+            'podcast_id': self.podcast.id,
+            'requested_owner_id': self.user_member.id,
+            'current_owner_id': self.user_owner.id
+        })
+        confirmation_url = self.build_confirmation_url(
+            self.podcast.slug, token)
+        response = self.client.get(confirmation_url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_get_confirmation_link_as_member(self):
+        self.client.force_authenticate(user=self.user_member)
+        token = generate_time_based_token({
+            'podcast_id': self.podcast.id,
+            'requested_owner_id': self.user_member.id,
+            'current_owner_id': self.user_owner.id
+        })
+        confirmation_url = self.build_confirmation_url(
+            self.podcast.slug, token)
+        response = self.client.get(confirmation_url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_get_confirmation_link_as_non_member(self):
+        self.client.force_authenticate(user=self.non_member)
+        token = generate_time_based_token({
+            'podcast_id': self.podcast.id,
+            'requested_owner_id': self.user_member.id,
+            'current_owner_id': self.user_owner.id
+        })
+        confirmation_url = self.build_confirmation_url(
+            self.podcast.slug, token)
+        response = self.client.get(confirmation_url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_tampered_token(self):
+        self.client.force_authenticate(user=self.user_owner)
+        token = generate_time_based_token({
+            'podcast_id': self.podcast.id,
+            'requested_owner_id': self.user_member.id,
+            'current_owner_id': self.user_owner.id
+        })
+        tampered_token = token + 'a'
+        confirmation_url = self.build_confirmation_url(
+            self.podcast.slug, tampered_token)
+        response = self.client.get(confirmation_url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_wrong_podcast_id(self):
+        self.client.force_authenticate(user=self.user_owner)
+        token = generate_time_based_token({
+            'podcast_id': 999,
+            'requested_owner_id': self.user_member.id,
+            'current_owner_id': self.user_owner.id
+        })
+        confirmation_url = self.build_confirmation_url(
+            self.podcast.slug, token)
+        response = self.client.get(confirmation_url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_no_current_owner_id(self):
+        self.client.force_authenticate(user=self.user_owner)
+        token = generate_time_based_token({
+            'podcast_id': self.podcast.id,
+            'requested_owner_id': self.user_member.id
+        })
+        confirmation_url = self.build_confirmation_url(
+            self.podcast.slug, token)
+        response = self.client.get(confirmation_url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_no_requested_owner_id(self):
+        self.client.force_authenticate(user=self.user_owner)
+        token = generate_time_based_token({
+            'podcast_id': self.podcast.id,
+            'current_owner_id': self.user_owner.id
         })
         confirmation_url = self.build_confirmation_url(
             self.podcast.slug, token)

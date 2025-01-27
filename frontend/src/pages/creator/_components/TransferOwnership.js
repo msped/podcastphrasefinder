@@ -22,14 +22,15 @@ const columns = [
     { field: 'role', headerName: 'Role', minWidth: 200 },
 ];
 
-export default function TransferOwnership({ members, setMemberships }) {
+export default function TransferOwnership({ members }) {
     const { data: session } = useSession();
     const { selectedPodcastOrg } = useContext(PodcastContext);
     const [currentMember, setCurrentMember] = useState(null)
+    const [isCurrentMemberOwner, setIsCurrentMemberOwner] = useState(null)
     const [open, setOpen] = useState(false);
     const [formDataState, setFormDataState] = useState(null);
     const [rowSelectionModel, setRowSelectionModel] = useState([]);
-    const { response, status, error } = useTransferMembershipHook(selectedPodcastOrg.slug, formDataState);
+    const { response, status, error, isLoading } = useTransferMembershipHook(selectedPodcastOrg.slug, formDataState);
 
 
     const toggleDialog = () => {
@@ -38,16 +39,16 @@ export default function TransferOwnership({ members, setMemberships }) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        const memberEmail = members.find(member => member.id === rowSelectionModel[0]);
-        setFormDataState(memberEmail.user.email)
+        const memberEmail = members.find(member => member.user.id === rowSelectionModel[0]);
+        setFormDataState(memberEmail.user.email);
     };
 
-    // current member
     useEffect(() => {
         const findCurrentMember = async () => {
             if (members) {
                 const foundMember = members.find(member => member.user.id === session?.user?.pk);
                 setCurrentMember(foundMember);
+                setIsCurrentMemberOwner(foundMember.role === 'Owner');
             }
         }
 
@@ -57,25 +58,8 @@ export default function TransferOwnership({ members, setMemberships }) {
     // handle response
     useEffect(() => {
         if (status >= 200 && status < 300) {
-            const new_owner = response.new_owner
-            const old_owner = response.old_owner
-
-            setMemberships(prevMemberships => {
-                const newMemberships = prevMemberships.map(membership => {
-                    switch (membership.user.id) {
-                        case new_owner.id:
-                            return { ...membership, role: 'Owner' };
-                        case old_owner.id:
-                            return { ...membership, role: 'Member' };
-                        default:
-                            return membership;
-                    }
-                })
-                return newMemberships;
-            })
-
-            toast.success(`Ownership has been transfered to ${new_owner.full_name}.`);
             toggleDialog();
+            toast.success(`A confirmation email has been sent, please check your inbox.`);
         } else if (error && error.response && error.response.data) { 
             if (typeof error.response.data === 'object') {
                 let errorMessages = [];
@@ -95,7 +79,9 @@ export default function TransferOwnership({ members, setMemberships }) {
             } else {
                 toast.error("An unexpected error occurred.");
             }
+            setFormDataState(null);
         } else if (error) {
+            setFormDataState(null);
             toast.error("A network or other unexpected error occurred.");
         }
     }, [response, status, error])
@@ -153,7 +139,8 @@ export default function TransferOwnership({ members, setMemberships }) {
                             color='error'
                             endIcon={<ArrowForwardIcon/>}
                             disabled={
-                                rowSelectionModel.length === 0
+                                rowSelectionModel.length === 0 ||
+                                isLoading
                             }
                         >
                             Transfer
@@ -184,10 +171,7 @@ export default function TransferOwnership({ members, setMemberships }) {
                                 sx={{
                                     maxWidth: '250px'
                                 }}
-                                disabled={members.length === 0 ||
-                                    members.length === 1 && members[0].role === 'Owner' ||
-                                    !currentMember || 
-                                    currentMember.role !== 'Owner'}
+                                disabled={members.length <= 1 || !isCurrentMemberOwner}
                             >
                                 Transfer Ownership
                             </Button>

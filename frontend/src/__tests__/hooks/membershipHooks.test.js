@@ -1,11 +1,12 @@
 import React from 'react';
-import { render, waitFor } from '@testing-library/react';
+import { render, waitFor, act, fireEvent } from '@testing-library/react';
 import {
     useGetMembershipsHook,
     usePostMembershipHook,
     usePatchMembershipHook,
     useDeleteMembershipHook,
     useTransferMembershipHook,
+    useGetConfirmTransferPodcastOwnershipHook
 } from '@/pages/creator/_hooks/membershipHooks'; 
 
 
@@ -15,6 +16,7 @@ jest.mock('../../pages/creator/_api/membershipServices', () => ({
     postMembershipsService: jest.fn(),
     deleteMembershipsService: jest.fn(),
     TransferMembershipService: jest.fn(),
+    getConfirmTransferPodcastOwnershipService: jest.fn()
 }));
 
 describe('Membership Hooks', () => {
@@ -23,7 +25,8 @@ describe('Membership Hooks', () => {
         patchMembershipsService, 
         postMembershipsService, 
         deleteMembershipsService, 
-        TransferMembershipService
+        TransferMembershipService,
+        getConfirmTransferPodcastOwnershipService
     } = require('../../pages/creator/_api/membershipServices');
 
     afterEach(() => {
@@ -138,7 +141,7 @@ describe('Membership Hooks', () => {
     
         it('should display response and status on success', async () => {
             const formData = 'newOwner@example.com';
-            const mockResponse = { data: 'success', status: 200 };
+            const mockResponse = { status: 200 };
             
             TransferMembershipService.mockResolvedValue(mockResponse);
     
@@ -146,7 +149,7 @@ describe('Membership Hooks', () => {
             
             await waitFor(() => {
                 expect(getByTestId('hook-result').textContent).toContain(
-                    JSON.stringify({ response: 'success', status: 200, error: null })
+                    JSON.stringify({ status: 200, error: null, isLoading: false })
                 );
             });
         });
@@ -166,9 +169,76 @@ describe('Membership Hooks', () => {
     
             await waitFor(() => {
                 expect(getByTestId('hook-result').textContent).toContain(
-                    JSON.stringify({ response: [], status: null, error: 'Something went wrong' })
+                    JSON.stringify({ response: [], status: null, error: 'Something went wrong', isLoading: false })
                 );
             });
         });
     });
+
+describe('useConfirmTransferPodcastOwnershipHook', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    const TestConfirmTransferComponent = () => {
+        const { status, error, isLoading, setSlug, setToken } = useGetConfirmTransferPodcastOwnershipHook();
+    
+        return (
+            <div>
+                <span data-testid="status">{status}</span>
+                <span data-testid="error">{error?.error}</span>
+                <span data-testid="isLoading">{isLoading ? 'loading' : 'loaded'}</span>
+                <button onClick={() => setSlug('test-slug')} data-testid="setSlugButton">Set Slug</button>
+                <button onClick={() => setToken('test-token')} data-testid="setTokenButton">Set Token</button>
+            </div>
+        );
+    };
+
+    it('should have initial states', () => {
+        const { getByTestId } = render(<TestConfirmTransferComponent />);
+
+        expect(getByTestId('status').textContent).toBe('');
+        expect(getByTestId('error').textContent).toBe('');
+        expect(getByTestId('isLoading').textContent).toBe('loading');
+    });
+
+    it('should fetch and update status on success', async () => {
+        const mockStatus = 200;
+        getConfirmTransferPodcastOwnershipService.mockResolvedValue({ status: mockStatus });
+
+        const { getByTestId } = render(<TestConfirmTransferComponent />);
+
+        await act(async () => {
+            fireEvent.click(getByTestId('setSlugButton'));
+            fireEvent.click(getByTestId('setTokenButton'));
+        });
+
+        await waitFor(() => expect(getByTestId('isLoading').textContent).toBe('loaded'));
+
+
+        expect(getConfirmTransferPodcastOwnershipService).toHaveBeenCalledWith('test-slug', 'test-token');
+        expect(getByTestId('status').textContent).toBe(mockStatus.toString());
+        expect(getByTestId('error').textContent).toBe('');
+        expect(getByTestId('isLoading').textContent).toBe('loaded');
+    });
+
+    it('should handle an error correctly', async () => {
+        getConfirmTransferPodcastOwnershipService.mockRejectedValue({ response: { status: 404, data: { 'error': 'Podcast does not exist.'}}});
+
+        const { getByTestId } = render(<TestConfirmTransferComponent />);
+
+        await act(async () => {
+            fireEvent.click(getByTestId('setSlugButton'));
+            fireEvent.click(getByTestId('setTokenButton'));
+        });
+
+        await waitFor(() => expect(getByTestId('isLoading').textContent).toBe('loaded'));
+
+        expect(getConfirmTransferPodcastOwnershipService).toHaveBeenCalledWith('test-slug', 'test-token');
+        expect(getByTestId('status').textContent).toBe('404');
+        expect(getByTestId('error').textContent).toBe('Podcast does not exist.');
+        expect(getByTestId('isLoading').textContent).toBe('loaded');
+    });
+});
+
 });

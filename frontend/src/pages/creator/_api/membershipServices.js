@@ -29,3 +29,9 @@ export const TransferMembershipService = async (slug, formData) => {
         .post(`orgs/podcasts/${slug}/transfer`, {'requested_owner': formData});
     return res;
 }
+
+export function getConfirmTransferPodcastOwnershipService(slug, token) {
+    const res = apiClient
+        .get(`orgs/podcasts/${slug}/confirm/transfer/${token}`)
+    return res;
+}
