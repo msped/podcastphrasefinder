@@ -71,12 +71,6 @@ export default function Footer() {
                                     <Link href='/' sx={{...styles.link}}>
                                         Home
                                     </Link>
-                                    <Link href='/episodes' sx={{...styles.link}}>
-                                        Search for an Episode
-                                    </Link>
-                                    <Link href='/podcasts' sx={{...styles.link}}>
-                                        Podcasts
-                                    </Link>
                                 </Stack>
                             </Grid>
                             {/* <Grid item xs={6} sm={4}>
