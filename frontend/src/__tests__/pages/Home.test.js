@@ -4,47 +4,61 @@ import { screen, render, waitFor, fireEvent } from "@testing-library/react"
 import mockRouter from 'next-router-mock';
 import Home from '@/pages/index';
 
+
 jest.mock('next/router', () => require('next-router-mock'))
 
 describe('Home component', () => {
     it('renders "PodcastPhraseFinder" header text', () => {
         render(<Home />);
-        expect(screen.queryAllByText(/PodcastPhraseFinder/i)[0]).toBeInTheDocument();
+        expect(screen.getByText(/PodcastPhraseFinder/i)).toBeInTheDocument();
     });
 
-    it('renders the episodes page from the home page', () => {
-        mockRouter.push('/')
+    it('switches tabs correctly', async () => {
+        render(<Home />);
 
-        const { getByRole } = render(<Home />)
-        expect(mockRouter).toMatchObject({
-            pathname: '/'
+        expect(screen.getByRole('tab', { name: 'Episode' })).toHaveClass('Mui-selected');
+        expect(screen.queryByRole('searchbox')).toBeVisible();
+
+        fireEvent.click(screen.getByRole('tab', { name: 'Podcast' }));
+        
+        expect(screen.getByRole('tab', { name: 'Podcast' })).toHaveClass('Mui-selected');
+        expect(screen.queryByRole('searchbox')).toBeVisible();
+    });
+
+    it('clears the search input value and query parameters when switching tabs', async () => {
+
+        render(<Home />);
+        const episodeSearchInput = screen.getByRole('searchbox');
+        fireEvent.change(episodeSearchInput, { target: { value: 'test' } });
+
+        fireEvent.click(screen.getByRole('tab', { name: 'Podcast' }));
+
+        await waitFor(() => {
+            expect(mockRouter.query).toEqual({});
+        });
+    });
+    
+    describe("Tab Styling", () => {
+        it("should render the Episode tab", () => {
+            render(<Home />)
+            const tab = screen.getByRole("tab", { name: /Episode/i });
+            expect(tab).toBeInTheDocument()
         })
-
-        fireEvent.click(getByRole('link', { name: /Go to Episodes/i }))
-
-        expect(screen.getByText('Search for an Episode')).toBeInTheDocument();
-        waitFor(() => {
-            expect(mockRouter).toMatchObject({
-                pathname: '/episodes'
-            })
+        it("should render the Podcast tab", () => {
+            render(<Home />)
+            const tab = screen.getByRole("tab", { name: /Podcast/i });
+            expect(tab).toBeInTheDocument()
         })
-    })
-
-    it('renders the podcasts page from the home page', () => {
-        mockRouter.push('/')
-
-        const { getByRole } = render(<Home />)
-        expect(mockRouter).toMatchObject({
-            pathname: '/'
+        it("should select the Episode tab by default", () => {
+            render(<Home />)
+            const tab = screen.getByRole("tab", { name: /Episode/i });
+            expect(tab).toHaveClass("Mui-selected")
         })
-
-        fireEvent.click(getByRole('link', { name: /Go to Podcasts/i }))
-
-        expect(screen.getByText('Search Podcasts')).toBeInTheDocument();
-        waitFor(() => {
-            expect(mockRouter).toMatchObject({
-                pathname: '/podcasts'
-            })
+        it("should switch to the Podcast tab when clicked", () => {
+            render(<Home />)
+            const podcastTab = screen.getByRole("tab", { name: /Podcast/i });
+            fireEvent.click(podcastTab);
+            expect(podcastTab).toHaveClass("Mui-selected");
         })
     })
 });

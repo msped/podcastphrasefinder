@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import Image from 'next/image';
 import {
     Card,
     CardContent,
@@ -11,7 +10,7 @@ import {
     Accordion,
     Collapse,
     AccordionSummary,
-    Link,
+    Avatar,
 } from '@mui/material'
 import { formatDistance } from 'date-fns';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
@@ -56,7 +55,7 @@ const styles = {
         fontWeight: '700',
         fontSize: {
             xs: '.8rem',
-            md: '1.25rem',
+            md: '1rem',
         }
     },
     publishedDate: {
@@ -84,11 +83,6 @@ const styles = {
         },
     },
     accordionSummaryStyles: {
-        maxWidth: {
-            'xs': '100%',
-            'sm': '46%',
-            'md': '35%'
-        },
         padding: '0 0'
     },
     cardContent: {
@@ -121,15 +115,14 @@ export default function EpisodePanel({ item }) {
                 <Grid container spacing={2}>
                     <Grid item xs={3} sm={2}>
                         <Box sx={styles.logoWrapper}>
-                            {item.episode.channel.avatar && (
-                            <Image
-                                src={item.episode.channel.avatar}
-                                style={{...styles.logo}}
-                                alt={`${item.episode.channel.name} logo`}
+                            <Avatar
+                                alt={item?.episode.channel.name}
+                                src={item?.episode.channel.avatar}
+                                variant='square'
                                 width={160}
                                 height={90}
+                                sx={styles.logo}
                             />
-                            )}
                         </Box>
                     </Grid>
                     <Grid item xs={9} sm={10}>

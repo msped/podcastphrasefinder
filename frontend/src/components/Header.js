@@ -56,12 +56,6 @@ export default function Header() {
                     }}>
                         
                     </Box>
-                    <Link href='/episodes' style={{...styles.headerLink}}>
-                        Episodes
-                    </Link>
-                    <Link href='/podcasts' style={{...styles.headerLink}}>
-                        Podcasts
-                    </Link>
                     <SignedIn>
                         <AccountMenu />
                     </SignedIn>

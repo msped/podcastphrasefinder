@@ -80,7 +80,7 @@ describe('EpisodePanel', () => {
     it('renders the avatar', () => {
         render(<EpisodePanel item={episode} />)
     
-        const avatar = screen.getByAltText("The Rest Is Politics logo")
+        const avatar = screen.getByAltText("The Rest Is Politics")
     
         expect(avatar).toBeInTheDocument()
     })

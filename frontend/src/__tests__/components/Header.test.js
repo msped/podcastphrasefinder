@@ -18,24 +18,6 @@ describe('Header', () => {
         expect(logoLink).toBeInTheDocument();
     });
 
-    test('renders episodes link', () => {
-        useSession.mockReturnValue({data: null, status: 'unauthenticated'})
-        render(
-            <Header />
-        );
-        const episodesLink = screen.getByRole('link', { name: /Episodes/i });
-        expect(episodesLink).toBeInTheDocument();
-    });
-
-    test('renders podcasts link', () => {
-        useSession.mockReturnValue({data: null, status: 'unauthenticated'})
-        render(
-            <Header />
-        );
-        const podcastsLink = screen.getByRole('link', { name: /Podcasts/i });
-        expect(podcastsLink).toBeInTheDocument();
-    });
-
     test('renders a sign in button, when no session', () => {
         useSession.mockReturnValue({data: null, status: 'unauthenticated'})
         render(
