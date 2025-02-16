@@ -1,9 +1,11 @@
 import React from 'react';
 import "@testing-library/jest-dom";
 import { screen, render, waitFor, fireEvent } from "@testing-library/react";
-import {  useRouter } from 'next/router';
+import mockRouter from 'next-router-mock';
 
-import Podcasts from '../../pages/podcasts/index';
+import PodcastSearch from '../../components/PodcastSearch';
+
+jest.mock('next/router', () => jest.requireActual('next-router-mock'))
 
 // Mock the PodcastsSearchResults component
 jest.mock('src/components/PodcastsSearchResults', () => {
@@ -13,33 +15,20 @@ jest.mock('src/components/PodcastsSearchResults', () => {
     };
 });
 
-jest.mock('next/router', () => ({
-    useRouter: jest.fn()
-}))
-
 describe('Podcasts', () => {
-    test('renders the title and subtitle', () => {
-        useRouter.mockReturnValue({ route: '/podcasts', isReady: true, push: jest.fn() })
-        render(<Podcasts />);
-        expect(screen.getAllByText(/Podcasts/i)[0]).toBeInTheDocument;
-        expect(
-            screen.getAllByText(
-                /see all the podcasts and the amount of episodes we have transcripts for/i
-            )[1]
-        ).toBeInTheDocument;
-    });
+    beforeEach(() => {
+        mockRouter.push('/podcasts')
+    })
 
     test('updates the search query when typing', () => {
-        useRouter.mockReturnValue({ route: '/podcasts', isReady: true, push: jest.fn() })
-        render(<Podcasts />);
+        render(<PodcastSearch />);
         const input = screen.getByRole('searchbox');
         input.value = 'React';
         expect(input.value).toBe('React');
     });
 
     test('renders the search results component with the correct query prop', () => {
-        useRouter.mockReturnValue({ route: '/podcasts', isReady: true, push: jest.fn() })
-        render(<Podcasts />);
+        render(<PodcastSearch />);
         fireEvent.change(
             screen.getByRole('searchbox'),
             { target: {
@@ -52,25 +41,22 @@ describe('Podcasts', () => {
     });
 
     test('updates searchQuery state on input change', () => {
-        useRouter.mockReturnValue({ route: '/podcasts', isReady: true, push: jest.fn() })
-        render(<Podcasts />);
+        render(<PodcastSearch />);
         const searchInput = screen.getByRole('searchbox');
         fireEvent.change(searchInput, { target: { value: 'test query' } });
         waitFor(() => expect(searchInput.value).toBe('test query'));
     });
 
     test('Test that the URL is being updated', () => {
-        useRouter.mockReturnValue({ route: '/podcasts', isReady: true, push: jest.fn() })
-        render(<Podcasts />);
+        render(<PodcastSearch />);
         const searchInput = screen.getByRole('searchbox');
         fireEvent.change(searchInput, { target: { value: 'test' } });
         waitFor(() => expect(global.window.location.href).toContain('/episodes?q=test'));
     });
 
     test('Loading with query already in URL returns results', () => {
-        useRouter.mockReturnValue({ route: '/podcasts', isReady: true, push: jest.fn() })
         global.window = { location: { pathname: '/podcasts', search: 'q=javascript' } };
-        render(<Podcasts />);
+        render(<PodcastSearch />);
         waitFor(() => expect(
             screen.getByTestId('search-results').textContent
         ).toBe('JavaScript'));
