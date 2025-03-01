@@ -55,6 +55,7 @@ class TestVideoIdCheck(APITestCase):
         self.assertFalse(response.data['error'])
 
 
+@override_settings(MEDIA_ROOT=MEDIA_ROOT)
 class TestAddYoutubeEpisodeView(APITestCase):
     def setUp(self):
         self.client = APIClient()

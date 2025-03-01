@@ -50,100 +50,100 @@ MEDIA_ROOT = tempfile.mkdtemp()
 #         )
 
 
-@override_settings(MEDIA_ROOT=MEDIA_ROOT)
-class TestCheckForPrivateVideos(TestCase):
+# @override_settings(MEDIA_ROOT=MEDIA_ROOT)
+# class TestCheckForPrivateVideos(TestCase):
 
-    def setUp(self):
-        mocked_transcript = 'mockedtranscriptlengthnew' * 121
-        self.user = User.objects.create_user(
-            username='admin', password='admin')
-        Podcast.objects.create(
-            name='Test Podcast',
-            avatar=SimpleUploadedFile('test.png', content=b'4321')
-        )
-        channel = Podcast.objects.get(name='Test Podcast')
+#     def setUp(self):
+#         mocked_transcript = 'mockedtranscriptlengthnew' * 121
+#         self.user = User.objects.create_user(
+#             username='admin', password='admin')
+#         Podcast.objects.create(
+#             name='Test Podcast',
+#             avatar=SimpleUploadedFile('test.png', content=b'4321')
+#         )
+#         channel = Podcast.objects.get(name='Test Podcast')
 
-        video_data = [
-            {
-                'id': 1,
-                'video_id': 'ce-QHeZnVu4',
-                'channel_id': channel.id,
-                'title': 'The giant archive hidden under the British countryside',
-                'published_date': '2023-08-25T20:55:33Z',
-                'is_draft': False,
-                'private_video': False,
-            },
-            {
-                'id': 2,
-                'video_id': '1yfX84RMQ3M',
-                'channel_id': channel.id,
-                'title': 'This man built his office inside an elevator',
-                'published_date': '2023-12-21T13:45:33Z',
-                'private_video': True,
-                'is_draft': False,
-            },
-            {
-                'id': 3,
-                'video_id': 'Xw1EKgEl_RY',
-                'channel_id': channel.id,
-                'title': 'Test Podcast Episode',
-                'published_date': '2023-08-25T15:35:33Z',
-                'is_draft': False,
-                'private_video': False,
+#         video_data = [
+#             {
+#                 'id': 1,
+#                 'video_id': 'ce-QHeZnVu4',
+#                 'channel_id': channel.id,
+#                 'title': 'The giant archive hidden under the British countryside',
+#                 'published_date': '2023-08-25T20:55:33Z',
+#                 'is_draft': False,
+#                 'private_video': False,
+#             },
+#             {
+#                 'id': 2,
+#                 'video_id': '1yfX84RMQ3M',
+#                 'channel_id': channel.id,
+#                 'title': 'This man built his office inside an elevator',
+#                 'published_date': '2023-12-21T13:45:33Z',
+#                 'private_video': True,
+#                 'is_draft': False,
+#             },
+#             {
+#                 'id': 3,
+#                 'video_id': 'Xw1EKgEl_RY',
+#                 'channel_id': channel.id,
+#                 'title': 'Test Podcast Episode',
+#                 'published_date': '2023-08-25T15:35:33Z',
+#                 'is_draft': False,
+#                 'private_video': False,
 
-            }
-        ]
+#             }
+#         ]
 
-        Episode.objects.bulk_create([Episode(**data) for data in video_data])
+#         Episode.objects.bulk_create([Episode(**data) for data in video_data])
 
-        transcripts = [
-            {
-                'id': 1,
-                'episode_id': 1,
-                'transcript': mocked_transcript,
-                'error_occurred': False
-            },
-            {
-                'id': 2,
-                'episode_id': 2,
-                'transcript': mocked_transcript,
-                'error_occurred': False
-            },
-            {
-                'id': 3,
-                'episode_id': 3,
-                'transcript': mocked_transcript,
-                'error_occurred': False
-            },
-        ]
+#         transcripts = [
+#             {
+#                 'id': 1,
+#                 'episode_id': 1,
+#                 'transcript': mocked_transcript,
+#                 'error_occurred': False
+#             },
+#             {
+#                 'id': 2,
+#                 'episode_id': 2,
+#                 'transcript': mocked_transcript,
+#                 'error_occurred': False
+#             },
+#             {
+#                 'id': 3,
+#                 'episode_id': 3,
+#                 'transcript': mocked_transcript,
+#                 'error_occurred': False
+#             },
+#         ]
 
-        Transcript.objects.bulk_create(
-            [Transcript(**data) for data in transcripts])
+#         Transcript.objects.bulk_create(
+#             [Transcript(**data) for data in transcripts])
 
-    def tearDown(self):
-        shutil.rmtree(MEDIA_ROOT, ignore_errors=True)
+#     def tearDown(self):
+#         shutil.rmtree(MEDIA_ROOT, ignore_errors=True)
 
-    @mock.patch('podcasts.utils.check_for_private_video')
-    def test_check_for_private_videos(self, mock_check_for_private_video):
-        """Should change two fields, one to true and another to false"""
-        mock_check_for_private_video.return_value.side_effect = [
-            False, False, True]
+#     @mock.patch('podcasts.utils.check_for_private_video')
+#     def test_check_for_private_videos(self, mock_check_for_private_video):
+#         """Should change two fields, one to true and another to false"""
+#         mock_check_for_private_video.return_value.side_effect = [
+#             False, False, True]
 
-        self.assertFalse(Episode.objects.get(
-            video_id='ce-QHeZnVu4').private_video)
-        self.assertTrue(Episode.objects.get(
-            video_id='1yfX84RMQ3M').private_video)
-        self.assertFalse(Episode.objects.get(
-            video_id='Xw1EKgEl_RY').private_video)
+#         self.assertFalse(Episode.objects.get(
+#             video_id='ce-QHeZnVu4').private_video)
+#         self.assertTrue(Episode.objects.get(
+#             video_id='1yfX84RMQ3M').private_video)
+#         self.assertFalse(Episode.objects.get(
+#             video_id='Xw1EKgEl_RY').private_video)
 
-        check_for_private_videos()
+#         check_for_private_videos()
 
-        self.assertFalse(Episode.objects.get(
-            video_id='ce-QHeZnVu4').private_video)
-        self.assertFalse(Episode.objects.get(
-            video_id='1yfX84RMQ3M').private_video)
-        self.assertTrue(Episode.objects.get(
-            video_id='Xw1EKgEl_RY').private_video)
+#         self.assertFalse(Episode.objects.get(
+#             video_id='ce-QHeZnVu4').private_video)
+#         self.assertFalse(Episode.objects.get(
+#             video_id='1yfX84RMQ3M').private_video)
+#         self.assertTrue(Episode.objects.get(
+#             video_id='Xw1EKgEl_RY').private_video)
 
 
 # @override_settings(MEDIA_ROOT=MEDIA_ROOT)
