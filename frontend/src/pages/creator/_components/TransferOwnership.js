@@ -48,7 +48,7 @@ export default function TransferOwnership({ members }) {
             if (members) {
                 const foundMember = members.find(member => member.user.id === session?.user?.pk);
                 setCurrentMember(foundMember);
-                setIsCurrentMemberOwner(foundMember.role === 'Owner');
+                setIsCurrentMemberOwner(foundMember?.role === 'Owner');
             }
         }
 
