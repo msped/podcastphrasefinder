@@ -3,6 +3,7 @@ import tempfile
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import override_settings
 from django.contrib.auth.models import User
+from rest_framework.exceptions import ValidationError
 from rest_framework.test import APITestCase
 from rest_framework.request import Request
 from rest_framework.test import APIRequestFactory

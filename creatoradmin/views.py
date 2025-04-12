@@ -88,6 +88,9 @@ class EpisodeDetailView(RetrieveUpdateDestroyAPIView):
     lookup_field = 'episode__id'
     lookup_url_kwarg = 'pk'
 
+    def get_serializer_context(self):
+        return {'request': self.request}
+
     def destroy(self, request, *args, **kwargs):
         # Delete the episode, will delete the transcipt
         episode = get_object_or_404(Episode, pk=kwargs['pk'])

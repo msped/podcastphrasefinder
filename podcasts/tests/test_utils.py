@@ -121,7 +121,6 @@ class TestUtils(TestCase):
             'published_date': '2023-09-10T23:00:20Z'
         }]
         response = create_transcript_models(video_data)
-        # print(response)
         self.assertEqual(response[0].video_id, 'Test1234')
         self.assertEqual(response[0].channel.id, 2)
         self.assertEqual(response[0].title, 'Test title')

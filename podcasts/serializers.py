@@ -5,6 +5,24 @@ from creatoradmin.utils import get_video_id
 
 
 class PodcastSerializer(serializers.ModelSerializer):
+    avatar = serializers.SerializerMethodField()
+
+    def get_avatar(self, obj):
+        if obj.avatar:
+            try:
+                if hasattr(obj.avatar, 'url'):
+                    avatar_url = obj.avatar.url
+                else:
+                    avatar_url = obj.avatar
+            except ValueError:
+                avatar_url = None
+            if avatar_url is not None and 'request' in self.context:
+                return self.context['request'].build_absolute_uri(
+                    avatar_url
+                )
+            return avatar_url
+        return None
+
     class Meta:
         model = Podcast
         fields = [
@@ -86,10 +104,10 @@ class TranscriptSerializer(serializers.ModelSerializer):
         return transcript
 
     def update(self, instance, validated_data):
-        episode_data = validated_data.pop('episode', {})
+        episode_data = validated_data.pop('episode', None)
         transcript_data = validated_data.pop('transcript', None)
 
-        if episode_data:
+        if episode_data is not None:
             for key, value in episode_data.items():
                 if key not in ('channel_id', 'video_id'):
                     setattr(instance.episode, key, value)

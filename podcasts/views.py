@@ -51,7 +51,8 @@ class SearchEpisodeView(APIView):
                         post_tags='</b></em>'
                 )
                 response = search.execute()
-                serializer = self.serializer_class(response, many=True)
+                serializer = self.serializer_class(
+                    response, many=True, context={'request': request})
                 return Response(serializer.data, status=status.HTTP_200_OK)
             except Exception as err:
                 return Response(str(err), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
