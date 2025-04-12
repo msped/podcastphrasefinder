@@ -177,7 +177,7 @@ class EpisodeSerializerTestCase(APITestCase):
         data = self.serializer.data
         self.assertFalse(data['is_draft'])
 
-    def test_serialized_channel_data(self):
+    def test_serialized_channel_data_no_request(self):
         data = self.serializer.data
         channel_data = data['channel']
         self.assertEqual(channel_data['id'], self.episode.channel.id)

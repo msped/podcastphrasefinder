@@ -199,24 +199,26 @@ class TestEpisodeDetailView(APITestCase):
         Membership.objects.create(
             user=self.member, role='Member', podcast=self.podcast)
 
-        self.client.force_authenticate(user=self.owner)
         self.detail_url = f'/api/creator/episodes/{self.episode.pk}'
 
     def tearDown(self):
         shutil.rmtree(MEDIA_ROOT, ignore_errors=True)
 
     def test_get_episode_detail_as_owner(self):
+        self.client.force_authenticate(user=self.owner)
         response = self.client.get(self.detail_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['episode']['title'], 'Test Episode')
 
     def test_update_episode_detail_as_owner(self):
+        self.client.force_authenticate(user=self.owner)
         data = {'episode': {'title': 'Updated Title'}}
-        response = self.client.patch(self.detail_url, data, format='json')
+        response = self.client.patch(self.detail_url, data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['episode']['title'], 'Updated Title')
 
     def test_delete_episode_detail_as_owner(self):
+        self.client.force_authenticate(user=self.owner)
         response = self.client.delete(self.detail_url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Episode.objects.filter(pk=self.episode.pk).exists())

@@ -18,6 +18,9 @@ class PodcastListCreateView(generics.ListCreateAPIView):
     serializer_class = PodcastSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def get_serializer_context(self):
+        return {'request': self.request}
+
     def perform_create(self, serializer):
         podcast = serializer.save()
         Membership.objects.filter(
@@ -42,6 +45,9 @@ class PodcastDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PodcastSerializer
     lookup_field = 'slug'
     lookup_url_kwarg = 'slug'
+
+    def get_serializer_context(self):
+        return {'request': self.request}
 
     def get_permissions(self):
         if self.request.method == 'PATCH':
@@ -112,7 +118,8 @@ class UserOrgSelectionView(APIView):
                 user=request.user, podcast__slug=podcast_slug)
             org.is_primary = True
             org.save()
-            serializer = MembershipSerializer(org, many=False)
+            serializer = MembershipSerializer(
+                org, many=False, context={'request': request})
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Membership.DoesNotExist:
             return Response(status=status.HTTP_204_NO_CONTENT)
@@ -122,6 +129,9 @@ class UserOrgSelectionView(APIView):
 
 class MembershipListCreateView(generics.ListCreateAPIView):
     serializer_class = MembershipSerializer
+
+    def get_serializer_context(self):
+        return {'request': self.request}
 
     def get_permissions(self):
         if self.request.method == 'POST':
@@ -175,6 +185,9 @@ class MembershipDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'id'
     lookup_url_kwarg = 'id'
+
+    def get_serializer_context(self):
+        return {'request': self.request}
 
     def get_permissions(self):
         if self.request.method == 'GET':
@@ -309,10 +322,10 @@ class ConfirmTransferPodcastView(generics.RetrieveAPIView):
             user__id=data['requested_owner_id'], podcast=podcast)
 
         current_owner_serializer = MembershipSerializer(
-            instance=current_owner_membership, data={"role": "Member"}, partial=True
+            instance=current_owner_membership, data={"role": "Member"}, partial=True, context={"request": request}
         )
         requested_owner_serializer = MembershipSerializer(
-            instance=requested_owner_membership, data={"role": "Owner"}, partial=True
+            instance=requested_owner_membership, data={"role": "Owner"}, partial=True, context={"request": request}
         )
         if current_owner_serializer.is_valid() and requested_owner_serializer.is_valid():
             current_owner_serializer.save()
