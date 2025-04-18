@@ -17,6 +17,10 @@ export default function EditableField({
     const { status, isLoading, error } = onSave(urlParam, formDataState);
 
     useEffect(() => {
+        setValue(children);
+    }, [children])
+
+    useEffect(() => {
         if (status >= 200 && status < 300) {
             toast.success('Succesfully updated!');
             setIsEditing(false);
