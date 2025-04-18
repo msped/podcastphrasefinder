@@ -10,11 +10,11 @@ import {
 } from '@mui/material';
 import RandomEpisodeGenerator from '@/components/RandomEpisodeGenerator';
 
-import useGetPodcastInformationHook from '@/hooks/useGetPodcastInformationHook';
+import useGetPodcastHook from '@/hooks/useGetPodcastHook';
 import PodcastInformationSkeleton from '@/skeletons/PodcastInformationSkeleton';
 
 export default function PodcastInformation({ slug }) {
-    const { podcast, isLoading } = useGetPodcastInformationHook(slug);
+    const { podcast, isLoading } = useGetPodcastHook(slug);
 
     return (
         <>

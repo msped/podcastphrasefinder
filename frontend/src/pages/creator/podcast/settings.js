@@ -3,33 +3,30 @@ import {
     Container,
     Card,
     CardContent,
-    Box,
     Stack,
+    Skeleton,
 } from '@mui/material'
 import withDashboardLayout from '../_components/withDashboardLayout';
 import { PodcastContext } from '@/context/PodcastContext';
+import useGetPodcastHook from '@/hooks/useGetPodcastHook';
 
 import PodcastSettings from '../_components/PodcastSettings';
 import UserManagement from '../_components/UserManagement';
 import DeletePodcast from '../_components/DeletePodcast';
-import LoadingSpinner from '@/components/LoadingSpinner';
 
 function Settings() {
     const { selectedPodcastOrg } = useContext(PodcastContext);
+    const { podcast } = useGetPodcastHook(selectedPodcastOrg?.slug);
 
     return (
         <Container maxWidth='md' sx={{ py: 2 }}>
             <Card>
                 <CardContent>
-                {selectedPodcastOrg === null ? (
-                    <Box>
-                        <LoadingSpinner />
-                    </Box>
-                ) : (
+                {podcast && (
                     <Stack direction='column' spacing={3}>
-                        <PodcastSettings podcast={selectedPodcastOrg} />
-                        <UserManagement />
-                        <DeletePodcast podcast={selectedPodcastOrg} />
+                        <PodcastSettings podcast={podcast} />
+                        <UserManagement podcast={podcast}/>
+                        <DeletePodcast podcast={podcast} />
                     </Stack>
                 )}
                 </CardContent>

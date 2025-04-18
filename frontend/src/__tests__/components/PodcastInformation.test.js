@@ -4,7 +4,7 @@ import '@testing-library/jest-dom';
 import PodcastInformation from '@/components/PodcastInformation';
 
 // Mock the useGetPodcastInformationHook function
-jest.mock('../../hooks/useGetPodcastInformationHook', () => {
+jest.mock('../../hooks/useGetPodcastHook', () => {
     return jest.fn(() => ({
         podcast: {
             name: 'Test Podcast',
