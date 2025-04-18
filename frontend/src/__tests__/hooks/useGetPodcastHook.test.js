@@ -1,13 +1,13 @@
 import React from 'react';
 import { fireEvent, render, waitFor } from '@testing-library/react';
-import useGetPodcastInformationHook from '@/hooks/useGetPodcastInformationHook';
-import getPodcastInformationService from '@/api/getPodcastInformationService';
+import useGetPodcastHook from '@/hooks/useGetPodcastHook';
+import getPodcastService from '@/api/getPodcastService';
 import '@testing-library/jest-dom';
 
-jest.mock('../../api/getPodcastInformationService');
+jest.mock('../../api/getPodcastService');
 
 function TestComponent({ channelId }) {
-    const { podcast, isLoading } = useGetPodcastInformationHook(channelId);
+    const { podcast, isLoading } = useGetPodcastHook(channelId);
     
     return (
         <div>
@@ -26,7 +26,7 @@ describe('useGetPodcastInformationHook', () => {
     });
 
     it('should start with loading state and an empty podcast array', async () => {
-        getPodcastInformationService.mockResolvedValue([]);
+        getPodcastService.mockResolvedValue([]);
         const { getByTestId } = render(<TestComponent channelId="channelId" />);
         
         waitFor(() => expect(getByTestId('loading')).toHaveTextContent('Loading...'));
@@ -34,7 +34,7 @@ describe('useGetPodcastInformationHook', () => {
 
     it('should set podcast data after successful fetch', async () => {
         const mockPodcastData = { episodes: [], title: 'Test Podcast' };
-        getPodcastInformationService.mockResolvedValue(mockPodcastData);
+        getPodcastService.mockResolvedValue(mockPodcastData);
 
         const { getByTestId, queryByTestId } = render(
             <TestComponent channelId="channelId" />
