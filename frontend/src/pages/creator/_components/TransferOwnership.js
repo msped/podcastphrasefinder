@@ -22,15 +22,14 @@ const columns = [
     { field: 'role', headerName: 'Role', minWidth: 200 },
 ];
 
-export default function TransferOwnership({ members }) {
+export default function TransferOwnership({ members, podcastSlug }) {
     const { data: session } = useSession();
-    const { selectedPodcastOrg } = useContext(PodcastContext);
     const [currentMember, setCurrentMember] = useState(null)
     const [isCurrentMemberOwner, setIsCurrentMemberOwner] = useState(null)
     const [open, setOpen] = useState(false);
     const [formDataState, setFormDataState] = useState(null);
     const [rowSelectionModel, setRowSelectionModel] = useState([]);
-    const { response, status, error, isLoading } = useTransferMembershipHook(selectedPodcastOrg.slug, formDataState);
+    const { response, status, error, isLoading } = useTransferMembershipHook(podcastSlug, formDataState);
 
 
     const toggleDialog = () => {
