@@ -16,17 +16,23 @@ import DeletePodcast from '../_components/DeletePodcast';
 
 function Settings() {
     const { selectedPodcastOrg } = useContext(PodcastContext);
-    const { podcast } = useGetPodcastHook(selectedPodcastOrg?.slug);
+    const { podcast, isLoading } = useGetPodcastHook(selectedPodcastOrg?.slug);
 
     return (
         <Container maxWidth='md' sx={{ py: 2 }}>
             <Card>
                 <CardContent>
-                {podcast && (
+                {podcast || !isLoading ? (
                     <Stack direction='column' spacing={3}>
                         <PodcastSettings podcast={podcast} />
                         <UserManagement podcast={podcast}/>
                         <DeletePodcast podcast={podcast} />
+                    </Stack>
+                ): (
+                    <Stack direction='column' spacing={3}>
+                        <Skeleton variant="rectangular" height={175} />
+                        <Skeleton variant="rectangular" height={175} />
+                        <Skeleton variant="rectangular" height={175} />
                     </Stack>
                 )}
                 </CardContent>
