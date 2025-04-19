@@ -6,7 +6,7 @@ import {
     deleteMembershipsService,
     TransferMembershipService,
     getConfirmTransferPodcastOwnershipService
-} from "@/pages/creator/_api/membershipServices";
+} from "@/api/membershipServices";
 
 jest.mock('../../api/apiClient');
 

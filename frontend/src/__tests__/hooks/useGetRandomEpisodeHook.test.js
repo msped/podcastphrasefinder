@@ -1,6 +1,8 @@
-import getRandomEpisodeService from '@/api/getRandomEpisodeService';
+import { getRandomEpisodeService } from '@/api/episodeServices';
 
-jest.mock('../../api/getRandomEpisodeService');
+jest.mock('../../api/episodeServices', () => ({
+    getRandomEpisodeService: jest.fn(),
+}));
 
 describe('getRandomEpisodeService', () => {
     beforeEach(() => {

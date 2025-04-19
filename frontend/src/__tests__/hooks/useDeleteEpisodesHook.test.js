@@ -1,6 +1,8 @@
-import deleteEpisodesService from '@/pages/creator/_api/deleteEpisodesService';
+import { deleteEpisodesService } from '@/api/episodeServices';
 
-jest.mock('../../pages/creator/_api/deleteEpisodesService');
+jest.mock('../../api/episodeServices', () => ({ 
+    deleteEpisodesService: jest.fn(),
+}));
 
 describe('deleteEpisodesService', () => {
     afterEach(() => {

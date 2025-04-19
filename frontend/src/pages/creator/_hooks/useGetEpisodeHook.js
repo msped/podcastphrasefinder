@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import getEpisodeService from '@/pages/creator/_api/getEpisodeService';
+import { getEpisodeService } from "@/api/episodeServices";
 
 const useGetEpisodeHook = () => {
     const [episodeId, setEpisodeId] = useState(null);

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import getEpisodesSearchService from '@/api/getEpisodesSearchService'
+import { getEpisodesSearchService } from '@/api/episodeServices';
+
 
 const useGetEpisodesSearchHook = (query, slug) => {
     const [results, setResults] = useState([])

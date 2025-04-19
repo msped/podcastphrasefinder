@@ -10,7 +10,7 @@ import {
 } from '@/pages/creator/_hooks/membershipHooks'; 
 
 
-jest.mock('../../pages/creator/_api/membershipServices', () => ({
+jest.mock('../../api/membershipServices', () => ({
     getMembershipsService: jest.fn(),
     patchMembershipsService: jest.fn(),
     postMembershipsService: jest.fn(),
@@ -27,7 +27,7 @@ describe('Membership Hooks', () => {
         deleteMembershipsService, 
         TransferMembershipService,
         getConfirmTransferPodcastOwnershipService
-    } = require('../../pages/creator/_api/membershipServices');
+    } = require('../../api/membershipServices');
 
     afterEach(() => {
         jest.clearAllMocks();

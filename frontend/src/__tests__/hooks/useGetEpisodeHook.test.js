@@ -1,8 +1,11 @@
 import { render, waitFor, fireEvent } from '@testing-library/react';
 import useGetEpisodeHook from '@/pages/creator/_hooks/useGetEpisodeHook';
-import getEpisodeService from '@/pages/creator/_api/getEpisodeService';
+import { getEpisodeService } from "@/api/episodeServices";
 
-jest.mock('../../pages/creator/_api/getEpisodeService');
+
+jest.mock('../../api/episodeServices', () => ({
+    getEpisodeService: jest.fn(),
+}));
 
 const TestComponent = () => {
     const { episode, isLoading, error, setEpisodeId } = useGetEpisodeHook();

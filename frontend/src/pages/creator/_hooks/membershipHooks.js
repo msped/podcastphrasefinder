@@ -6,7 +6,7 @@ import {
     deleteMembershipsService,
     TransferMembershipService,
     getConfirmTransferPodcastOwnershipService
-} from "../_api/membershipServices";
+} from "@/api/membershipServices";
 
 export const useGetMembershipsHook = (podcastSlug) => {
     const [memberships, setMemberships] = useState([]);

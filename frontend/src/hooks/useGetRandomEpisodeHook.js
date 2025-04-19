@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import getRandomEpisodeService from '@/api/getRandomEpisodeService'
+import { getRandomEpisodeService } from '@/api/episodeServices';
+
 
 const useGetRandomEpisodeHook = (slug) => {
     const [episode, setEpisode] = useState(null)

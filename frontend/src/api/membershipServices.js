@@ -1,4 +1,4 @@
-import apiClient from "../../../api/apiClient";
+import apiClient from "@/api/apiClient";
 
 export const getMembershipsService = async () => {
     const res = await apiClient

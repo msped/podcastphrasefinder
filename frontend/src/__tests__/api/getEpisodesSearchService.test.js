@@ -1,5 +1,6 @@
 import apiClient from '@/api/apiClient';
-import getEpisodesSearchService from '@/api/getEpisodesSearchService';
+import { getEpisodesSearchService } from '@/api/episodeServices';
+
 
 jest.mock('../../api/apiClient');
 

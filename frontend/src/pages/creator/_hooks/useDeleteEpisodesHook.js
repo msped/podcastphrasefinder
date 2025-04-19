@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import deleteEpisodesService from '../_api/deleteEpisodesService'
+import { deleteEpisodesService } from "@/api/episodeServices";
+
 
 const useDeleteEpisodesInBulkHook = () => {
     const [statusResponse, setStatusResponse] = useState(null)
