@@ -2,7 +2,7 @@ from django.contrib.postgres.search import SearchVector, SearchRank
 from django.shortcuts import get_object_or_404
 from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.views import APIView
 from rest_framework import status
 from elasticsearch_dsl import Q
@@ -76,11 +76,14 @@ class SearchPodcastsView(ListAPIView):
         return Podcast.objects.all()[:5]
 
 
-class GetPodcastInformation(APIView):
-    def get(self, request, slug):
-        channel = get_object_or_404(Podcast, slug=slug)
-        serializer = PodcastSerializer(channel, many=False)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+class GetPodcastInformation(RetrieveAPIView):
+    serializer_class = PodcastSerializer
+    queryset = Podcast.objects.all()
+    lookup_field = 'slug'
+    lookup_url_kwarg = 'slug'
+
+    def get_serializer_context(self):
+        return {'request': self.request}
 
 
 class RandomEpisodeView(APIView):

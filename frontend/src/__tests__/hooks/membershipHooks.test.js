@@ -43,7 +43,7 @@ describe('Membership Hooks', () => {
             const mockData = [{ id: 1, name: 'Gold' }];
             getMembershipsService.mockResolvedValueOnce(mockData);
 
-            const { getByTestId } = render(<TestComponent hook={useGetMembershipsHook} />);
+            const { getByTestId } = render(<TestComponent hook={useGetMembershipsHook} args={['test-slug']} />);
 
             await waitFor(() => {
                 expect(

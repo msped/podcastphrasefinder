@@ -8,7 +8,7 @@ import {
     getConfirmTransferPodcastOwnershipService
 } from "../_api/membershipServices";
 
-export const useGetMembershipsHook = () => {
+export const useGetMembershipsHook = (podcastSlug) => {
     const [memberships, setMemberships] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -18,11 +18,8 @@ export const useGetMembershipsHook = () => {
             setMemberships(data);
             setIsLoading(false);
         }
-
-        if (memberships.length === 0){
-            fetchMemberships()
-        }
-    }, [])
+        fetchMemberships()
+    }, [podcastSlug])
 
     return { memberships, isLoading, setMemberships };
 }

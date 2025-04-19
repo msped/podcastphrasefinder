@@ -5,7 +5,6 @@ import * as React from 'react';
 import { Toaster } from 'react-hot-toast';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
-import TransferOwnership from '@/pages/creator/_components/TransferOwnership';
 
 jest.mock('../../pages/creator/_hooks/membershipHooks', () => ({
     useGetMembershipsHook: jest.fn(),
@@ -51,14 +50,14 @@ describe('UserManagement Component', () => {
     });
 
     it('renders the component and displays the users', () => {
-        render(<UserManagement />);
+        render(<UserManagement podcast={{ slug: 'test-slug' }}/>);
         expect(screen.getByText('User Permissions')).toBeInTheDocument();
         expect(screen.getByText('John Doe')).toBeInTheDocument();
         expect(screen.getByText('Jane Doe')).toBeInTheDocument();
     });
 
     it('opens the add user dialog', () => {
-        render(<UserManagement />);
+        render(<UserManagement podcast={{ slug: 'test-slug' }}/>);
         fireEvent.click(screen.getByRole('button', { name: 'Add User' }));
         expect(screen.getByRole('heading', { name: 'Add User' })).toBeVisible();
         expect(screen.getByLabelText('Email')).toBeVisible();
@@ -67,7 +66,7 @@ describe('UserManagement Component', () => {
 
 
     it('opens the edit user dialog and populates the fields', () => {
-        render(<UserManagement />);
+        render(<UserManagement podcast={{ slug: 'test-slug' }}/>);
         fireEvent.click(screen.getAllByLabelText('edit')[0]);
         expect(screen.getByText('Edit User')).toBeVisible();
         expect(screen.getByLabelText('Email')).toHaveValue('john.doe@example.com');
@@ -97,7 +96,7 @@ describe('UserManagement Component', () => {
         });
     
         it('opens the Add User dialog when clicking Add User button', () => {
-            render(<UserManagement />);
+            render(<UserManagement podcast={{ slug: 'test-slug' }}/>);
             
             const addButton = screen.getByRole('button', { name: /add user/i });
             fireEvent.click(addButton);
@@ -107,7 +106,7 @@ describe('UserManagement Component', () => {
         });
     
         it('should update the email field when typing', () => {
-            render(<UserManagement />);
+            render(<UserManagement podcast={{ slug: 'test-slug' }}/>);
     
             const addButton = screen.getByRole('button', { name: /add user/i });
             fireEvent.click(addButton);
@@ -136,7 +135,7 @@ describe('UserManagement Component', () => {
             render(
                 <>
                     <Toaster />
-                    <UserManagement />
+                    <UserManagement podcast={{ slug: 'test-slug' }}/>
                 </>
             );
     
@@ -167,7 +166,7 @@ describe('UserManagement Component', () => {
             render(
                 <>
                     <Toaster />
-                    <UserManagement />
+                    <UserManagement podcast={{ slug: 'test-slug' }}/>
                 </>
             );
             fireEvent.click(screen.getByRole('button', { name: 'Add User' }));
@@ -191,7 +190,7 @@ describe('UserManagement Component', () => {
             const mockSetMemberships = jest.fn();
             useGetMembershipsHook.mockReturnValue({ memberships: mockMemberships, isLoading: false, setMemberships: mockSetMemberships })
 
-            render(<UserManagement />);
+            render(<UserManagement podcast={{ slug: 'test-slug' }}/>);
 
             fireEvent.click(screen.getAllByLabelText('edit')[0]);
 
@@ -206,7 +205,7 @@ describe('UserManagement Component', () => {
             usePatchMembershipHook.mockReturnValue({ status: 400, error: { response: { data: { role: ["Role is required"] } } } });
             const mockSetMemberships = jest.fn();
             useGetMembershipsHook.mockReturnValue({ memberships: mockMemberships, isLoading: false, setMemberships: mockSetMemberships })
-            render(<UserManagement />);
+            render(<UserManagement podcast={{ slug: 'test-slug' }}/>);
 
             fireEvent.click(screen.getAllByLabelText('edit')[0]);
             fireEvent.change(screen.getByTestId('role-selector'), { target: { value: '' } });
@@ -222,7 +221,7 @@ describe('UserManagement Component', () => {
             const mockSetMemberships = jest.fn();
             useGetMembershipsHook.mockReturnValue({ memberships: mockMemberships, isLoading: false, setMemberships: mockSetMemberships })
 
-            render(<UserManagement />);
+            render(<UserManagement podcast={{ slug: 'test-slug' }}/>);
             fireEvent.click(screen.getAllByLabelText('delete')[0]);
 
             await waitFor(() => expect(mockSetMemberships).toHaveBeenCalledWith(
@@ -237,7 +236,7 @@ describe('UserManagement Component', () => {
             const mockSetMemberships = jest.fn();
 
             useGetMembershipsHook.mockReturnValue({ memberships: mockMemberships, isLoading: false, setMemberships: mockSetMemberships })
-            render(<UserManagement />);
+            render(<UserManagement podcast={{ slug: 'test-slug' }}/>);
             fireEvent.click(screen.getAllByLabelText('delete')[0]);
 
 

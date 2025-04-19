@@ -1,20 +1,23 @@
 import { useEffect, useState } from 'react'
-import getPodcastInformationService from '@/api/getPodcastInformationService'
+import getPodcastService from '@/api/getPodcastService'
 
-const useGetPodcastInformationHook = (slug) => {
+const useGetPodcastHook = (slug) => {
     const [podcast, setPodcast] = useState([])
     const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         const fetchDataFromService = async () => {
-            await getPodcastInformationService(slug)
+            await getPodcastService(slug)
             .then(setPodcast)
             setIsLoading(false)
         }
-        fetchDataFromService()
-    }, [])
+        if (slug) {
+            fetchDataFromService();
+        
+        }
+    }, [slug])
 
     return { podcast, isLoading };
 }
 
-export default useGetPodcastInformationHook;
+export default useGetPodcastHook;

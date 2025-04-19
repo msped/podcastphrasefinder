@@ -1,9 +1,9 @@
 import apiClient from "./apiClient";
 
-const getPodcastInformationService = (slug) => {
+const getPodcastService = (slug) => {
     return apiClient
         .get(`podcasts/${slug}`)
         .then((res) => res.data)
 }
 
-export default getPodcastInformationService;
+export default getPodcastService;
