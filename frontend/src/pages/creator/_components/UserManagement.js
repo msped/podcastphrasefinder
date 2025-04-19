@@ -37,7 +37,7 @@ import TransferOwnership from '../_components/TransferOwnership';
 
 import toast from 'react-hot-toast';
 
-export default function UserManagement() {
+export default function UserManagement({ podcast }) {
     const [openDialog, setOpenDialog] = useState(false);
     const [dialogMode, setDialogMode] = useState('add');
     const [editedUser, setEditedUser] = useState({
@@ -49,7 +49,7 @@ export default function UserManagement() {
         },
         role: 'Member',
     });
-    const { memberships, isLoading, setMemberships } = useGetMembershipsHook();
+    const { memberships, isLoading, setMemberships } = useGetMembershipsHook(podcast.slug);
 
     const [postTrigger, setPostTrigger] = useState(null);
     const [patchTrigger, setPatchTrigger] = useState(null);
@@ -243,7 +243,7 @@ export default function UserManagement() {
                 </TableContainer>
                 )}
 
-                <TransferOwnership members={memberships} setMemberships={setMemberships} />
+                <TransferOwnership podcastSlug={podcast.slug} members={memberships} setMemberships={setMemberships} />
             </Stack>
             <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth='sm' fullWidth>
                 <DialogTitle>
