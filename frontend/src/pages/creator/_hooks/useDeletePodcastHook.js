@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import deletePodcastService from '@/pages/creator/_api/deletePodcastService';
+import { deletePodcastService } from '@/api/podcastServices';
 
 export default function useDeletePodcastHook(slug) {
     const [status, setStatus] = useState(null)

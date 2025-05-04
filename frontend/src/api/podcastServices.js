@@ -15,3 +15,9 @@ export const patchPodcastService = async (podcastSlug, formData) => {
         });
     return res;
 }
+
+export const deletePodcastService = (slug) => {
+    const res = apiClient
+        .delete(`orgs/podcasts/${slug}`)
+    return res;
+}
