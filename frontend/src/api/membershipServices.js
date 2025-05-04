@@ -35,6 +35,17 @@ export const getOrgSelectionService = () => {
         })
 }
 
+export const postOrgSelectionService = (org) => {
+    return apiClient
+        .post(`/orgs/memberships/user`, {'slug': org})
+        .then((res) => {
+            if (res.status === 200) {
+                return res.data
+            }
+            return null
+        })
+}
+
 export const TransferMembershipService = async (slug, formData) => {
     const res = await apiClient
         .post(`orgs/podcasts/${slug}/transfer`, {'requested_owner': formData});

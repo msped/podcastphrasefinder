@@ -3,7 +3,7 @@ import { render, act } from '@testing-library/react';
 import { useSession } from 'next-auth/react';
 import { PodcastContext, PodcastProvider } from '@/context/PodcastContext'; 
 import { getOrgSelectionService } from '@/api/membershipServices';
-import postOrgSelectionService from "@/api/postOrgSelectionService";
+import { postOrgSelectionService } from "@/api/membershipServices";
 
 // Mock next-auth useSession hook
 jest.mock('next-auth/react', () => ({
@@ -13,8 +13,8 @@ jest.mock('next-auth/react', () => ({
 // Mock service calls
 jest.mock('../../api/membershipServices', () => ({
     getOrgSelectionService: jest.fn(),
+    postOrgSelectionService: jest.fn(),
 }));
-jest.mock('../../api/postOrgSelectionService');
 
 describe('PodcastProvider', () => {
     const mockSession = {
