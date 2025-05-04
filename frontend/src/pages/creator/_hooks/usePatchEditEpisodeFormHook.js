@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import patchEditEpisodeFormService from '@/pages/creator/_api/patchEditEpisodeFormService'
+import { patchEditEpisodeFormService } from '@/api/episodeServices'
 
 const usePatchEditEpisodeFormHook = (episodeId, formData) => {
     const [status, setStatus] = useState(null)

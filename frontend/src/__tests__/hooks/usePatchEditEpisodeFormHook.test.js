@@ -1,8 +1,10 @@
 import { render, waitFor } from '@testing-library/react';
 import usePatchEditEpisodeFormHook from '@/pages/creator/_hooks/usePatchEditEpisodeFormHook';
-import patchEditEpisodeFormService from '@/pages/creator/_api/patchEditEpisodeFormService';
+import { patchEditEpisodeFormService } from '@/api/episodeServices';
 
-jest.mock('../../pages/creator/_api/patchEditEpisodeFormService');
+jest.mock('../../api/episodeServices', () => ({
+    patchEditEpisodeFormService: jest.fn(),
+}));
 
 const TestComponent = ({ episodeId, formData }) => {
     const { status, isPutLoading, error } = usePatchEditEpisodeFormHook(episodeId, formData);

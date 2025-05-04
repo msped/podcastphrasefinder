@@ -37,3 +37,9 @@ export const getCreatorEpisodeService = async (selectedPodcastOrg) => {
         .get(`creator/${selectedPodcastOrg}/episodes`);
     return res.data;
 }
+
+export const patchEditEpisodeFormService = async (episodeId, formData) => {
+    const res = await apiClient
+        .patch(`creator/episodes/${episodeId}`, formData);
+    return res;
+}
