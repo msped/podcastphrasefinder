@@ -31,3 +31,9 @@ export const getEpisodeService = async (episodeId) => {
         .get(`creator/episodes/${episodeId}`);
     return res.data;
 }
+
+export const getCreatorEpisodeService = async (selectedPodcastOrg) => {
+    const res = await apiClient
+        .get(`creator/${selectedPodcastOrg}/episodes`);
+    return res.data;
+}

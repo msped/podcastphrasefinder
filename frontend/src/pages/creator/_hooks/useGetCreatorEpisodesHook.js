@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react';
-import getCreatorEpisodeService from '@/pages/creator/_api/getCreatorEpisodeService';
+import {getCreatorEpisodeService} from '@/api/episodeServices';
 import { PodcastContext } from '@/context/PodcastContext';
 
 const useGetCreatorEpisodesHook = () => {
