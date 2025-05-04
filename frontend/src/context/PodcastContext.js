@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import { useSession } from 'next-auth/react';
-import getOrgSelectionService from '@/api/getOrgSelectionService';
+import { getOrgSelectionService } from '@/api/membershipServices';
 import postOrgSelectionService from "@/api/postOrgSelectionService";
 
 const PodcastContext = createContext(null);

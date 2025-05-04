@@ -24,6 +24,17 @@ export const deleteMembershipsService = async (memberId) => {
     return res;
 }
 
+export const getOrgSelectionService = () => {
+    return apiClient
+        .get(`orgs/memberships/user`)
+        .then((res) => {
+            if (res.status === 200) {
+                return res.data
+            }
+            return null
+        })
+}
+
 export const TransferMembershipService = async (slug, formData) => {
     const res = await apiClient
         .post(`orgs/podcasts/${slug}/transfer`, {'requested_owner': formData});

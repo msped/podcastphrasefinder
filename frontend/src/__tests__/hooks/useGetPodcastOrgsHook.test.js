@@ -2,9 +2,11 @@ import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom'
 import useGetPodcastOrgsHook from '@/hooks/useGetPodcastOrgsHook';
-import getOrgSelectionService from '@/api/getOrgSelectionService'; 
+import { getOrgSelectionService } from '@/api/membershipServices'; 
 
-jest.mock('../../api/getOrgSelectionService');
+jest.mock('../../api/membershipServices', () => ({
+    getOrgSelectionService: jest.fn(),
+}));
 
 function TestComponent() {
     const { podcasts, isLoading } = useGetPodcastOrgsHook();

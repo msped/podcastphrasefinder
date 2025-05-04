@@ -2,7 +2,7 @@ import React from 'react';
 import { render, act } from '@testing-library/react';
 import { useSession } from 'next-auth/react';
 import { PodcastContext, PodcastProvider } from '@/context/PodcastContext'; 
-import getOrgSelectionService from '@/api/getOrgSelectionService';
+import { getOrgSelectionService } from '@/api/membershipServices';
 import postOrgSelectionService from "@/api/postOrgSelectionService";
 
 // Mock next-auth useSession hook
@@ -11,7 +11,9 @@ jest.mock('next-auth/react', () => ({
 }));
 
 // Mock service calls
-jest.mock('../../api/getOrgSelectionService');
+jest.mock('../../api/membershipServices', () => ({
+    getOrgSelectionService: jest.fn(),
+}));
 jest.mock('../../api/postOrgSelectionService');
 
 describe('PodcastProvider', () => {

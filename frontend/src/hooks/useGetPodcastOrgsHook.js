@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import getOrgSelectionService from '@/api/getOrgSelectionService';
+import { getOrgSelectionService } from '@/api/membershipServices';
 
 
 const useGetPodcastOrgsHook = () => {
