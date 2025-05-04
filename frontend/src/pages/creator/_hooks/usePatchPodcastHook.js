@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import patchPodcastService from '@/pages/creator/_api/patchPodcastService'
+import { patchPodcastService } from '@/api/podcastServices'
 
 const usePatchPodcastHook = (podcastSlug, formData) => {
     const [status, setStatus] = useState(null)
