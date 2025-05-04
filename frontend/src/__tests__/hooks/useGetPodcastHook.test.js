@@ -1,10 +1,12 @@
 import React from 'react';
 import { fireEvent, render, waitFor } from '@testing-library/react';
 import useGetPodcastHook from '@/hooks/useGetPodcastHook';
-import getPodcastService from '@/api/getPodcastService';
+import { getPodcastService } from '@/api/podcastServices';
 import '@testing-library/jest-dom';
 
-jest.mock('../../api/getPodcastService');
+jest.mock('../../api/podcastServices', () => ({
+    getPodcastService: jest.fn(),
+}));
 
 function TestComponent({ channelId }) {
     const { podcast, isLoading } = useGetPodcastHook(channelId);

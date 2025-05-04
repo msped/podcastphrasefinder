@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import getPodcastService from '@/api/getPodcastService'
+import { getPodcastService } from '@/api/podcastServices'
 
 const useGetPodcastHook = (slug) => {
     const [podcast, setPodcast] = useState([])

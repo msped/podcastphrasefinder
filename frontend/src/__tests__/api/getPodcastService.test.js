@@ -1,4 +1,4 @@
-import getPodcastService from '@/api/getPodcastService';
+import { getPodcastService } from '@/api/podcastServices';
 import apiClient from '@/api/apiClient'
 
 jest.mock('../../api/apiClient', () => ({
