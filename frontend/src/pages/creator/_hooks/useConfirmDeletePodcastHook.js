@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import getConfirmDeletePodcastService from '@/pages/creator/_api/getConfirmDeletePodcastService';
+import { getConfirmDeletePodcastService } from "@/api/membershipServices";
+
 
 const useConfirmDeletePodcastHook = () => {
     const [slug, setSlug] = useState(null);

@@ -57,3 +57,9 @@ export function getConfirmTransferPodcastOwnershipService(slug, token) {
         .get(`orgs/podcasts/${slug}/confirm/transfer/${token}`)
     return res;
 }
+
+export const getConfirmDeletePodcastService = (slug, token) => {
+    const res = apiClient
+        .get(`orgs/podcasts/${slug}/confirm/delete/${token}`)
+    return res;
+}
