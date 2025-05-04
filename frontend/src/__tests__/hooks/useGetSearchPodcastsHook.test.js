@@ -1,8 +1,10 @@
 import { renderHook, waitFor, act } from '@testing-library/react';
-import getPodcastsSearchService from '@/api/getPodcastsSearchService';
+import { getPodcastsSearchService } from '@/api/podcastServices';
 import useGetPodcastsSearchHook from '@/hooks/useGetPodcastsSearchHook';
 
-jest.mock('../../api/getPodcastsSearchService');
+jest.mock('../../api/podcastServices', () => ({
+    getPodcastsSearchService: jest.fn()
+}));
 
 describe('useGetPodcastsSearchHook', () => {
     afterEach(() => {

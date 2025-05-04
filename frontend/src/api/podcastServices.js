@@ -21,3 +21,11 @@ export const deletePodcastService = (slug) => {
         .delete(`orgs/podcasts/${slug}`)
     return res;
 }
+
+export const getPodcastsSearchService = (query) => {
+    return apiClient
+        .get('podcasts/search', {
+            params: { q: query }
+        })
+        .then((res) => res.data)
+}
