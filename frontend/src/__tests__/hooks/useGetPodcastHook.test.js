@@ -1,6 +1,6 @@
 import React from 'react';
 import { fireEvent, render, waitFor } from '@testing-library/react';
-import useGetPodcastHook from '@/hooks/useGetPodcastHook';
+import { useGetPodcastHook } from '@/hooks/podcastHooks';
 import { getPodcastService } from '@/api/podcastServices';
 import '@testing-library/jest-dom';
 

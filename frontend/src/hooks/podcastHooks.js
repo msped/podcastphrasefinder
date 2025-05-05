@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
-import { getPodcastService } from '@/api/podcastServices'
+import { useState, useEffect } from 'react';
+import { getPodcastService } from '@/api/podcastServices';
 
-const useGetPodcastHook = (slug) => {
+export const useGetPodcastHook = (slug) => {
     const [podcast, setPodcast] = useState([])
     const [isLoading, setIsLoading] = useState(true)
 
@@ -19,5 +19,3 @@ const useGetPodcastHook = (slug) => {
 
     return { podcast, isLoading };
 }
-
-export default useGetPodcastHook;

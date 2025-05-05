@@ -1,21 +1,25 @@
-import React from 'react';
+import React, { use } from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import PodcastInformation from '@/components/PodcastInformation';
+import { useGetPodcastHook } from '@/hooks/podcastHooks';
 
-// Mock the useGetPodcastInformationHook function
-jest.mock('../../hooks/useGetPodcastHook', () => {
-    return jest.fn(() => ({
-        podcast: {
-            name: 'Test Podcast',
-            slug: 'test-podcast',
-            avatar: "https://yt3.ggpht.com/sROZx5jI62ZX-7Udpthim3reUrYnjGwBrzoJ_JuvKjLcxnHuceC1IHLWIfoykgi28rmW_EIV=s800-c-k-c0x00ffffff-no-rj",
-        },
-        isLoading: false,
-    }));
-});
+jest.mock('../../hooks/podcastHooks', () => ({
+    useGetPodcastHook: jest.fn(),
+}));
 
 describe('PodcastInformation', () => {
+    beforeEach(() => {
+        useGetPodcastHook.mockReturnValue({
+            podcast: {
+                name: 'Test Podcast',
+                slug: 'test-podcast',
+                avatar: "https://yt3.ggpht.com/sROZx5jI62ZX-7Udpthim3reUrYnjGwBrzoJ_JuvKjLcxnHuceC1IHLWIfoykgi28rmW_EIV=s800-c-k-c0x00ffffff-no-rj",
+            },
+            isLoading: false,
+        });
+    })
+
     test('renders podcast name and number of episodes', () => {
         const slug = '1234567890';
         render(<PodcastInformation slug={slug} />);
