@@ -1,5 +1,5 @@
 import { renderHook, act } from '@testing-library/react';
-import useGetCreatorEpisodesHook from '@/pages/creator/_hooks/useGetCreatorEpisodesHook';
+import { useGetCreatorEpisodesHook } from '@/hooks/episodeHooks';
 import { getCreatorEpisodeService } from '@/api/episodeServices';
 import { PodcastContext } from '@/context/PodcastContext';
 

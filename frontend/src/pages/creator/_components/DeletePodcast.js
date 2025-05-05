@@ -11,7 +11,7 @@ import {
     Card,
     CardContent,
 } from '@mui/material';
-import useGetCreatorEpisodesHook from '@/pages/creator/_hooks/useGetCreatorEpisodesHook';
+import { useGetCreatorEpisodesHook } from '@/hooks/episodeHooks';
 import useDeletePodcastHook from '@/pages/creator/_hooks/useDeletePodcastHook';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LoadingSpinner from '@/components/LoadingSpinner';

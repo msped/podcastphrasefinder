@@ -21,8 +21,7 @@ import LockOpenIcon from '@mui/icons-material/LockOpen';
 import DraftsIcon from '@mui/icons-material/Drafts';
 import PublishIcon from '@mui/icons-material/Publish';
 import { DataGrid, GridToolbarQuickFilter } from '@mui/x-data-grid';
-import useGetCreatorEpisodesHook from '@/pages/creator/_hooks/useGetCreatorEpisodesHook';
-import {useDeleteEpisodesHook} from '@/hooks/episodeHooks';
+import { useGetCreatorEpisodesHook, useDeleteEpisodesHook } from '@/hooks/episodeHooks';
 
 const iconFontSize = 18;
 

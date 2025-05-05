@@ -2,12 +2,14 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import DeletePodcast from '@/pages/creator/_components/DeletePodcast';
 import useDeletePodcastHook from '@/pages/creator/_hooks/useDeletePodcastHook';
-import useGetCreatorEpisodesHook from '@/pages/creator/_hooks/useGetCreatorEpisodesHook';
+import { useGetCreatorEpisodesHook } from '@/hooks/episodeHooks';
 import toast from 'react-hot-toast';
 import '@testing-library/jest-dom';
 
 jest.mock('../../pages/creator/_hooks/useDeletePodcastHook');
-jest.mock('../../pages/creator/_hooks/useGetCreatorEpisodesHook');
+jest.mock('../../hooks/episodeHooks', () => ({
+    useGetCreatorEpisodesHook: jest.fn()
+}));
 
 jest.mock('react-hot-toast', () => ({
     success: jest.fn(),

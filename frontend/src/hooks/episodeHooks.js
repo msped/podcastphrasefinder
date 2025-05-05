@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { 
     getEpisodesSearchService,
     getEpisodeService,
+    getCreatorEpisodeService,
     patchEditEpisodeFormService,
     deleteEpisodesService 
-} from '@/api/episodeServices'
+} from '@/api/episodeServices';
+import { PodcastContext } from '@/context/PodcastContext';
 
 
 export const useGetEpisodeHook = () => {
@@ -116,4 +118,26 @@ export const useGetEpisodesSearchHook = (query, slug) => {
     }, [query, slug]);
 
     return { results, isLoading };
+}
+
+export const useGetCreatorEpisodesHook = () => {
+    const [results, setResults] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
+    const { selectedPodcastOrg } = useContext(PodcastContext);
+
+    useEffect(() => {
+        async function fetchDataFromService() {
+            const episodes = await getCreatorEpisodeService(selectedPodcastOrg.slug)
+            setResults(episodes);
+            setIsLoading(false);
+        }
+        if (selectedPodcastOrg !== null) {
+            fetchDataFromService();
+        } else {
+            setIsLoading(false);
+            setResults([]);
+        }
+    }, [selectedPodcastOrg]);
+
+    return { results, isLoading, setResults };
 }
