@@ -7,7 +7,7 @@ import {
 } from '@mui/material';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import EditEpisodeForm from '@/pages/creator/_forms/EditEpisodeForm';
-import useGetEpisodeHook from '@/pages/creator/_hooks/useGetEpisodeHook';
+import { useGetEpisodeHook } from '@/hooks/episodeHooks';
 import withDashboardLayout from '@/pages/creator/_components/withDashboardLayout';
 
 const Edit = () => {

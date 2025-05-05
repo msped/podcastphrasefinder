@@ -1,5 +1,5 @@
 import { render, waitFor, fireEvent } from '@testing-library/react';
-import useGetEpisodeHook from '@/pages/creator/_hooks/useGetEpisodeHook';
+import { useGetEpisodeHook } from '@/hooks/episodeHooks';
 import { getEpisodeService } from "@/api/episodeServices";
 
 
