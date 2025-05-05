@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 import { patchEditEpisodeFormService } from '@/api/episodeServices'
 
-const usePatchEditEpisodeFormHook = (episodeId, formData) => {
+export const usePatchEditEpisodeFormHook = (episodeId, formData) => {
     const [status, setStatus] = useState(null)
     const [isPutLoading, setIsPutLoading] = useState(false)
     const [error, setError] = useState(null)
@@ -25,5 +25,3 @@ const usePatchEditEpisodeFormHook = (episodeId, formData) => {
 
     return { status, isPutLoading, error };
 }
-
-export default usePatchEditEpisodeFormHook;

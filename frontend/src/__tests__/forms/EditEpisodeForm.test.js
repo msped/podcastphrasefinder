@@ -2,6 +2,7 @@ import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import EditEpisodeForm from '@/pages/creator/_forms/EditEpisodeForm';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { usePatchEditEpisodeFormHook } from '@/hooks/episodeHooks';
 import '@testing-library/jest-dom'
 import mockRouter from 'next-router-mock';
 import toast from 'react-hot-toast';
@@ -10,15 +11,13 @@ jest.mock('next/router', () => require('next-router-mock'));
 
 jest.mock('react-hot-toast');
 
-const mockUsePatchEditEpisodeFormHook = jest.fn();
-jest.mock('../../pages/creator/_hooks/usePatchEditEpisodeFormHook', () => ({
-    __esModule: true,
-    default: () => mockUsePatchEditEpisodeFormHook(),
+jest.mock('../../hooks/episodeHooks', () => ({
+    usePatchEditEpisodeFormHook: jest.fn(),
 }));
 
 function setup(episode, status = 200, isPutLoading = false, error = null) {
     mockRouter.push = jest.fn(); // Mock push function
-    mockUsePatchEditEpisodeFormHook.mockReturnValue({ status, isPutLoading, error });
+    usePatchEditEpisodeFormHook.mockReturnValue({ status, isPutLoading, error });
 
     return render(
         <LocalizationProvider dateAdapter={AdapterDateFns}>

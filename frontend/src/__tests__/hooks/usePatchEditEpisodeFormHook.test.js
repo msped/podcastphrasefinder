@@ -1,5 +1,5 @@
 import { render, waitFor } from '@testing-library/react';
-import usePatchEditEpisodeFormHook from '@/pages/creator/_hooks/usePatchEditEpisodeFormHook';
+import { usePatchEditEpisodeFormHook } from '@/hooks/episodeHooks';
 import { patchEditEpisodeFormService } from '@/api/episodeServices';
 
 jest.mock('../../api/episodeServices', () => ({
