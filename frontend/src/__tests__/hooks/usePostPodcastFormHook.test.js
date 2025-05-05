@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, waitFor } from '@testing-library/react';
-import usePostPodcastFormHook from '@/pages/creator/_hooks/usePostPodcastFormHook';
+import { usePostPodcastFormHook } from '@/hooks/podcastHooks';
 import { postPodcastFormService } from '@/api/podcastServices';
 
 jest.mock('../../api/podcastServices', () => ({

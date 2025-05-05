@@ -15,7 +15,7 @@ import { styled } from '@mui/material/styles';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
-import usePostPodcastFormHook from '../_hooks/usePostPodcastFormHook';
+import { usePostPodcastFormHook } from '@/hooks/podcastHooks';
 
 import toast from 'react-hot-toast';
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import CreatePodcastForm from '../../pages/creator/_forms/CreatePodcastForm';
-import usePostPodcastFormHook from '../../pages/creator/_hooks/usePostPodcastFormHook';
+import { usePostPodcastFormHook } from '@/hooks/podcastHooks';
 import mockRouter from 'next-router-mock';
 import "@testing-library/jest-dom"
 import userEvent from '@testing-library/user-event';
@@ -10,7 +10,9 @@ jest.mock('next/router', () => ({
     useRouter: jest.fn(),
 }));
 jest.mock('next/router', () => require('next-router-mock'));
-jest.mock('../../pages/creator/_hooks/usePostPodcastFormHook');
+jest.mock('../../hooks/podcastHooks', () => ({
+    usePostPodcastFormHook: jest.fn(),
+}));
 
 describe('CreatePodcastForm', () => {
     jest.useFakeTimers();

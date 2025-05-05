@@ -3,7 +3,8 @@ import {
     getPodcastService,
     getPodcastsSearchService,
     deletePodcastService,
-    patchPodcastService
+    patchPodcastService,
+    postPodcastFormService
 } from '@/api/podcastServices';
 
 export const useGetPodcastHook = (slug) => {
@@ -107,4 +108,30 @@ export const useDeletePodcastHook = (slug) => {
     }, [slug])
 
     return { status, error }
+}
+
+export const usePostPodcastFormHook = (formData) => {
+    const [response, setResponse] = useState([])
+    const [status, setStatus] = useState(null)
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState(null)
+
+    useEffect(() => {
+        const fetchDataFromService = async () => {
+            await postPodcastFormService(formData)
+            .then(res => {
+                setResponse(res?.data);
+                setStatus(res?.status);
+                setIsLoading(true)
+            }).catch((error) => {
+                setError(error)
+                setIsLoading(false)
+            })
+        }
+        if (formData) {
+            fetchDataFromService();
+        }
+    }, [formData])
+
+    return { response, status, isLoading, error };
 }
