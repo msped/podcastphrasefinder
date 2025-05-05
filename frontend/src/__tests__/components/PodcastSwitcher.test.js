@@ -3,9 +3,11 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import PodcastSwitcher from '@/components/PodcastSwitcher';
 import { PodcastContext } from '@/context/PodcastContext';
-import useGetPodcastOrgsHook from '@/hooks/useGetPodcastOrgsHook';
+import { useGetPodcastOrgsHook } from '@/hooks/membershipHooks';
 
-jest.mock('../../hooks/useGetPodcastOrgsHook');
+jest.mock('../../hooks/membershipHooks', () => ({
+    useGetPodcastOrgsHook: jest.fn(),
+}));
 
 const mockPodcasts = [
     {

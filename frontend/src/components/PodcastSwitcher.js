@@ -14,7 +14,7 @@ import AddIcon from '@mui/icons-material/Add';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import SettingsIcon from '@mui/icons-material/Settings';
-import useGetPodcastOrgsHook from '@/hooks/useGetPodcastOrgsHook';
+import { useGetPodcastOrgsHook } from '@/hooks/membershipHooks';
 import { PodcastContext } from '@/context/PodcastContext';
 
 const PodcastSwitcher = () => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom'
-import useGetPodcastOrgsHook from '@/hooks/useGetPodcastOrgsHook';
+import { useGetPodcastOrgsHook } from '@/hooks/membershipHooks';
 import { getOrgSelectionService } from '@/api/membershipServices'; 
 
 jest.mock('../../api/membershipServices', () => ({

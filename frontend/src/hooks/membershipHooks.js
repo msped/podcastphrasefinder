@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { 
+import {
+    getOrgSelectionService,
     getMembershipsService,
     patchMembershipsService,
     postMembershipsService,
@@ -156,3 +157,19 @@ export const useGetConfirmTransferPodcastOwnershipHook = () => {
 
     return { status, error, isLoading, setSlug, setToken };
 };
+
+export const useGetPodcastOrgsHook = () => {
+    const [podcasts, setPodcasts] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
+
+    useEffect(() => {
+        const fetchDataFromService = async () => {
+            await getOrgSelectionService()
+            .then(setPodcasts)
+            setIsLoading(false)
+        }
+        fetchDataFromService()
+    }, [])
+
+    return { podcasts, isLoading };
+}
