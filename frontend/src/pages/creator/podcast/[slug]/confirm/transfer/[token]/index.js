@@ -43,7 +43,7 @@ function TransferPodcastOwnershipConfirmationPage() {
                 toast.error('Podcast does not exist.');
                 break;
             default:
-                toast.error('An unexpected error occurred.');st.error('Podcast does not exist.')
+                toast.error('An unexpected error occurred.');
         }
         router.push('/creator/podcast/settings');
     }, [status, error, isLoading])
