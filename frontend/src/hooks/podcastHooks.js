@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getPodcastService, getPodcastsSearchService } from '@/api/podcastServices';
+import { getPodcastService, getPodcastsSearchService, deletePodcastService } from '@/api/podcastServices';
 
 export const useGetPodcastHook = (slug) => {
     const [podcast, setPodcast] = useState([])
@@ -53,4 +53,28 @@ export const useGetPodcastsSearchHook = (query) => {
     }, [query]);
 
     return { results, isLoading };
+}
+
+export const useDeletePodcastHook = (slug) => {
+    const [status, setStatus] = useState(null)
+    const [error, setError] = useState(null)
+
+    useEffect(() => {
+        const deletePodcast = async () => {
+            await deletePodcastService(slug)
+            .then(res => {
+                setStatus(res.status);
+                setError(null);
+            })
+            .catch(err => {
+                setError(err.response.data);
+                setStatus(err.response.status);
+            })
+        }
+        if (slug) {
+            deletePodcast();
+        }
+    }, [slug])
+
+    return { status, error }
 }

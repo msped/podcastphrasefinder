@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, act } from '@testing-library/react';
 import { deletePodcastService } from '@/api/podcastServices';
-import useDeletePodcastHook from '@/pages/creator/_hooks/useDeletePodcastHook';
+import { useDeletePodcastHook } from '@/hooks/podcastHooks';
 
 jest.mock('../../api/podcastServices', () => ({
     deletePodcastService: jest.fn(),
