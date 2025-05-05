@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { patchEditEpisodeFormService } from '@/api/episodeServices'
+import { patchEditEpisodeFormService, deleteEpisodesService } from '@/api/episodeServices'
 
 export const usePatchEditEpisodeFormHook = (episodeId, formData) => {
     const [status, setStatus] = useState(null)
@@ -24,4 +24,23 @@ export const usePatchEditEpisodeFormHook = (episodeId, formData) => {
     }, [formData])
 
     return { status, isPutLoading, error };
+}
+
+export const useDeleteEpisodesHook = () => {
+    const [statusResponse, setStatusResponse] = useState(null)
+    const [isLoading, setIsLoading] = useState(false)
+
+    const deleteEpisodes = async (episodeId) => { 
+        setIsLoading(true);
+        try {
+            const response = await deleteEpisodesService(episodeId);
+            setStatusResponse(response);
+        } catch (error) {
+            console.error("Error deleting selected episodes:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return { statusResponse, isLoading, deleteEpisodes }; 
 }
