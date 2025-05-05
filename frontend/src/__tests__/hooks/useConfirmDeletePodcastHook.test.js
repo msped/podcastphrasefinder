@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, act, fireEvent, waitFor } from '@testing-library/react';
-import useConfirmDeletePodcastHook from '@/pages/creator/_hooks/useConfirmDeletePodcastHook';
+import { useConfirmDeletePodcastHook } from '@/hooks/membershipHooks';
 import { getConfirmDeletePodcastService } from "@/api/membershipServices";
 
 // Mock the service
