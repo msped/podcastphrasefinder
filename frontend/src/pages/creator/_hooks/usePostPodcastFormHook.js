@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import postPodcastFormHook from '@/pages/creator/_api/postPodcastFormService';
+import { postPodcastFormService } from '@/api/podcastServices';
 
 const usePostPodcastFormHook = (formData) => {
     const [response, setResponse] = useState([])
@@ -9,7 +9,7 @@ const usePostPodcastFormHook = (formData) => {
 
     useEffect(() => {
         const fetchDataFromService = async () => {
-            await postPodcastFormHook(formData)
+            await postPodcastFormService(formData)
             .then(res => {
                 setResponse(res?.data);
                 setStatus(res?.status);
