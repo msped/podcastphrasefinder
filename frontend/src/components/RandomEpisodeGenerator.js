@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import ShuffleIcon from '@mui/icons-material/Shuffle';
 import CachedIcon from '@mui/icons-material/Cached';
-import useGetRandomEpisodeHook from '@/hooks/useGetRandomEpisodeHook';
+import { useGetRandomEpisodeHook } from '@/hooks/episodeHooks';
 
 export default function RandomEpisodeGenerator({ slug }) {
     const { episode, isLoading, fetchRandomEpisode } = useGetRandomEpisodeHook(slug);

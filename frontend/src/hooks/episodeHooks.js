@@ -4,7 +4,8 @@ import {
     getEpisodeService,
     getCreatorEpisodeService,
     patchEditEpisodeFormService,
-    deleteEpisodesService 
+    deleteEpisodesService,
+    getRandomEpisodeService
 } from '@/api/episodeServices';
 import { PodcastContext } from '@/context/PodcastContext';
 
@@ -140,4 +141,23 @@ export const useGetCreatorEpisodesHook = () => {
     }, [selectedPodcastOrg]);
 
     return { results, isLoading, setResults };
+}
+
+export const useGetRandomEpisodeHook = (slug) => {
+    const [episode, setEpisode] = useState(null)
+    const [isLoading, setIsLoading] = useState(false)
+
+    const fetchRandomEpisode = async () => { 
+        setIsLoading(true);
+        try {
+            const data = await getRandomEpisodeService(slug);
+            setEpisode(data);
+        } catch (error) {
+            console.error("Error fetching random episode:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return { episode, isLoading, fetchRandomEpisode }; 
 }

@@ -2,11 +2,10 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import RandomEpisodeGenerator from '@/components/RandomEpisodeGenerator';
-import useGetRandomEpisodeHook from '@/hooks/useGetRandomEpisodeHook';
+import { useGetRandomEpisodeHook } from '@/hooks/episodeHooks';
 
-jest.mock('../../hooks/useGetRandomEpisodeHook', () => ({
-    __esModule: true, 
-    default: jest.fn()
+jest.mock('../../hooks/episodeHooks', () => ({
+    useGetRandomEpisodeHook: jest.fn(),
 }));
 
 describe('RandomEpisodeGenerator', () => {
