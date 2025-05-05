@@ -1,6 +1,6 @@
 import { renderHook, waitFor, act } from '@testing-library/react';
 import { getPodcastsSearchService } from '@/api/podcastServices';
-import useGetPodcastsSearchHook from '@/hooks/useGetPodcastsSearchHook';
+import { useGetPodcastsSearchHook } from '@/hooks/podcastHooks';
 
 jest.mock('../../api/podcastServices', () => ({
     getPodcastsSearchService: jest.fn()
