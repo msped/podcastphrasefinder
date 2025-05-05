@@ -7,7 +7,7 @@ import {
     useDeleteMembershipHook,
     useTransferMembershipHook,
     useGetConfirmTransferPodcastOwnershipHook
-} from '@/pages/creator/_hooks/membershipHooks'; 
+} from '@/hooks/membershipHooks'; 
 
 
 jest.mock('../../api/membershipServices', () => ({

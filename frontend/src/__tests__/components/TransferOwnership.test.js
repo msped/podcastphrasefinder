@@ -4,11 +4,11 @@ import TransferOwnership from '@/pages/creator/_components/TransferOwnership';
 import { PodcastContext } from '@/context/PodcastContext';
 import '@testing-library/jest-dom'
 import { SessionProvider } from 'next-auth/react';
-import { useTransferMembershipHook } from '@/pages/creator/_hooks/membershipHooks';
+import { useTransferMembershipHook } from '@/hooks/membershipHooks';
 import toast from 'react-hot-toast';
 import { debug } from 'jest-preview';
 
-jest.mock('../../pages/creator/_hooks/membershipHooks', () => ({
+jest.mock('../../hooks/membershipHooks', () => ({
     useTransferMembershipHook: jest.fn(),
 }));
 

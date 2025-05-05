@@ -13,7 +13,7 @@ import toast from 'react-hot-toast';
 import { DataGrid } from '@mui/x-data-grid';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { PodcastContext } from '@/context/PodcastContext';
-import { useTransferMembershipHook } from '@/pages/creator/_hooks/membershipHooks';
+import { useTransferMembershipHook } from '@/hooks/membershipHooks';
 import { useSession } from 'next-auth/react';
 
 const columns = [

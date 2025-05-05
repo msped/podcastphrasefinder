@@ -1,12 +1,12 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import UserManagement from '@/pages/creator/_components/UserManagement';
-import { useGetMembershipsHook, useDeleteMembershipHook, usePatchMembershipHook, usePostMembershipHook } from '@/pages/creator/_hooks/membershipHooks';
+import { useGetMembershipsHook, useDeleteMembershipHook, usePatchMembershipHook, usePostMembershipHook } from '@/hooks/membershipHooks';
 import * as React from 'react';
 import { Toaster } from 'react-hot-toast';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 
-jest.mock('../../pages/creator/_hooks/membershipHooks', () => ({
+jest.mock('../../hooks/membershipHooks', () => ({
     useGetMembershipsHook: jest.fn(),
     useDeleteMembershipHook: jest.fn(),
     usePatchMembershipHook: jest.fn(),
