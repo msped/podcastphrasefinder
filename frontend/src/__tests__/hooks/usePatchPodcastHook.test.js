@@ -1,7 +1,7 @@
 import { render, waitFor } from '@testing-library/react';
 
 import { patchPodcastService } from '@/api/podcastServices';
-import usePatchPodcastHook from '@/pages/creator/_hooks/usePatchPodcastHook';
+import { usePatchPodcastHook } from '@/hooks/podcastHooks';
 
 jest.mock('../../api/podcastServices', () => ({
     patchPodcastService: jest.fn(),
