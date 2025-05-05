@@ -29,3 +29,11 @@ export const getPodcastsSearchService = (query) => {
         })
         .then((res) => res.data)
 }
+
+export const postPodcastFormService = (formData) => {
+    return apiClient
+        .post('orgs/podcasts', formData)
+        .then((res) => {
+            return { data: res.data, status: res.status }
+        })
+}

@@ -1,5 +1,5 @@
 import apiClient from "@/api/apiClient";
-import postPodcastFormService from "@/pages/creator/_api/postPodcastFormService";
+import { postPodcastFormService } from "@/api/podcastServices";
 
 jest.mock("../../api/apiClient", () => ({
     post: jest.fn()
