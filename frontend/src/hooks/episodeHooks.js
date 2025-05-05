@@ -1,5 +1,10 @@
 import { useEffect, useState } from 'react';
-import { getEpisodeService, patchEditEpisodeFormService, deleteEpisodesService } from '@/api/episodeServices'
+import { 
+    getEpisodesSearchService,
+    getEpisodeService,
+    patchEditEpisodeFormService,
+    deleteEpisodesService 
+} from '@/api/episodeServices'
 
 
 export const useGetEpisodeHook = () => {
@@ -76,4 +81,39 @@ export const useDeleteEpisodesHook = () => {
     };
 
     return { statusResponse, isLoading, deleteEpisodes }; 
+}
+
+export const useGetEpisodesSearchHook = (query, slug) => {
+    const [results, setResults] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
+
+    useEffect(() => {
+        if (query.length === 0) {
+            setResults([]);
+            return;
+        }
+
+        setIsLoading(true);
+        const timeoutId = setTimeout(() => {
+            if (query.length >= 3) {
+                fetchDataFromService();
+            }
+        }, 750);
+
+        function fetchDataFromService() {
+            getEpisodesSearchService(query, slug)
+                .then(data => {
+                    setResults(data);
+                    setIsLoading(false);
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+                    setIsLoading(false);
+                });
+        }
+
+        return () => clearTimeout(timeoutId); 
+    }, [query, slug]);
+
+    return { results, isLoading };
 }

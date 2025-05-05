@@ -1,7 +1,7 @@
 import { renderHook, waitFor, act } from '@testing-library/react';
 import { getEpisodesSearchService } from '@/api/episodeServices';
 
-import useGetEpisodesSearchHook from '@/hooks/useGetEpisodesSearchHook';
+import { useGetEpisodesSearchHook } from "@/hooks/episodeHooks";
 
 jest.mock('../../api/episodeServices', () => ({
     getEpisodesSearchService: jest.fn(),
