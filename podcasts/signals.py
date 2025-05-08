@@ -1,9 +1,8 @@
-from django.db import connection
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from .models import Podcast, Episode, Transcript
-from .tasks import add_back_catalogue_task
+from .models import Episode, Transcript
+
 from .utils import get_transcript
 
 
