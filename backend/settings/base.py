@@ -146,14 +146,7 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_EXTENDED = True
 
 CELERY_BEAT_SCHEDULE = {
-    "check_for_private_videos": {
-        "task": "podcasts.tasks.check_for_private_videos",
-        "schedule": crontab(0, 0, day_of_month='1'),
-    },
-    "get_new_episodes": {
-        "task": "podcasts.tasks.get_new_episodes",
-        "schedule": crontab(0, 0)
-    }
+
 }
 
 ELASTICSEARCH_DSL = {
