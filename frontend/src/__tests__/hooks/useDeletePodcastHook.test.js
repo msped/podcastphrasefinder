@@ -1,9 +1,11 @@
 import React from 'react';
 import { render, screen, act } from '@testing-library/react';
-import deletePodcastService from '@/pages/creator/_api/deletePodcastService';
-import useDeletePodcastHook from '@/pages/creator/_hooks/useDeletePodcastHook';
+import { deletePodcastService } from '@/api/podcastServices';
+import { useDeletePodcastHook } from '@/hooks/podcastHooks';
 
-jest.mock('../../pages/creator/_api/deletePodcastService'); 
+jest.mock('../../api/podcastServices', () => ({
+    deletePodcastService: jest.fn(),
+}));
 
 function TestComponent({ slug }) {
     const { status, error } = useDeletePodcastHook(slug);

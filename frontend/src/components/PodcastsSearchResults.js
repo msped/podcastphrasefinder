@@ -1,4 +1,4 @@
-import useGetPodcastsSearchHook from '@/hooks/useGetPodcastsSearchHook'
+import { useGetPodcastsSearchHook } from '@/hooks/podcastHooks'
 import PodcastPanel from '@/components/PodcastPanel'
 import { Grid, Stack, Typography } from '@mui/material'
 

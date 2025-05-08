@@ -1,4 +1,4 @@
-import apiClient from "../../../api/apiClient";
+import apiClient from "@/api/apiClient";
 
 export const getMembershipsService = async () => {
     const res = await apiClient
@@ -24,6 +24,28 @@ export const deleteMembershipsService = async (memberId) => {
     return res;
 }
 
+export const getOrgSelectionService = () => {
+    return apiClient
+        .get(`orgs/memberships/user`)
+        .then((res) => {
+            if (res.status === 200) {
+                return res.data
+            }
+            return null
+        })
+}
+
+export const postOrgSelectionService = (org) => {
+    return apiClient
+        .post(`/orgs/memberships/user`, {'slug': org})
+        .then((res) => {
+            if (res.status === 200) {
+                return res.data
+            }
+            return null
+        })
+}
+
 export const TransferMembershipService = async (slug, formData) => {
     const res = await apiClient
         .post(`orgs/podcasts/${slug}/transfer`, {'requested_owner': formData});
@@ -33,5 +55,11 @@ export const TransferMembershipService = async (slug, formData) => {
 export function getConfirmTransferPodcastOwnershipService(slug, token) {
     const res = apiClient
         .get(`orgs/podcasts/${slug}/confirm/transfer/${token}`)
+    return res;
+}
+
+export const getConfirmDeletePodcastService = (slug, token) => {
+    const res = apiClient
+        .get(`orgs/podcasts/${slug}/confirm/delete/${token}`)
     return res;
 }

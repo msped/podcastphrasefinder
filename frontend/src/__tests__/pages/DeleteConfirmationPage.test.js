@@ -1,13 +1,15 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import DeletePodcastConfirmationPage from '@/pages/creator/podcast/[slug]/confirm/delete/[token]/index';
-import useConfirmDeletePodcastHook from '@/pages/creator/_hooks/useConfirmDeletePodcastHook';
+import { useConfirmDeletePodcastHook } from '@/hooks/membershipHooks';
 import mockRouter from 'next-router-mock';
 import { toast } from 'react-hot-toast';
 import '@testing-library/jest-dom';
 
 jest.mock('next/router', () => require('next-router-mock'));
-jest.mock('../../pages/creator/_hooks/useConfirmDeletePodcastHook');
+jest.mock('../../hooks/membershipHooks', () => ({
+    useConfirmDeletePodcastHook: jest.fn(),
+}));
 jest.mock('react-hot-toast');
 jest.mock('../../pages/creator/_components/withDashboardLayout', () => (Component) => Component);
 jest.mock('../../components/PodcastSwitcher')

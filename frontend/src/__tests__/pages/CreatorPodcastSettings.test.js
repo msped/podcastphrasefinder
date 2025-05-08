@@ -1,14 +1,16 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { PodcastContext } from '@/context/PodcastContext';
-import getOrgSelectionService from '@/api/getOrgSelectionService';
+import { getOrgSelectionService } from '@/api/membershipServices';
 import Settings from '@/pages/creator/podcast/settings';
 
 jest.mock('../../pages/creator/_components/withDashboardLayout', () => (Component) => Component);
 jest.mock('../../pages/creator/_components/PodcastSettings');
 jest.mock('../../pages/creator/_components/UserManagement')
 jest.mock('../../pages/creator/_components/DeletePodcast')
-jest.mock('../../api/getOrgSelectionService', );
+jest.mock('../../api/membershipServices', () => ({
+    getOrgSelectionService: jest.fn(),
+}));
 jest.mock('../../components/LoadingSpinner');
 
 describe('settings Component', () => {

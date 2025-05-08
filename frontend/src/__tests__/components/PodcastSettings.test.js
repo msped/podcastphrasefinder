@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import PodcastSettings from '@/pages/creator/_components/PodcastSettings';
-import usePatchPodcastHook from '@/pages/creator/_hooks/usePatchPodcastHook';
+import { usePatchPodcastHook } from '@/hooks/podcastHooks';
 import '@testing-library/jest-dom';
 
 jest.mock('react-hot-toast', () => ({
@@ -9,7 +9,9 @@ jest.mock('react-hot-toast', () => ({
     error: jest.fn(),
 }));
 
-jest.mock('../../pages/creator/_hooks/usePatchPodcastHook');
+jest.mock('../../hooks/podcastHooks', () => ({
+    usePatchPodcastHook: jest.fn(),
+}));
 
 const mockPodcast = {
     slug: 'test-podcast',

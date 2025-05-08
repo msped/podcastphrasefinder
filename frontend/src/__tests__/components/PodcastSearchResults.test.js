@@ -2,12 +2,11 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom'
 import PodcastsSearchResults from '@/components/PodcastsSearchResults';
-import useGetPodcastsSearchHook from '@/hooks/useGetPodcastsSearchHook';
+import { useGetPodcastsSearchHook } from '@/hooks/podcastHooks';
 
-jest.mock('../../hooks/useGetPodcastsSearchHook', () => ({
-    __esModule: true,
-    default: jest.fn()
-}))
+jest.mock('../../hooks/podcastHooks', () => ({
+    useGetPodcastsSearchHook: jest.fn(),
+}));
 
 describe('PodcastsSearchResults', () => {
     beforeEach(() => {

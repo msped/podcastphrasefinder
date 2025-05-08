@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import {
     Box,
 } from '@mui/material';
-import useConfirmDeletePodcastHook from '@/pages/creator/_hooks/useConfirmDeletePodcastHook';
+import { useConfirmDeletePodcastHook } from '@/hooks/membershipHooks';
 import withDashboardLayout from '@/pages/creator/_components/withDashboardLayout';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import toast from 'react-hot-toast';

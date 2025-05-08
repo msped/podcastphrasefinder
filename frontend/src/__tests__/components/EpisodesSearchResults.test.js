@@ -2,9 +2,11 @@ import { render, screen } from "@testing-library/react";
 import * as nextRouter from 'next/router'
 import "@testing-library/jest-dom"
 import EpisodesSearchResults from "@/components/EpisodesSearchResults";
-import useGetEpisodesSearchHook from "@/hooks/useGetEpisodesSearchHook";
+import { useGetEpisodesSearchHook } from "@/hooks/episodeHooks";
 
-jest.mock("../..//hooks/useGetEpisodesSearchHook", () => jest.fn());
+jest.mock("../../hooks/episodeHooks", () => ({
+    useGetEpisodesSearchHook: jest.fn(),
+}));
 
 nextRouter.useRouter = jest.fn()
 nextRouter.useRouter.mockImplementation(() => ({ route: '/' }))

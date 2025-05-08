@@ -8,7 +8,7 @@ import {
 } from '@mui/material'
 import withDashboardLayout from '../_components/withDashboardLayout';
 import { PodcastContext } from '@/context/PodcastContext';
-import useGetPodcastHook from '@/hooks/useGetPodcastHook';
+import { useGetPodcastHook } from '@/hooks/podcastHooks';
 
 import PodcastSettings from '../_components/PodcastSettings';
 import UserManagement from '../_components/UserManagement';

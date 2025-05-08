@@ -1,9 +1,11 @@
 import { renderHook, act } from '@testing-library/react';
-import useGetCreatorEpisodesHook from '@/pages/creator/_hooks/useGetCreatorEpisodesHook';
-import getCreatorEpisodeService from '@/pages/creator/_api/getCreatorEpisodeService';
+import { useGetCreatorEpisodesHook } from '@/hooks/episodeHooks';
+import { getCreatorEpisodeService } from '@/api/episodeServices';
 import { PodcastContext } from '@/context/PodcastContext';
 
-jest.mock('../../pages/creator/_api/getCreatorEpisodeService');
+jest.mock('../../api/episodeServices', () => ({
+    getCreatorEpisodeService: jest.fn(),
+}));
 
 describe('useGetCreatorEpisodesHook', () => {
     const mockEpisodes = [{ id: 1, title: 'Test Episode' }];

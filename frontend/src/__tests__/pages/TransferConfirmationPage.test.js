@@ -1,13 +1,13 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import TransferPodcastOwnershipConfirmationPage from '@/pages/creator/podcast/[slug]/confirm/transfer/[token]/index';
-import { useGetConfirmTransferPodcastOwnershipHook } from '@/pages/creator/_hooks/membershipHooks';
+import { useGetConfirmTransferPodcastOwnershipHook } from '@/hooks/membershipHooks';
 import mockRouter from 'next-router-mock';
 import { toast } from 'react-hot-toast';
 import '@testing-library/jest-dom';
 
 jest.mock('next/router', () => require('next-router-mock'));
-jest.mock('../../pages/creator/_hooks/membershipHooks', () => ({
+jest.mock('../../hooks/membershipHooks', () => ({
     useGetConfirmTransferPodcastOwnershipHook: jest.fn()
 }));
 jest.mock('react-hot-toast');

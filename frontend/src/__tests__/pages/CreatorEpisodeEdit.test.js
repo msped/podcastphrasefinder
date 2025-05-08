@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import Edit from '@/pages/creator/dashboard/episodes/[id]/edit';
-import useGetEpisodeHook from '@/pages/creator/_hooks/useGetEpisodeHook';
+import { useGetEpisodeHook } from '@/hooks/episodeHooks';
 import '@testing-library/jest-dom';
 
 jest.mock('../../pages/creator/_forms/EditEpisodeForm', () => () => <div>EditEpisodeForm Component</div>);
@@ -14,7 +14,9 @@ jest.mock('../../components/PodcastSwitcher', () => () => <div data-testid="podc
 jest.mock('next/router', () => ({
     useRouter: jest.fn(),
 }));
-jest.mock('../../pages/creator/_hooks/useGetEpisodeHook');
+jest.mock('../../hooks/episodeHooks', () => ({
+    useGetEpisodeHook: jest.fn(),
+}));
 
 describe('Edit Page', () => {
     const mockEpisode = {

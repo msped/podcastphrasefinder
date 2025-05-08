@@ -16,7 +16,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import toast from 'react-hot-toast';
-import usePatchPodcastHook from '../_hooks/usePatchPodcastHook';
+import { usePatchPodcastHook } from '@/hooks/podcastHooks';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',

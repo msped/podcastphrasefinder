@@ -14,7 +14,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import SaveIcon from '@mui/icons-material/Save';
 import toast from 'react-hot-toast';
 
-import usePatchEditEpisodeFormHook from '@/pages/creator/_hooks/usePatchEditEpisodeFormHook';
+import { usePatchEditEpisodeFormHook } from '@/hooks/episodeHooks';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import TranscriptDialog from '../_components/TranscriptDialog';
 

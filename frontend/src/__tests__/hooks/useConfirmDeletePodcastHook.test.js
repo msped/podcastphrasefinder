@@ -1,10 +1,12 @@
 import React from 'react';
 import { render, act, fireEvent, waitFor } from '@testing-library/react';
-import useConfirmDeletePodcastHook from '@/pages/creator/_hooks/useConfirmDeletePodcastHook';
-import getConfirmDeletePodcastService from '@/pages/creator/_api/getConfirmDeletePodcastService';
+import { useConfirmDeletePodcastHook } from '@/hooks/membershipHooks';
+import { getConfirmDeletePodcastService } from "@/api/membershipServices";
 
 // Mock the service
-jest.mock('../../pages/creator/_api/getConfirmDeletePodcastService');
+jest.mock('../../api/membershipServices', () => ({
+    getConfirmDeletePodcastService: jest.fn(),
+}));
 
 const TestComponent = () => {
     const { status, error, isLoading, setSlug, setToken } = useConfirmDeletePodcastHook();

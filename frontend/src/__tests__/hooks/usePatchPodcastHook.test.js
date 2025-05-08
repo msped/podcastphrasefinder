@@ -1,9 +1,11 @@
 import { render, waitFor } from '@testing-library/react';
 
-import patchPodcastService from '@/pages/creator/_api/patchPodcastService';
-import usePatchPodcastHook from '@/pages/creator/_hooks/usePatchPodcastHook';
+import { patchPodcastService } from '@/api/podcastServices';
+import { usePatchPodcastHook } from '@/hooks/podcastHooks';
 
-jest.mock('../../pages/creator/_api/patchPodcastService');
+jest.mock('../../api/podcastServices', () => ({
+    patchPodcastService: jest.fn(),
+}));
 
 const TestComponent = ({podcastSlug, formData}) => {
     const { status, isLoading, error } = usePatchPodcastHook(podcastSlug, formData);

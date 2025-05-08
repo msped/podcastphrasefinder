@@ -1,4 +1,4 @@
-import useGetEpisodesSearchHook from '@/hooks/useGetEpisodesSearchHook'
+import { useGetEpisodesSearchHook } from "@/hooks/episodeHooks";
 import EpisodePanel from '@/components/EpisodePanel'
 import { Grid, Stack, Typography } from '@mui/material'
 

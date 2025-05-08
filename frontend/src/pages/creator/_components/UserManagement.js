@@ -32,7 +32,7 @@ import {
     useDeleteMembershipHook,
     usePatchMembershipHook,
     usePostMembershipHook,
-} from '../_hooks/membershipHooks';
+} from '../../../hooks/membershipHooks';
 import TransferOwnership from '../_components/TransferOwnership';
 
 import toast from 'react-hot-toast';

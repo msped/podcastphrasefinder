@@ -1,5 +1,5 @@
 import apiClient from "@/api/apiClient";
-import deletePodcastService from "@/pages/creator/_api/deletePodcastService";
+import { deletePodcastService } from "@/api/podcastServices";
 
 jest.mock("../../api/apiClient");
 

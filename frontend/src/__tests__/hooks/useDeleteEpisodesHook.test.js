@@ -1,30 +1,48 @@
-import deleteEpisodesService from '@/pages/creator/_api/deleteEpisodesService';
+import { renderHook, act } from '@testing-library/react';
+import { useDeleteEpisodesHook } from '@/hooks/episodeHooks';
+import { deleteEpisodesService } from '@/api/episodeServices';
 
-jest.mock('../../pages/creator/_api/deleteEpisodesService');
+jest.mock('../../api/episodeServices', () => ({
+    deleteEpisodesService: jest.fn(),
+}));
 
-describe('deleteEpisodesService', () => {
-    afterEach(() => {
-        jest.clearAllMocks();
+describe('useDeleteEpisodesHook', () => {
+    it('should initialize with null statusResponse and isLoading false', () => {
+        const { result } = renderHook(() => useDeleteEpisodesHook());
+        expect(result.current.statusResponse).toBe(null);
+        expect(result.current.isLoading).toBe(false);
     });
 
-    it('should delete episodes successfully', async () => {
-        const mockResponse = { status: 204 }; 
-        deleteEpisodesService.mockResolvedValue(mockResponse);
-
-        const episodeId = 1;
-        const response = await deleteEpisodesService(episodeId);
-
-        expect(deleteEpisodesService).toHaveBeenCalledWith(episodeId);
-        expect(response).toEqual(mockResponse);
-    });
-
-    it('should handle errors when deleting episodes', async () => {
-        const mockError = new Error('Failed to delete episodes');
-        deleteEpisodesService.mockRejectedValue(mockError);
-
-        const episodeId = 1; 
+    it('should set isLoading to true while deleting episodes', async () => {
+        deleteEpisodesService.mockResolvedValue({});
+        const { result } = renderHook(() => useDeleteEpisodesHook());
         
-        await expect(deleteEpisodesService(episodeId)).rejects.toThrowError(mockError);
-        expect(deleteEpisodesService).toHaveBeenCalledWith(episodeId);
+        act(() => {
+            result.current.deleteEpisodes(123);
+        });
+        
+        expect(result.current.isLoading).toBe(true);
+    });
+
+    it('should call deleteEpisodesService with the correct episodeId', async () => {
+        deleteEpisodesService.mockResolvedValue({});
+        const { result } = renderHook(() => useDeleteEpisodesHook());
+        
+        await act(async () => {
+            await result.current.deleteEpisodes(456);
+        });
+        
+        expect(deleteEpisodesService).toHaveBeenCalledWith(456);
+    });
+
+    it('should set statusResponse on successful deletion', async () => {
+        const mockResponse = { status: 200 };
+        deleteEpisodesService.mockResolvedValue(mockResponse);
+        const { result } = renderHook(() => useDeleteEpisodesHook());
+        
+        await act(async () => {
+            await result.current.deleteEpisodes(789);
+        });
+        expect(result.current.statusResponse).toBe(mockResponse);
     });
 });

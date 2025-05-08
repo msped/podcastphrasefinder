@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { PodcastContext } from '@/context/PodcastContext';
-import useGetPodcastOrgsHook from '@/hooks/useGetPodcastOrgsHook';
+import { useGetPodcastOrgsHook } from '@/hooks/membershipHooks';
 
 jest.mock('next/navigation', () => ({
     usePathname: jest.fn(),
@@ -18,7 +18,9 @@ jest.mock('@mui/material/styles', () => ({
 }));
 
 jest.mock('@mui/material/useMediaQuery', () => jest.fn());
-jest.mock("../../hooks/useGetPodcastOrgsHook", () => jest.fn())
+jest.mock("../../hooks/membershipHooks", () => ({
+    useGetPodcastOrgsHook: jest.fn(),
+}));
 
 const mockChildren = <div>Test Content</div>;
 

@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import RandomEpisodeGenerator from '@/components/RandomEpisodeGenerator';
 
-import useGetPodcastHook from '@/hooks/useGetPodcastHook';
+import { useGetPodcastHook } from '@/hooks/podcastHooks';
 import PodcastInformationSkeleton from '@/skeletons/PodcastInformationSkeleton';
 
 export default function PodcastInformation({ slug }) {

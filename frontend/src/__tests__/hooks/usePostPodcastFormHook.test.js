@@ -1,14 +1,13 @@
 import React from 'react';
 import { render, waitFor } from '@testing-library/react';
-import usePostPodcastFormHook from '@/pages/creator/_hooks/usePostPodcastFormHook';
+import { usePostPodcastFormHook } from '@/hooks/podcastHooks';
+import { postPodcastFormService } from '@/api/podcastServices';
 
-jest.mock('../../pages/creator/_api/postPodcastFormService', () => ({
-    __esModule: true,
-    default: jest.fn(),
+jest.mock('../../api/podcastServices', () => ({
+    postPodcastFormService: jest.fn()
 }));
 
 describe('usePostPodcastFormHook', () => {
-    const postPodcastFormMock = require('../../pages/creator/_api/postPodcastFormService').default;
 
     afterEach(() => {
         jest.clearAllMocks();
@@ -28,13 +27,13 @@ describe('usePostPodcastFormHook', () => {
 
     it('should fetch data successfully', async () => {
         const mockResponse = { data: { success: true }, status: 200 };
-        postPodcastFormMock.mockResolvedValueOnce(mockResponse);
+        postPodcastFormService.mockResolvedValueOnce(mockResponse);
 
         const formData = { title: 'My Podcast' };
         const { getByTestId } = render(<TestComponent formData={formData} />);
 
         await waitFor(() => {
-            expect(getByTestId('response').textContent).toBe(JSON.stringify(mockResponse.data));
+            expect(getByTestId('response').textContent).toBe(JSON.stringify(mockResponse.data),);
             expect(getByTestId('status').textContent).toBe(String(mockResponse.status));
             expect(getByTestId('isLoading').textContent).toBe('true');
             expect(getByTestId('error').textContent).toBe('null');
@@ -42,8 +41,8 @@ describe('usePostPodcastFormHook', () => {
     });
 
     it('should handle errors', async () => {
-        const mockError = { message: 'Network Error' };
-        postPodcastFormMock.mockRejectedValueOnce(mockError);
+        const mockError = new Error('Network Error');
+        postPodcastFormService.mockRejectedValueOnce(mockError);
 
         const formData = { title: 'My Failed Podcast' };
         const { getByTestId } = render(<TestComponent formData={formData} />);
@@ -51,13 +50,13 @@ describe('usePostPodcastFormHook', () => {
         await waitFor(() => {
             expect(getByTestId('response').textContent).toBe('[]');
             expect(getByTestId('status').textContent).toBe('');
-            expect(getByTestId('isLoading').textContent).toBe('false');
-            expect(getByTestId('error').textContent).toBe(JSON.stringify(mockError));
+            expect(getByTestId('isLoading').textContent).toBe('false')
+            expect(getByTestId('error').textContent).toBe(JSON.stringify(mockError))
         });
     });
 
     it('should not call service if no formData is provided', () => {
         render(<TestComponent formData={null} />);
-        expect(postPodcastFormMock).not.toHaveBeenCalled();
+        expect(postPodcastFormService).not.toHaveBeenCalled();
     });
 });

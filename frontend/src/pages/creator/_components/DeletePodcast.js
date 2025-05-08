@@ -11,8 +11,8 @@ import {
     Card,
     CardContent,
 } from '@mui/material';
-import useGetCreatorEpisodesHook from '@/pages/creator/_hooks/useGetCreatorEpisodesHook';
-import useDeletePodcastHook from '@/pages/creator/_hooks/useDeletePodcastHook';
+import { useGetCreatorEpisodesHook } from '@/hooks/episodeHooks';
+import { useDeletePodcastHook } from '@/hooks/podcastHooks';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import toast from 'react-hot-toast';

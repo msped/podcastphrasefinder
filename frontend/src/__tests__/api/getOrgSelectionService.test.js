@@ -1,5 +1,5 @@
 import apiClient from '@/api/apiClient';
-import getOrgSelectionService from '@/api/getOrgSelectionService';
+import { getOrgSelectionService } from '@/api/membershipServices';
 
 jest.mock('../../api/apiClient');
 

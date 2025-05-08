@@ -1,5 +1,5 @@
 import apiClient from "@/api/apiClient";
-import patchEditEpisodeFormService from "@/pages/creator/_api/patchEditEpisodeFormService";
+import { patchEditEpisodeFormService } from "@/api/episodeServices";
 
 jest.mock("../../api/apiClient", () => ({
     patch: jest.fn(),
