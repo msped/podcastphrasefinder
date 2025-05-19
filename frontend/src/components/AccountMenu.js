@@ -98,7 +98,7 @@ export default function AccountMenu() {
                     Creator dashboard
                 </MenuItem>
                 <Divider />
-                <MenuItem href='/settings' component={Link}>
+                <MenuItem href='/creator/settings' component={Link}>
                     <ListItemIcon>
                         <Settings fontSize="small" />
                     </ListItemIcon>
