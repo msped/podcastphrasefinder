@@ -9,7 +9,7 @@ import toast from 'react-hot-toast';
 
 
 export default function EditableField({
-    children, onSave, fieldName, urlParam, ...typographyProps
+    children, onSave, fieldName, urlParam = null, ...typographyProps
 }) {
     const [isEditing, setIsEditing] = useState(false);
     const [value, setValue] = useState(children || '');
