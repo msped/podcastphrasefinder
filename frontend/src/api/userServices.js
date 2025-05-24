@@ -11,3 +11,9 @@ export const patchUserService = async (formData) => {
         .patch(`auth/user`, formData)
         .then((res) => res)
 }
+
+export const deleteUserService = async () => {
+    return await apiClient
+        .delete(`auth/user/delete`)
+        .then((res) => res)
+}
