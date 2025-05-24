@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { 
     getUserService,
-    patchUserService
+    patchUserService,
+    deleteUserService
 } from '@/api/userServices';
 
 export const useGetUserHook = () => {
@@ -44,3 +45,30 @@ export const usePatchUserHook = (urlParam = null, formData) => {
 
     return { status, isPutLoading, error };
 }
+
+export const useDeleteUserHook = (trigger) => {
+    const [status, setStatus] = useState(null);
+    const [error, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        const deleteUser = async () => {
+            setIsLoading(true);
+            try {
+                const res = await deleteUserService();
+                setStatus(res.status);
+                setError(null);
+            } catch (err) {
+                setError(err.response?.data || err.message);
+                setStatus(null);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        if (trigger) {
+            deleteUser();
+        }
+    }, [trigger]);
+
+    return { status, error, isLoading };
+};
