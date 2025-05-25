@@ -4,7 +4,7 @@ from dj_rest_auth.views import LoginView, LogoutView, UserDetailsView
 from django.urls import path
 from rest_framework_simplejwt.views import TokenVerifyView
 
-from .views import GoogleLogin
+from .views import GoogleLogin, DeleteAccountView
 
 urlpatterns = [
     path("register", RegisterView.as_view(), name="rest_register"),
@@ -14,4 +14,5 @@ urlpatterns = [
     path("token/verify", TokenVerifyView.as_view(), name="token_verify"),
     path("token/refresh", get_refresh_view().as_view(), name="token_refresh"),
     path("google", GoogleLogin.as_view(), name="google_login"),
+    path("user/delete", DeleteAccountView.as_view(), name="delete_account"),
 ]
