@@ -1,5 +1,6 @@
 import axios from "axios";
 import { getSession } from "next-auth/react";
+import toast from "react-hot-toast";
 
 const apiClient = () => {
     const defaultOptions = {
@@ -25,7 +26,7 @@ const apiClient = () => {
             return response;
         },
         (error) => {
-            if (error.status === 401) {
+            if (error.response.status === 401) {
                 window.location.href = '/';
             }
             return Promise.reject(error)

@@ -6,9 +6,7 @@ import apiClient from "@/api/apiClient";
 const BACKEND_ACCESS_TOKEN_LIFETIME = 45 * 60;            // 45 minutes
 const BACKEND_REFRESH_TOKEN_LIFETIME = 6 * 24 * 60 * 60;  // 6 days
 
-const getCurrentEpochTime = () => {
-    return Math.floor(new Date().getTime() / 1000);
-};
+const refreshTokenUrl = "auth/token/refresh";
 
 const SIGN_IN_HANDLERS = {
     "google": async (user, account, profile, email, credentials) => {
@@ -28,6 +26,32 @@ const SIGN_IN_HANDLERS = {
     },
 };
 const SIGN_IN_PROVIDERS = Object.keys(SIGN_IN_HANDLERS);
+
+async function refreshAccessToken(token) {
+    try {
+        const response = await apiClient.post(refreshTokenUrl, {
+            refresh: token.refresh_token,
+        });
+        const refreshedTokens = response.data;
+
+        if (!refreshedTokens.access) {
+            throw refreshedTokens;
+        }
+
+        return {
+            ...token,
+            access_token: refreshedTokens.access,
+            refresh_token: refreshedTokens.refresh ?? token.refresh_token, // Fall back to old refresh token
+            ref: Date.now() + BACKEND_ACCESS_TOKEN_LIFETIME * 1000, // Update the refresh time
+        };
+    } catch (error) {
+        console.log(error);
+        return {
+            ...token,
+            error: "RefreshAccessTokenError",
+        };
+    }
+}
 
 export const authOptions = {
     secret: process.env.AUTH_SECRET,
@@ -68,22 +92,14 @@ export const authOptions = {
                 token["user"] = backendResponse.user;
                 token["access_token"] = backendResponse.access;
                 token["refresh_token"] = backendResponse.refresh;
-                token["ref"] = getCurrentEpochTime() + BACKEND_ACCESS_TOKEN_LIFETIME;
+                token["ref"] = Date.now() + BACKEND_ACCESS_TOKEN_LIFETIME * 1000;
                 return token;
             }
             // Refresh the backend token if necessary
-            if (getCurrentEpochTime() > token["ref"]) {
-                const response = await apiClient.post(
-                    "auth/token/refresh",
-                    {
-                        refresh: token["refresh_token"],
-                    },
-                );
-                token["access_token"] = response.data.access;
-                token["refresh_token"] = response.data.refresh;
-                token["ref"] = getCurrentEpochTime() + BACKEND_ACCESS_TOKEN_LIFETIME;
+            if (Date.now() < token["ref"]) {
+                return token;
             }
-            return token;
+            return refreshAccessToken(token);
         },
         // Since we're using Django as the backend we have to pass the JWT
         // token to the client instead of the `session`.
