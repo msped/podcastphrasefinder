@@ -30,6 +30,8 @@ const PodcastSwitcher = () => {
         setOpen(!open);
     }
 
+    const backgroundColorActive = 'rgba(134, 18, 155, .5)';
+
     return (
         <>
             <Button 
@@ -79,9 +81,11 @@ const PodcastSwitcher = () => {
                                     cursor: 'pointer',
                                     alignItems: 'center',
                                     padding: 1,
+                                    backgroundColor: selectedPodcastOrg?.id === item.podcast.id ? backgroundColorActive : 'transparent',
+                                    borderRadius: '5px',
                                     '&:hover': {
-                                        backgroundColor: 'rgba(171, 71, 188, 0.08)'
-                                    }
+                                        backgroundColor: selectedPodcastOrg?.id === item.podcast.id ? 'none' : 'rgba(171, 71, 188, 0.08)'
+                                    },
                                 }}
                             >
                                 <Grid container spacing={3}>
