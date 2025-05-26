@@ -11,6 +11,7 @@ import { PodcastContext } from '@/context/PodcastContext';
 import { useGetPodcastHook } from '@/hooks/podcastHooks';
 
 import PodcastSettings from '../_components/PodcastSettings';
+import RSSFeedSettings from '../_components/RSSFeedSettings';
 import UserManagement from '../_components/UserManagement';
 import DeletePodcast from '../_components/DeletePodcast';
 
@@ -25,6 +26,7 @@ function Settings() {
                 {podcast || !isLoading ? (
                     <Stack direction='column' spacing={3}>
                         <PodcastSettings podcast={podcast} />
+                        <RSSFeedSettings podcast={podcast} />
                         <UserManagement podcast={podcast}/>
                         <DeletePodcast podcast={podcast} />
                     </Stack>
