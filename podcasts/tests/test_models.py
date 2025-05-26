@@ -100,11 +100,6 @@ class TestModels(APITestCase):
         )
 
     def episode_release_day(self):
-        podcast = Podcast.objects.get(name="Tom Scott")
-        EpisodeReleaseDay.objects.create(
-            podcast=podcast,
-            day=2
-        )
         edr_obj = EpisodeReleaseDay.objects.get(
             podcast__name="Tom Scott", day=2)
         self.assertEqual(
