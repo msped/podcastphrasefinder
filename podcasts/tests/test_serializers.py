@@ -7,9 +7,8 @@ from unittest import mock
 from zoneinfo import ZoneInfo
 from django.contrib.auth.models import User
 from rest_framework.test import APITestCase
-from ..models import Podcast, Episode, Transcript
-from ..serializers import PodcastSerializer, EpisodeSerializer, TranscriptSerializer
-
+from ..models import Podcast, Episode, Transcript, EpisodeReleaseDay, PodcastRSSFeed
+from ..serializers import PodcastSerializer, EpisodeSerializer, TranscriptSerializer, EpisodeReleaseDaySerializer, PodcastRSSFeedSerializer
 from creatoradmin.utils import convert_date_from_picker
 
 MEDIA_ROOT = tempfile.mkdtemp()
@@ -187,3 +186,123 @@ class TranscriptSerializerTestCase(APITestCase):
         data = self.serializer.data
         self.assertEqual(data['error_occurred'],
                          self.transcript.error_occurred)
+
+
+@override_settings(MEDIA_ROOT=MEDIA_ROOT)
+class EpisodeReleaseDaySerializerTestCase(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='admin', password='admin')
+        Podcast.objects.create(
+            name='Have a Word Podcast',
+            avatar=SimpleUploadedFile('test.png', content=b'4321')
+        )
+        self.podcast = Podcast.objects.get(name='Have a Word Podcast')
+        self.episode_release_day = EpisodeReleaseDay.objects.create(
+            podcast=self.podcast,
+            day=2
+        )
+
+    def tearDown(self):
+        shutil.rmtree(MEDIA_ROOT, ignore_errors=True)
+
+    def test_episode_release_day_serializer(self):
+        serializer = EpisodeReleaseDaySerializer(
+            instance=self.episode_release_day)
+        data = serializer.data
+        self.assertEqual(data['id'], self.episode_release_day.id)
+        self.assertEqual(data['podcast']['id'],
+                         self.episode_release_day.podcast.id)
+        self.assertEqual(data['day'], self.episode_release_day.day)
+
+    def test_episode_release_day_serializer_create(self):
+        data = {
+            'podcast_id': self.podcast.id,
+            'day': 3
+        }
+        serializer = EpisodeReleaseDaySerializer(data=data)
+        self.assertTrue(serializer.is_valid())
+        episode_release_day = serializer.save()
+        self.assertEqual(episode_release_day.day, 3)
+        self.assertEqual(episode_release_day.podcast, self.podcast)
+
+        # Clean up the created instance
+        EpisodeReleaseDay.objects.filter(
+            id=episode_release_day.id).delete()
+
+    def test_episode_release_day_serializer_update(self):
+        data = {
+            'day': 4
+        }
+        serializer = EpisodeReleaseDaySerializer(
+            instance=self.episode_release_day, data=data, partial=True)
+        self.assertTrue(serializer.is_valid())
+        updated_episode_release_day = serializer.save()
+        self.assertEqual(updated_episode_release_day.day, 4)
+        self.assertEqual(updated_episode_release_day.podcast, self.podcast)
+
+    def test_episode_release_day_serializer_delete(self):
+        self.episode_release_day.delete()
+        with self.assertRaises(EpisodeReleaseDay.DoesNotExist):
+            EpisodeReleaseDay.objects.get(id=self.episode_release_day.id)
+
+
+class PodcastRSSFeedSerializerTestCase(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='admin', password='admin')
+        Podcast.objects.create(
+            name='Have a Word Podcast',
+            avatar=SimpleUploadedFile('test.png', content=b'4321')
+        )
+        self.podcast = Podcast.objects.get(name='Have a Word Podcast')
+        self.rss_feed_url = 'https://example.com/rss'
+        self.podcast_rss_feed = PodcastRSSFeed.objects.create(
+            podcast=self.podcast,
+            rss_feed_url=self.rss_feed_url
+        )
+        self.serializer = PodcastRSSFeedSerializer(
+            instance=self.podcast_rss_feed)
+
+    def tearDown(self):
+        shutil.rmtree(MEDIA_ROOT, ignore_errors=True)
+
+    def test_podcast_rss_feed_serializer(self):
+        data = self.serializer.data
+        self.assertEqual(data['id'], self.podcast_rss_feed.id)
+        self.assertEqual(data['podcast']['id'], self.podcast.id)
+        self.assertEqual(data['rss_feed_url'], self.rss_feed_url)
+        self.assertIn('last_updated', data)
+        self.assertIsNotNone(data['last_updated'])
+
+    def test_podcast_rss_feed_serializer_create(self):
+        data = {
+            'podcast_id': self.podcast.id,
+            'rss_feed_url': 'https://newexample.com/rss'
+        }
+        serializer = PodcastRSSFeedSerializer(data=data)
+        self.assertTrue(serializer.is_valid())
+        podcast_rss_feed = serializer.save()
+        self.assertEqual(podcast_rss_feed.rss_feed_url,
+                         'https://newexample.com/rss')
+        self.assertEqual(podcast_rss_feed.podcast, self.podcast)
+
+        # Clean up the created instance
+        PodcastRSSFeed.objects.filter(id=podcast_rss_feed.id).delete()
+
+    def test_podcast_rss_feed_serializer_update(self):
+        data = {
+            'rss_feed_url': 'https://updatedexample.com/rss'
+        }
+        serializer = PodcastRSSFeedSerializer(
+            instance=self.podcast_rss_feed, data=data, partial=True)
+        self.assertTrue(serializer.is_valid())
+        updated_podcast_rss_feed = serializer.save()
+        self.assertEqual(updated_podcast_rss_feed.rss_feed_url,
+                         'https://updatedexample.com/rss')
+        self.assertEqual(updated_podcast_rss_feed.podcast, self.podcast)
+
+    def test_podcast_rss_feed_serializer_delete(self):
+        self.podcast_rss_feed.delete()
+        with self.assertRaises(PodcastRSSFeed.DoesNotExist):
+            PodcastRSSFeed.objects.get(id=self.podcast_rss_feed.id)
