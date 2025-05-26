@@ -65,7 +65,8 @@ class EpisodeReleaseDay(models.Model):
         (4, "Wednesday"),
         (5, "Thursday"),
         (6, "Friday"),
-        (7, "Saturday")
+        (7, "Saturday"),
+        (8, "Everyday"),
     )
 
     podcast = models.ForeignKey(Podcast, on_delete=models.CASCADE)
@@ -74,3 +75,16 @@ class EpisodeReleaseDay(models.Model):
     def __str__(self):
         return f'An Episode of {self.podcast.name} ' + \
             f'is released on a {self.get_day_display()}'
+
+
+class PodcastRSSFeed(models.Model):
+    podcast = models.ForeignKey(Podcast, on_delete=models.CASCADE)
+    rss_feed_url = models.URLField(max_length=200)
+    last_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f'RSS Feed for {self.podcast.name}'
+
+    class Meta:
+        verbose_name = 'Podcast RSS Feed'
+        verbose_name_plural = 'Podcasts RSS Feeds'
