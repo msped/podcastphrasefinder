@@ -7,7 +7,11 @@ from .views import (
     PodcastDetailView,
     TransferOwnershipView,
     ConfirmDeletePodcastView,
-    ConfirmTransferPodcastView
+    ConfirmTransferPodcastView,
+    PodcastRSSFeedListCreateView,
+    PodcastRSSFeedDetailView,
+    EpisodeReleaseDayListCreateView,
+    EpisodeReleaseDayDetailView,
 )
 
 urlpatterns = [
@@ -24,4 +28,12 @@ urlpatterns = [
          ConfirmDeletePodcastView.as_view(), name='confirm-delete-podcast'),
     path('podcasts/<slug:slug>/confirm/transfer/<str:token>',
          ConfirmTransferPodcastView.as_view(), name='confirm-transfer-podcast'),
+    path('podcasts/<slug:slug>/rss-feeds',
+         PodcastRSSFeedListCreateView.as_view(), name='podcast-rss-feed-list-create'),
+    path('podcasts/<slug:slug>/rss-feeds/<int:id>',
+         PodcastRSSFeedDetailView.as_view(), name='podcast-rss-feed-detail'),
+    path('podcasts/<slug:slug>/schedule',
+         EpisodeReleaseDayListCreateView.as_view(), name='podcast-release-schedule-list-create'),
+    path('podcasts/<slug:slug>/schedule/<int:id>',
+         EpisodeReleaseDayDetailView.as_view(), name='podcast-release-schedule-detail'),
 ]
