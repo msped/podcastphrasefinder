@@ -7,8 +7,7 @@ from PIL import Image
 from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.test import APITestCase
-from podcasts.models import Podcast
-import itsdangerous
+from podcasts.models import Podcast, EpisodeReleaseDay, PodcastRSSFeed
 from ..models import Membership
 from ..utils import generate_time_based_token
 
@@ -741,3 +740,191 @@ class ConfirmOwnershipTransferViewTestCase(APITestCase):
             self.podcast.slug, token)
         response = self.client.get(confirmation_url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class PodcastRSSFeedListCreateViewTestCase(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create(
+            username='testuser', password='12345')
+        self.podcast = Podcast.objects.create(
+            name='Test Podcast',
+            slug='test-podcast',
+        )
+        Membership.objects.create(
+            user=self.user, podcast=self.podcast, role='Owner', is_primary=True)
+        self.client.force_authenticate(user=self.user)
+
+    def tearDown(self):
+        shutil.rmtree(MEDIA_ROOT, ignore_errors=True)
+
+    def test_create_rss_feed(self):
+        data = {
+            'rss_feed_url': 'https://example.com/rss',
+            'podcast_id': self.podcast.id
+        }
+        response = self.client.post(
+            f'/api/orgs/podcasts/{self.podcast.slug}/rss-feeds', data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(PodcastRSSFeed.objects.count(), 1)
+
+    def test_list_rss_feeds(self):
+        PodcastRSSFeed.objects.create(
+            rss_feed_url='https://example.com/rss',
+            podcast=self.podcast
+        )
+        response = self.client.get(
+            f'/api/orgs/podcasts/{self.podcast.slug}/rss-feeds')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+
+    def test_create_rss_feed_invalid_data(self):
+        data = {
+            'rss_feed_url': 'invalid-url',
+            'podcast_id': self.podcast.id
+        }
+        response = self.client.post(
+            f'/api/orgs/podcasts/{self.podcast.slug}/rss-feeds', data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(PodcastRSSFeed.objects.count(), 0)
+
+    def test_create_rss_feed_no_podcast(self):
+        data = {
+            'rss_feed_url': 'https://example.com/rss',
+            'podcast_id': 9999
+        }
+        response = self.client.post(
+            f'/api/orgs/podcasts/{self.podcast.slug}/rss-feeds', data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(PodcastRSSFeed.objects.count(), 0)
+
+
+class PodcastRSSFeedDetailViewTestCase(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create(
+            username='testuser', password='12345')
+        self.podcast = Podcast.objects.create(
+            name='Test Podcast',
+            slug='test-podcast',
+        )
+        Membership.objects.create(
+            user=self.user, podcast=self.podcast, role='Owner', is_primary=True)
+        self.rss_feed = PodcastRSSFeed.objects.create(
+            rss_feed_url='https://example.com/rss',
+            podcast=self.podcast
+        )
+        self.client.force_authenticate(user=self.user)
+
+    def tearDown(self):
+        shutil.rmtree(MEDIA_ROOT, ignore_errors=True)
+
+    def test_retrieve_rss_feed(self):
+        response = self.client.get(
+            f'/api/orgs/podcasts/{self.podcast.slug}/rss-feeds/{self.rss_feed.id}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            response.data['rss_feed_url'], 'https://example.com/rss')
+
+    def test_update_rss_feed(self):
+        updated_data = {'rss_feed_url': 'https://updated-example.com/rss'}
+        response = self.client.patch(
+            f'/api/orgs/podcasts/{self.podcast.slug}/rss-feeds/{self.rss_feed.id}', updated_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.rss_feed.refresh_from_db()
+        self.assertEqual(self.rss_feed.rss_feed_url,
+                         'https://updated-example.com/rss')
+
+    def test_delete_rss_feed(self):
+        response = self.client.delete(
+            f'/api/orgs/podcasts/{self.podcast.slug}/rss-feeds/{self.rss_feed.id}')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(PodcastRSSFeed.objects.filter(
+            id=self.rss_feed.id).exists())
+
+
+class EpisodeReleaseDayListCreateViewTestCase(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create(
+            username='testuser', password='12345')
+        self.podcast = Podcast.objects.create(
+            name='Test Podcast',
+            slug='test-podcast',
+        )
+        Membership.objects.create(
+            user=self.user, podcast=self.podcast, role='Owner', is_primary=True)
+        self.client.force_authenticate(user=self.user)
+
+    def tearDown(self):
+        shutil.rmtree(MEDIA_ROOT, ignore_errors=True)
+
+    def test_create_release_day(self):
+        data = {
+            'day': 2,
+            'podcast_id': self.podcast.id
+        }
+        response = self.client.post(
+            f'/api/orgs/podcasts/{self.podcast.slug}/schedule', data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(EpisodeReleaseDay.objects.count(), 1)
+
+    def test_list_release_days(self):
+        EpisodeReleaseDay.objects.create(
+            day=2,
+            podcast=self.podcast
+        )
+        response = self.client.get(
+            f'/api/orgs/podcasts/{self.podcast.slug}/schedule')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+
+    def test_create_release_day_invalid_data(self):
+        data = {
+            'day': 10,  # Invalid day
+            'podcast_id': self.podcast.id
+        }
+        response = self.client.post(
+            f'/api/orgs/podcasts/{self.podcast.slug}/schedule', data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(EpisodeReleaseDay.objects.count(), 0)
+
+    def test_create_release_day_no_podcast(self):
+        data = {
+            'day': 2,
+            'podcast_id': 9999
+        }
+        response = self.client.post(
+            f'/api/orgs/podcasts/{self.podcast.slug}/schedule', data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(EpisodeReleaseDay.objects.count(), 0)
+
+
+class EpisodeReleaseDayDetailViewTestCase(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create(
+            username='testuser', password='12345')
+        self.podcast = Podcast.objects.create(
+            name='Test Podcast',
+            slug='test-podcast',
+        )
+        Membership.objects.create(
+            user=self.user, podcast=self.podcast, role='Owner', is_primary=True)
+        self.release_day = EpisodeReleaseDay.objects.create(
+            day=2,
+            podcast=self.podcast
+        )
+        self.client.force_authenticate(user=self.user)
+
+    def tearDown(self):
+        shutil.rmtree(MEDIA_ROOT, ignore_errors=True)
+
+    def test_retrieve_release_day(self):
+        response = self.client.get(
+            f'/api/orgs/podcasts/{self.podcast.slug}/schedule/{self.release_day.id}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['day'], 2)
+
+    def test_delete_release_day(self):
+        response = self.client.delete(
+            f'/api/orgs/podcasts/{self.podcast.slug}/schedule/{self.release_day.id}')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(EpisodeReleaseDay.objects.filter(
+            id=self.release_day.id).exists())

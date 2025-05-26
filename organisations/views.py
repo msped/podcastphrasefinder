@@ -7,8 +7,8 @@ from django.conf import settings
 import itsdangerous
 from .models import Membership
 from .serializers import MembershipSerializer
-from podcasts.models import Podcast
-from podcasts.serializers import PodcastSerializer
+from podcasts.models import Podcast, EpisodeReleaseDay, PodcastRSSFeed
+from podcasts.serializers import PodcastSerializer, EpisodeReleaseDaySerializer, PodcastRSSFeedSerializer
 from .permissions import IsOrgOwner, IsOrgAdmin, IsOrgMember
 from .utils import generate_time_based_token
 
@@ -89,7 +89,102 @@ class PodcastDetailView(generics.RetrieveUpdateDestroyAPIView):
         return Response(status=status.HTTP_200_OK)
 
 
+class PodcastRSSFeedListCreateView(generics.ListCreateAPIView):
+    serializer_class = PodcastRSSFeedSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_serializer_context(self):
+        return {'request': self.request}
+
+    def get_queryset(self):
+        podcast = Membership.objects.get(
+            user=self.request.user, is_primary=True).podcast
+        return PodcastRSSFeed.objects.filter(podcast=podcast)
+
+    def perform_create(self, serializer):
+        podcast = Membership.objects.get(
+            user=self.request.user, is_primary=True).podcast
+        serializer.save(podcast=podcast)
+
+
+class PodcastRSSFeedDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = PodcastRSSFeed.objects.all()
+    serializer_class = PodcastRSSFeedSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    lookup_field = 'id'
+    lookup_url_kwarg = 'id'
+
+    def get_serializer_context(self):
+        return {'request': self.request}
+
+    def get_permissions(self):
+        if self.request.method == 'PATCH':
+            permission_classes = [
+                IsOrgAdmin | IsOrgOwner,
+                permissions.IsAuthenticated
+            ]
+        elif self.request.method == 'DELETE':
+            permission_classes = [
+                IsOrgOwner | IsOrgAdmin,
+                permissions.IsAuthenticated
+            ]
+        else:
+            permission_classes = [
+                IsOrgAdmin | IsOrgOwner | IsOrgMember,
+                permissions.IsAuthenticated
+            ]
+        return [permission() for permission in permission_classes]
+
+
+class EpisodeReleaseDayListCreateView(generics.ListCreateAPIView):
+    serializer_class = EpisodeReleaseDaySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_serializer_context(self):
+        return {'request': self.request}
+
+    def get_queryset(self):
+        podcast = Membership.objects.get(
+            user=self.request.user, is_primary=True).podcast
+        return EpisodeReleaseDay.objects.filter(podcast=podcast)
+
+    def perform_create(self, serializer):
+        podcast = Membership.objects.get(
+            user=self.request.user, is_primary=True).podcast
+        serializer.save(podcast=podcast)
+
+
+class EpisodeReleaseDayDetailView(generics.RetrieveDestroyAPIView):
+    queryset = EpisodeReleaseDay.objects.all()
+    serializer_class = EpisodeReleaseDaySerializer
+    permission_classes = [permissions.IsAuthenticated]
+    lookup_field = 'id'
+    lookup_url_kwarg = 'id'
+
+    def get_serializer_context(self):
+        return {'request': self.request}
+
+    def get_permissions(self):
+        if self.request.method == 'PATCH':
+            permission_classes = [
+                IsOrgAdmin | IsOrgOwner,
+                permissions.IsAuthenticated
+            ]
+        elif self.request.method == 'DELETE':
+            permission_classes = [
+                IsOrgOwner | IsOrgAdmin,
+                permissions.IsAuthenticated
+            ]
+        else:
+            permission_classes = [
+                IsOrgAdmin | IsOrgOwner | IsOrgMember,
+                permissions.IsAuthenticated
+            ]
+        return [permission() for permission in permission_classes]
+
 # Handles the changing of the selected membership (podcast)
+
+
 class UserOrgSelectionView(APIView):
     permission_classes = [
         permissions.IsAuthenticated,
