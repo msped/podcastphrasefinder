@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Episode, Podcast, EpisodeReleaseDay, Transcript
+from .models import Episode, Podcast, EpisodeReleaseDay, Transcript, PodcastRSSFeed
 from organisations.models import Membership
 
 admin.site.register(EpisodeReleaseDay)
@@ -21,9 +21,17 @@ class TranscriptInlineAdmin(admin.TabularInline):
     extra = 0
 
 
+class PodcastRSSFeedInlineAdmin(admin.TabularInline):
+    model = PodcastRSSFeed
+    extra = 0
+
+
 @admin.register(Podcast)
 class PodcastAdmin(admin.ModelAdmin):
-    inlines = [EpisodeReleaseDayInlineAdmin, MembershipInlineAdmin]
+    inlines = [PodcastRSSFeedInlineAdmin,
+               EpisodeReleaseDayInlineAdmin, MembershipInlineAdmin]
+    list_display = ['id', 'name', 'slug', 'avatar']
+    search_fields = ['name',]
 
     class Meta:
         model = Podcast
