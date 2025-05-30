@@ -4,7 +4,11 @@ import {
     getPodcastsSearchService,
     deletePodcastService,
     patchPodcastService,
-    postPodcastFormService
+    postPodcastFormService,
+    getFeedsService,
+    postFeedService,
+    deleteFeedService,
+    getEpisodeReleaseDaysService
 } from '@/api/podcastServices';
 
 export const useGetPodcastHook = (slug) => {
@@ -134,4 +138,54 @@ export const usePostPodcastFormHook = (formData) => {
     }, [formData])
 
     return { response, status, isLoading, error };
+}
+
+export const useGetFeedsHook = (podcastSlug) => {
+    const [feeds, setFeeds] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
+    const [error, setError] = useState(null)
+
+    useEffect(() => {
+        const fetchDataFromService = async () => {
+            await getFeedsService(podcastSlug)
+            .then(setFeeds)
+            .catch((error) => {
+                setError(error);
+                setFeeds([]);
+            }).finally(() => {
+                setIsLoading(false)
+            })
+            setIsLoading(false)
+        }
+        if (podcastSlug) {
+            fetchDataFromService();
+        }
+    }, [podcastSlug])
+
+    return { feeds, isLoading, error, setFeeds };
+}
+
+
+export const useGetEpisodeReleaseDaysHook = (podcastSlug) => {
+    const [releaseDays, setReleaseDays] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
+    const [error, setError] = useState(null)
+
+    useEffect(() => {
+        const fetchDataFromService = async () => {
+            await getEpisodeReleaseDaysService(podcastSlug)
+            .then(setReleaseDays)
+            .catch((error) => {
+                setError(error);
+                setReleaseDays([]);
+            }).finally(() => {
+                setIsLoading(false)
+            })
+        }
+        if (podcastSlug) {
+            fetchDataFromService();
+        }
+    }, [podcastSlug])
+
+    return { releaseDays, isLoading, error, setReleaseDays };
 }
