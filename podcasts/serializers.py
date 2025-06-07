@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Podcast, Episode, Transcript
+from .models import Podcast, Episode, Transcript, EpisodeReleaseDay, PodcastRSSFeed
 from creatoradmin.utils import get_video_id
 
 
@@ -31,6 +31,36 @@ class PodcastSerializer(serializers.ModelSerializer):
             'slug',
             'avatar',
         ]
+
+
+class EpisodeReleaseDaySerializer(serializers.ModelSerializer):
+    podcast = PodcastSerializer(many=False, read_only=True)
+    podcast_id = serializers.PrimaryKeyRelatedField(
+        queryset=Podcast.objects.all(),
+        source='podcast',
+        write_only=True,
+        allow_null=True
+    )
+
+    class Meta:
+        model = EpisodeReleaseDay
+        fields = ['id', 'podcast', 'podcast_id', 'day']
+
+
+class PodcastRSSFeedSerializer(serializers.ModelSerializer):
+    podcast = PodcastSerializer(many=False, read_only=True)
+    podcast_id = serializers.PrimaryKeyRelatedField(
+        queryset=Podcast.objects.all(),
+        source='podcast',
+        write_only=True,
+        allow_null=True
+    )
+
+    class Meta:
+        model = PodcastRSSFeed
+        fields = ['id', 'podcast', 'podcast_id',
+                  'rss_feed_url', 'last_updated']
+        read_only_fields = ['last_updated']
 
 
 class EpisodeSerializer(serializers.ModelSerializer):
