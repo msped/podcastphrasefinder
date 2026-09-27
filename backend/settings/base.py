@@ -149,6 +149,8 @@ CELERY_BEAT_SCHEDULE = {
 
 }
 
+RSS_ALLOW_PRIVATE_HOSTS = False
+
 ELASTICSEARCH_DSL = {
     'default': {
         'hosts': os.getenv("ELASTICSEARCH_DSL_HOSTS", 'localhost:9200')

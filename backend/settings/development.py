@@ -4,6 +4,9 @@ DEBUG = True
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+# Allow feeds served from localhost (e.g. fixture feeds via python -m http.server)
+RSS_ALLOW_PRIVATE_HOSTS = True
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',

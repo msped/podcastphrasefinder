@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:podcast="https://podcastindex.org/namespace/1.0">
+    <channel>
+        <title>No Owner Podcast</title>
+        <item>
+            <title>Episode A</title>
+            <guid>episode-a-guid</guid>
+            <podcast:transcript url="https://example.com/a.txt"/>
+        </item>
+    </channel>
+</rss>

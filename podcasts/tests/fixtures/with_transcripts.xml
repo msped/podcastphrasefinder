@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+    xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"
+    xmlns:podcast="https://podcastindex.org/namespace/1.0"
+    xmlns:podcastold="https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/1.0.md">
+    <channel>
+        <title>Test Transcripts Podcast</title>
+        <itunes:image href="https://example.com/artwork.jpg"/>
+        <itunes:owner>
+            <itunes:name>Test Owner</itunes:name>
+            <itunes:email>owner@example.com</itunes:email>
+        </itunes:owner>
+        <item>
+            <title>Episode 3</title>
+            <guid isPermaLink="false">ep-3-guid</guid>
+            <pubDate>Mon, 15 Sep 2025 06:00:00 +0000</pubDate>
+            <enclosure url="https://example.com/ep3.mp3" type="audio/mpeg" length="1000"/>
+            <podcast:transcript url="https://example.com/ep3.json" type="application/json"/>
+            <podcast:transcript url="https://example.com/ep3.vtt" type="text/vtt"/>
+        </item>
+        <item>
+            <title>Episode 2</title>
+            <guid isPermaLink="false">ep-2-guid</guid>
+            <pubDate>Mon, 08 Sep 2025 06:00:00 +0000</pubDate>
+            <enclosure url="https://example.com/ep2.mp3" type="audio/mpeg" length="1000"/>
+            <podcastold:transcript url="https://example.com/ep2.srt" type="application/x-subrip"/>
+        </item>
+        <item>
+            <title>Episode 1</title>
+            <pubDate>not a date</pubDate>
+            <enclosure url="https://example.com/ep1.mp3" type="audio/mpeg" length="1000"/>
+        </item>
+    </channel>
+</rss>

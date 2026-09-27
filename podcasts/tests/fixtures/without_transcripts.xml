@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+    <channel>
+        <title>No Transcripts Podcast</title>
+        <image>
+            <url>https://example.com/channel-image.jpg</url>
+        </image>
+        <managingEditor>editor@example.com (Test Editor)</managingEditor>
+        <item>
+            <title>Only Episode</title>
+            <guid>only-episode-guid</guid>
+            <pubDate>Tue, 02 Sep 2025 10:30:00 +0100</pubDate>
+            <enclosure url="https://example.com/only.mp3" type="audio/mpeg" length="1000"/>
+        </item>
+    </channel>
+</rss>
